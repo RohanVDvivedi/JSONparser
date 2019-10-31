@@ -16,7 +16,15 @@ enum json_data_type
 typedef struct json_node json_node;
 struct json_node
 {
+	// type of node
 	json_data_type type;
+
+	// data for the node
+	// BOOLE 			=> uint8_t
+	// NUMBER, STRING 	=> dstring
+	// ARRAY 			=> array
+	// OBJECT 			=> hashmap
+	// ERROR 			=> NULL
 	void* data_p;
 };
 
