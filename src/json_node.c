@@ -25,7 +25,7 @@ json_node* get_new_json_node(json_data_type type)
 		}
 		default:
 		{
-			jnode_p->data = NULL;
+			jnode_p->data_p = NULL;
 			break;
 		}
 	}
