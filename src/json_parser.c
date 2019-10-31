@@ -19,7 +19,42 @@ json_node* parse_json(dstring* json_string)
 	// this is what the result will pointed to by
 	json_node* jnode = NULL;
 
-
+	char* inst = json_string->cstring;
+	while((*inst) != '\0')
+	{
+		switch(*inst)
+		{
+			case '\"' :
+			{
+				break;
+			}
+			case ':' :
+			{
+				break;
+			}
+			case ',' :
+			{
+				break;
+			}
+			case '{' :
+			{
+				break;
+			}
+			case '}' :
+			{
+				break;
+			}
+			case '[' :
+			{
+				break;
+			}
+			case ']' :
+			{
+				break;
+			}
+		}
+		inst++;
+	}
 
 	// delete all the contents of the stack and the stack itself
 	delete_state_stack(state_stack);
