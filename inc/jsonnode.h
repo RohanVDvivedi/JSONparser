@@ -8,7 +8,7 @@ enum json_data_type
 	NUMBER,		// dstring
 	STRING,		// dstring
 	ARRAY,		// array
-	OBJECT		// hashmap
+	OBJECT		// hashmap of dstring vs any other json_type
 };
 
 typedef struct json_node json_node;
