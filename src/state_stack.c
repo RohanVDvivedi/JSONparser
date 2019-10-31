@@ -36,7 +36,7 @@ void delete_state_stack(stack* state_stack)
 	// delete/pop 
 	while(state_stack->stack_size > 0)
 	{
-		pop_state_stack(state_stack);
+		pop_state(state_stack);
 	}
 	delete_stack(state_stack);
 }

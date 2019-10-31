@@ -15,7 +15,7 @@ CFLAGS=-I${INC_DIR} -I${CUTLERY_PATH}/inc
 ${OBJ_DIR}/%.o : ${SRC_DIR}/%.c ${INC_DIR}/%.h ${CUTLERY_PATH}/inc
 	${CC} ${CFLAGS} -c $< -o $@
 
-${BIN_DIR}/$(TARGET) : ${OBJ_DIR}/jsonparser.o
+${BIN_DIR}/$(TARGET) : ${OBJ_DIR}/json_parser.o ${OBJ_DIR}/state_stack.o
 	ar rcs $@ ${OBJ_DIR}/*.o
 
 path : 
