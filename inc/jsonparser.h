@@ -7,6 +7,6 @@
 #include<hashmap.h>
 #include<stack.h>
 
-node* parse_json(dstring* json_string);
+json_node* parse_json(dstring* json_string);
 
 #endif
