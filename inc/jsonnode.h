@@ -8,7 +8,9 @@ enum json_data_type
 	NUMBER,		// dstring
 	STRING,		// dstring
 	ARRAY,		// array
-	OBJECT		// hashmap of dstring vs any other json_type
+	OBJECT,		// hashmap of dstring vs any other json_type
+
+	ERROR		// this is when the json string has error and is not valid and can not be parsed
 };
 
 typedef struct json_node json_node;

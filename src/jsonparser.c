@@ -9,7 +9,7 @@ enum parse_state
 	READING_NUMBER,
 	READING_ARRAY,
 	READING_OBJECT
-}
+};
 
 // returns character pointer pointing to the next character from the *from and that equals the matched character
 char* get_until(char* from, char matches)
@@ -34,9 +34,9 @@ json_node* parse_json(dstring* json_string)
 	// delete all the contents of the stack and the stack itself
 	while(state_stack->stack_size > 0)
 	{
-		void* element = (void*)get_top(state_stack);
+		void* element = (void*)get_top_stack(state_stack);
 		free(element);
-		pop(state_stack);
+		pop_stack(state_stack);
 	}
 	delete_stack(state_stack);
 
