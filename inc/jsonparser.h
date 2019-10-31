@@ -1,10 +1,10 @@
 #ifndef JSON_PARSER_H
 #define JSON_PARSER_H
 
-typedef enum json_data_type json_data_type;
-enum json_data_type
-{
-
-};
+#include<jsonnode.h>
+#include<array.h>
+#include<dstring.h>
+#include<hashmap.h>
+#include<stack.h>
 
 #endif

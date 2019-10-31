@@ -10,12 +10,12 @@ RM=rm -f
 TARGET=libjsonpar.a
 
 
-CFLAGS=-I${INC_DIR}
+CFLAGS=-I${INC_DIR} -I${CUTLERY_PATH}/inc
 
-${OBJ_DIR}/%.o : ${SRC_DIR}/%.c ${INC_DIR}/%.h
+${OBJ_DIR}/%.o : ${SRC_DIR}/%.c ${INC_DIR}/%.h ${CUTLERY_PATH}/inc
 	${CC} ${CFLAGS} -c $< -o $@
 
-${BIN_DIR}/$(TARGET) : ${OBJ_DIR}/jsonparser.c
+${BIN_DIR}/$(TARGET) : ${OBJ_DIR}/jsonparser.o
 	ar rcs $@ ${OBJ_DIR}/*.o
 
 path : 
