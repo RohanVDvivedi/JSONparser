@@ -16,7 +16,7 @@ enum json_data_type
 	NUMBER,		// dstring  ([-][0-9][.][0-9])
 	STRING,		// dstring  (*)
 	ARRAY,		// array    (standard cutlery array of json_node*)
-	OBJECT,		// hashmap  (standard cutlery hashmap of dstring* vs json_node*)
+	OBJECT,		// hashmap  (standard cutlery hashmap of json_node*(STRING mandatorily) vs json_node*)
 
 	ERROR		// this is when the json string has error and is not valid and can not be parsed
 };
@@ -33,7 +33,7 @@ struct json_node
 	// NUMBER		 	=> dstring ([-][0-9][.][0-9])
 	// STRING 			=> dstring (*)
 	// ARRAY 			=> array   (standard cutlery array of json_node*)
-	// OBJECT 			=> hashmap (standard cutlery hashmap of dstring* vs json_node*)
+	// OBJECT 			=> hashmap (standard cutlery hashmap of json_node*(STRING mandatorily) vs json_node*)
 	
 	// ERROR 			=> NULL
 	void* data_p;

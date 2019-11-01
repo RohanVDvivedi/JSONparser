@@ -29,7 +29,7 @@ stack* get_state_stack(dstring* json_string)
 	return get_stack((json_string->bytes_occupied / 10) + 10);
 }
 
-parse_state* get_current_state(stack* state_stack)
+parse_state get_current_state(stack* state_stack)
 {
 	// return state of the state_desc that is on top of the stack
 	return ((state_desc*)get_top_stack(state_stack))->state;
@@ -41,7 +41,7 @@ json_node* get_current_state_reinstate_node(stack* state_stack)
 	return ((state_desc*)get_top_stack(state_stack))->reinstate_to_node;
 }
 
-unsigned long long int increment_current_state_elements_read()
+unsigned long long int increment_current_state_elements_read(stack* state_stack)
 {
 	return ((state_desc*)get_top_stack(state_stack))->elements_read++;
 }
@@ -52,7 +52,7 @@ void push_state(stack* state_stack, parse_state state, json_node* reinstate_to_n
 	state_desc* new_state_desc = get_new_state_desc(state, reinstate_to_node);
 
 	// push it on
-	push_stack(state_stack, new_state);
+	push_stack(state_stack, new_state_desc);
 }
 
 json_node* pop_state(stack* state_stack)
@@ -62,7 +62,7 @@ json_node* pop_state(stack* state_stack)
 
 	// get the reinstate node value, so that it can be returned
 	json_node* reinstate_to_node = desc->reinstate_to_node;
-	delete_state_desc(state_desc);
+	delete_state_desc(desc);
 
 	// pop the freed element from the stack
 	pop_stack(state_stack);

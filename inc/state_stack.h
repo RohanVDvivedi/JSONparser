@@ -7,6 +7,8 @@
 #include<dstring.h>
 #include<stack.h>
 
+#include<json_node.h>
+
 typedef enum parse_state parse_state;
 enum parse_state
 {
@@ -29,13 +31,13 @@ struct state_desc
 	json_node* reinstate_to_node;
 
 	unsigned long long int elements_read;
-}
+};
 
 // gets a new state stack for the given json string
 stack* get_state_stack(dstring* json_string);
 
 // gets the currentr state pf the parser from the given state
-parse_state* get_current_state(stack* state_stack);
+parse_state get_current_state(stack* state_stack);
 
 // gives you the current, json node, to be reinstated for the last state that was pushed
 json_node* get_current_state_reinstate_node(stack* state_stack);

@@ -1,8 +1,13 @@
 #include<json_node.h>
 
-unsigned long long int key_hashing_function(dstring* key)
+unsigned long long int key_hashing_function(json_node* key)
 {
-	return key->bytes_occupied;
+	return ((dstring*)(key->data_p))->bytes_occupied;
+}
+
+int key_compare_function(json_node* key1, json_node* key2)
+{
+	return compare_dstring(((dstring*)(key1->data_p))->bytes_occupied, ((dstring*)(key2->data_p))->bytes_occupied);
 }
 
 json_node* get_new_json_node()
@@ -36,7 +41,7 @@ void initialize_json_node(json_node* jnode_p, json_data_type type, unsigned long
 		}
 		case OBJECT:
 		{
-			jnode_p->data_p = get_hashmap(expected_size, (unsigned long long int(*)(const void*))key_hashing_function, (int(*)(const void*, const void*))compare_dstring, ELEMENTS_AS_RED_BLACK_BST);
+			jnode_p->data_p = get_hashmap(expected_size, (unsigned long long int(*)(const void*))key_hashing_function, (int(*)(const void*, const void*))key_compare_function, ELEMENTS_AS_RED_BLACK_BST);
 			break;
 		}
 		default:
