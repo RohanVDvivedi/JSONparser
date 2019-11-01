@@ -28,6 +28,7 @@ struct json_node
 	json_data_type type;
 
 	// data for the node
+	// NULLE			=> dstring (null)
 	// BOOLE 			=> dstring (true, false)
 	// NUMBER, STRING 	=> dstring ([-][0-9][.][0-9])
 	// ARRAY 			=> array   (standard cutlery array of json_node*)

@@ -8,7 +8,7 @@ unsigned long long int key_hashing_function(dstring* key)
 json_node* get_new_json_node()
 {
 	json_node* jnode_p = (json_node*) malloc(sizeof(json_node));
-	jnode_p->type = NULLE;
+	jnode_p->type = ERROR;
 	jnode_p->data_p = NULL;
 	return jnode_p;
 }
@@ -18,6 +18,7 @@ void initialize_json_node(json_node* jnode_p, json_data_type type, unsigned long
 	jnode_p->type = type;
 	switch(jnode_p->type)
 	{
+		case NULLE:
 		case BOOLE:
 		case NUMBER:
 		case STRING:
@@ -46,6 +47,7 @@ void delete_json_node(json_node* jnode_p)
 {
 	switch(jnode_p->type)
 	{
+		case NULLE:
 		case BOOLE:
 		case NUMBER:
 		case STRING:
