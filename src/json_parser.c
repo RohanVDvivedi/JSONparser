@@ -195,17 +195,25 @@ json_node* parse_json(dstring* json_string)
 				}
 				// if it is some json node that is a dstring, we append the new data at its end
 				else if( 	
-							(get_current_state(state_stack)) == READING_STRING
-						||	(get_current_state(state_stack)) == READING_KEY
-						||	(get_current_state(state_stack)) == READING_NUMBER
-						||	(get_current_state(state_stack)) == READING_BOOLE
-						||	(get_current_state(state_stack)) == READING_NULLE 
+							get_current_state(state_stack) == READING_STRING
+						||	get_current_state(state_stack) == READING_KEY
+						||	get_current_state(state_stack) == READING_NUMBER
+						||	get_current_state(state_stack) == READING_BOOLE
+						||	get_current_state(state_stack) == READING_NULLE 
 					)
 				{
 					// make a string from the character and append it to the dstring
 					char temp_cstring[2] = "Z";
 					temp_cstring[0] = *inst;
 					append_to_dstring((dstring*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p), temp_cstring);
+				}
+				else if(get_current_state(state_stack) == VALUE_TO_BE_READ && (*inst == ' ' || *inst == '\r' || *inst == '\n' || *inst == '\t'))
+				{
+					// do nothing just skip
+				}
+				else
+				{
+					// ERROR
 				}
 				break;
 			}
