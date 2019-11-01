@@ -4,9 +4,7 @@
 #include<json_node.h>
 #include<state_stack.h>
 
-#include<array.h>
 #include<dstring.h>
-#include<hashmap.h>
 
 json_node* parse_json(dstring* json_string);
 

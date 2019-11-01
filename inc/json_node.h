@@ -4,10 +4,14 @@
 #include<stdio.h>
 #include<stdlib.h>
 
+#include<dstring.h>
+#include<array.h>
+#include<hashmap.h>
+
 typedef enum json_data_type json_data_type;
 enum json_data_type
 {
-	BOOLE,		// boolean as a uint8_t
+	BOOLE,		// dstring
 	NUMBER,		// dstring
 	STRING,		// dstring
 	ARRAY,		// array
@@ -23,10 +27,10 @@ struct json_node
 	json_data_type type;
 
 	// data for the node
-	// BOOLE 			=> uint8_t
-	// NUMBER, STRING 	=> dstring
-	// ARRAY 			=> array
-	// OBJECT 			=> hashmap
+	// BOOLE 			=> dstring (true, false)
+	// NUMBER, STRING 	=> dstring ([-][0-9][.][0-9])
+	// ARRAY 			=> array   (standard cutlery array of json_node*)
+	// OBJECT 			=> hashmap (standard cutlery hashmap of dstring* vs json_node*)
 	// ERROR 			=> NULL
 	void* data_p;
 };
