@@ -39,6 +39,10 @@ json_node* parse_json(dstring* json_string)
 				{
 					pop_state(state_stack);
 				}
+				else
+				{
+					// ERROR
+				}
 				break;
 			}
 			case ':' :
@@ -48,6 +52,10 @@ json_node* parse_json(dstring* json_string)
 			}
 			case ',' :
 			{
+				if((*get_current_state(state_stack)) == READING_STRING)
+				{
+					
+				}
 				break;
 			}
 			case '{' :
@@ -62,6 +70,10 @@ json_node* parse_json(dstring* json_string)
 				{
 					pop_state(state_stack);
 				}
+				else
+				{
+					// ERROR
+				}
 				break;
 			}
 			case '[' :
@@ -75,6 +87,10 @@ json_node* parse_json(dstring* json_string)
 				if((*get_current_state(state_stack)) == READING_ARRAY)
 				{
 					pop_state(state_stack);
+				}
+				else
+				{
+					// ERROR
 				}
 				break;
 			}
