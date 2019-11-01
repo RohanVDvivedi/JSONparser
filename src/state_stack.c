@@ -1,5 +1,29 @@
 #include<state_stack.h>
 
+/*
+	stack state object
+*/
+
+// create function
+state_desc* get_new_state_desc(parse_state state, json_node* reinstate_to_node)
+{
+	state_desc* desc = (state_desc*) malloc(sizeof(state_desc));
+	desc->state = state;
+	desc->reinstate_to_node = reinstate_to_node;
+	desc->elements_read = 0;
+	return desc;
+}
+
+// delete function
+void delete_state_desc(state_desc* desc)
+{
+	free(desc);
+}
+
+/*
+	stack state object
+*/
+
 stack* get_state_stack(dstring* json_string)
 {
 	return get_stack((json_string->bytes_occupied / 10) + 10);
@@ -8,27 +32,37 @@ stack* get_state_stack(dstring* json_string)
 parse_state* get_current_state(stack* state_stack)
 {
 	// return the pointer to the same type casted element, as on top of the stack
-	return (parse_state*)get_top_stack(state_stack);
+	return ((state_desc*)get_top_stack(state_stack))->state;
 }
 
-void push_state(stack* state_stack, parse_state state)
+unsigned long long int increment_current_state_elements_read()
 {
-	// create a new element that can be pished to the stack
-	parse_state* new_state = (parse_state*) malloc(sizeof(parse_state));
-	(*new_state) = state;
+	return ((state_desc*)get_top_stack(state_stack))->elements_read++;
+}
+
+void push_state(stack* state_stack, parse_state state, json_node* reinstate_to_node)
+{
+	// create a new element that can be pushed to the stack
+	state_desc* new_state_desc = get_new_state_desc(state, reinstate_to_node);
 
 	// push it on
 	push_stack(state_stack, new_state);
 }
 
-void pop_state(stack* state_stack)
+json_node* pop_state(stack* state_stack)
 {
 	// get the first element and free it
-	void* state_p = (void*)get_top_stack(state_stack);
-	free(state_p);
+	state_desc* desc = (state_desc*)get_top_stack(state_stack);
+
+	// get the reinstate node value, so that it can be returned
+	json_node* reinstate_to_node = desc->reinstate_to_node;
+	delete_state_desc(state_desc);
 
 	// pop the freed element from the stack
 	pop_stack(state_stack);
+
+	// return the json node pointer so that it can be used to fetch other elements
+	return reinstate_to_node;
 }
 
 void delete_state_stack(stack* state_stack)

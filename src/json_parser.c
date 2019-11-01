@@ -27,17 +27,46 @@ json_node* parse_json(dstring* json_string)
 		{
 			case '\"' :
 			{
+				int no_error = 1;
+
 				if((*get_current_state(state_stack)) == READING_OBJECT)
 				{
 					push_state(state_stack, READING_KEY);
+
+					// add a new element in the object
+					
 				}
-				else if((*get_current_state(state_stack)) == READING_OBJECT)
+				else if((*get_current_state(state_stack)) == VALUE_TO_BE_READ || (*get_current_state(state_stack)) == READING_ARRAY)
 				{
 					push_state(state_stack, READING_STRING);
 				}
-				else if((*get_current_state(state_stack)) == READING_STRING || (*get_current_state(state_stack)) == READING_KEY)
+				else if((*get_current_state(state_stack)) == READING_STRING)
 				{
 					pop_state(state_stack);
+				}
+				else if((*get_current_state(state_stack)) == READING_KEY)
+				{
+					pop_state(state_stack);
+					push_state(state_stack, KEY_PARSED);
+				}
+				else
+				{
+					// ERROR
+					no_error = 0;
+				}
+
+				if(no_error)
+				{
+
+				}
+				break;
+			}
+			case ':' :
+			{
+				if((*get_current_state(state_stack)) == KEY_PARSED)
+				{
+					pop_state(state_stack);
+					push_state(state_stack, VALUE_TO_BE_READ);
 				}
 				else
 				{
@@ -45,16 +74,15 @@ json_node* parse_json(dstring* json_string)
 				}
 				break;
 			}
-			case ':' :
-			{
-
-				break;
-			}
 			case ',' :
 			{
 				if((*get_current_state(state_stack)) == READING_OBJECT || (*get_current_state(state_stack)) == READING_NUMBER)
 				{
-					// add a new element if it is an OBJECT or an ARRAY
+					// increment the number of elements in the current state, either array or hashmap
+					unsigned long long int index = increment_current_state_elements_read(state_stack);
+
+					// add a new element if it is an ARRAY
+					if
 				}
 				else
 				{
@@ -99,8 +127,29 @@ json_node* parse_json(dstring* json_string)
 				break;
 			}
 			// loop over the elements from the characters, reading and completing, a string, number, boolean or null
-			default  :
+			default :
 			{
+				// \ is escape character
+				if(*inst == '\\' && ((*get_current_state(state_stack)) == READING_STRING || (*get_current_state(state_stack)) == READING_KEY))
+				{
+					inst++;
+					// handle escaped character
+					switch(*inst)
+					{
+						default :
+						{
+							break;
+						}
+					}
+					break;
+				}
+				else
+				{
+					// make a string from the character and append it to the dstring
+					char temp_cstring[2] = "Z";
+					temp_cstring[0] = *inst;
+					append_to_dstring(jnode_p->data_p, temp_cstring);
+				}
 				break;
 			}
 		}
