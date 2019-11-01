@@ -214,6 +214,9 @@ json_node* parse_json(dstring* json_string)
 						pop_state(state_stack);
 
 						push_state(state_stack, READING_RAW_DATA, get_new_json_node());
+
+						// initialize it to an ERROR
+						initialize_json_node(get_current_state_reinstate_node(state_stack), ERROR, 10);
 					}
 				}
 				else
