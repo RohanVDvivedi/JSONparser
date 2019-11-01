@@ -34,7 +34,8 @@ json_node* parse_json(dstring* json_string)
 					push_state(state_stack, READING_KEY);
 
 					// add a new element in the object
-					
+					// create a new array element and save it in array, and update jnode_p
+
 				}
 				else if((*get_current_state(state_stack)) == VALUE_TO_BE_READ || (*get_current_state(state_stack)) == READING_ARRAY)
 				{
@@ -76,13 +77,16 @@ json_node* parse_json(dstring* json_string)
 			}
 			case ',' :
 			{
-				if((*get_current_state(state_stack)) == READING_OBJECT || (*get_current_state(state_stack)) == READING_NUMBER)
+				if((*get_current_state(state_stack)) == READING_OBJECT || (*get_current_state(state_stack)) == READING_ARRAY)
 				{
 					// increment the number of elements in the current state, either array or hashmap
 					unsigned long long int index = increment_current_state_elements_read(state_stack);
 
-					// add a new element if it is an ARRAY
-					if
+					// add a new array element if it is an ARRAY
+					if((*get_current_state(state_stack)) == READING_ARRAY)
+					{
+						// create a new array element and save it in array, and update jnode_p
+					}
 				}
 				else
 				{
@@ -112,6 +116,9 @@ json_node* parse_json(dstring* json_string)
 			{
 				push_state(state_stack, READING_ARRAY);
 				initialize_json_node(jnode_p, ARRAY, 30);
+
+				// create a new array element and save it in array, and update jnode_p
+
 				break;
 			}
 			case ']' :
