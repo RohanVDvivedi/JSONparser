@@ -122,6 +122,11 @@ json_node* parse_json(dstring* json_string)
 			}
 			case '{' :
 			{
+				if(get_current_state(state_stack) == VALUE_TO_BE_READ)
+				{
+					pop_state(state_stack);
+				}
+
 				// insert a new json node, on the stack and update the state to READING OBJECT
 				push_state(state_stack, READING_OBJECT, get_new_json_node());
 
@@ -131,6 +136,7 @@ json_node* parse_json(dstring* json_string)
 			}
 			case '}' :
 			{
+				// the value for the key is going to be an array
 				if(get_current_state(state_stack) == READING_OBJECT)
 				{
 					// we need to return the outer most object
@@ -144,6 +150,12 @@ json_node* parse_json(dstring* json_string)
 			}
 			case '[' :
 			{
+				// the value for the key is going to be an array
+				if(get_current_state(state_stack) == VALUE_TO_BE_READ)
+				{
+					pop_state(state_stack);
+				}
+
 				// insert a new json node, on the stack and update the state to READING OBJECT
 				push_state(state_stack, READING_ARRAY, get_new_json_node());
 
