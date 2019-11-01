@@ -16,11 +16,12 @@ json_node* parse_json(dstring* json_string)
 	// create a state stack
 	stack* state_stack = get_stack((json_string->bytes_occupied / 10) + 10);
 
-	// this is what the result will pointed to by
-	json_node* jnode_p = get_new_json_node();
-	json_node* json_parent_most_node_p = jnode_p;
-
+	// build the iterator
 	char* inst = json_string->cstring;
+	dstring* temp_dstr = get_dstring(40);
+
+	json_node* return_node = NULL;
+
 	while((*inst) != '\0')
 	{
 		switch(*inst)
@@ -29,17 +30,22 @@ json_node* parse_json(dstring* json_string)
 			{
 				int no_error = 1;
 
+				// if it is starting of the reading of a string,
+				// it can be a key for a json object
 				if((*get_current_state(state_stack)) == READING_OBJECT)
 				{
-					push_state(state_stack, READING_KEY);
-
-					// add a new element in the object
-					// create a new array element and save it in array, and update jnode_p
-
+					push_state(state_stack, READING_KEY, NULL);
 				}
-				else if((*get_current_state(state_stack)) == VALUE_TO_BE_READ || (*get_current_state(state_stack)) == READING_ARRAY)
+				// or a string element of an array
+				else if((*get_current_state(state_stack)) == READING_ARRAY)
 				{
-					push_state(state_stack, READING_STRING);
+					push_state(state_stack, READING_STRING, get_new_json_node());
+				}
+				// or a value to be read, for an array of object
+				else if((*get_current_state(state_stack)) == VALUE_TO_BE_READ)
+				{
+					pop_state(state_stack);
+					push_state(state_stack, READING_STRING, get_new_json_node());
 				}
 				else if((*get_current_state(state_stack)) == READING_STRING)
 				{
@@ -48,7 +54,7 @@ json_node* parse_json(dstring* json_string)
 				else if((*get_current_state(state_stack)) == READING_KEY)
 				{
 					pop_state(state_stack);
-					push_state(state_stack, KEY_PARSED);
+					push_state(state_stack, KEY_PARSED, NULL);
 				}
 				else
 				{
@@ -58,7 +64,10 @@ json_node* parse_json(dstring* json_string)
 
 				if(no_error)
 				{
-
+					if(temp_dstr == NULL)
+					{
+						temp_dstr = get_dstring(40);
+					}
 				}
 				break;
 			}
@@ -67,7 +76,13 @@ json_node* parse_json(dstring* json_string)
 				if((*get_current_state(state_stack)) == KEY_PARSED)
 				{
 					pop_state(state_stack);
-					push_state(state_stack, VALUE_TO_BE_READ);
+					push_state(state_stack, VALUE_TO_BE_READ, NULL);
+
+					// add a new element in the object, and update jnode_p
+					insert_entry(get_current_state_reinstate_node(state_stack), read_str, get_new_json_node());
+
+					// increment the elements read
+					increment_current_state_elements_read(state_stack);
 				}
 				else
 				{
@@ -86,6 +101,9 @@ json_node* parse_json(dstring* json_string)
 					if((*get_current_state(state_stack)) == READING_ARRAY)
 					{
 						// create a new array element and save it in array, and update jnode_p
+						json_node* new_jnode_p = get_new_json_node();
+						set_element(get_current_state_reinstate_node(state_stack), new_jnode_p, index);
+						jnode_p = new_jnode_p;
 					}
 				}
 				else
@@ -96,15 +114,19 @@ json_node* parse_json(dstring* json_string)
 			}
 			case '{' :
 			{
-				push_state(state_stack, READING_OBJECT);
-				initialize_json_node(jnode_p, OBJECT, 30);
+				// insert a new json node, on the stack and update the state to READING OBJECT
+				push_state(state_stack, READING_OBJECT, get_new_json_node());
+
+				// initialize the last added json_node to an object
+				initialize_json_node(get_current_state_reinstate_node(state_stack), OBJECT, 30);
 				break;
 			}
 			case '}' :
 			{
 				if((*get_current_state(state_stack)) == READING_OBJECT)
 				{
-					pop_state(state_stack);
+					// we need to return the outer most object
+					return_node = pop_state(state_stack);
 				}
 				else
 				{
@@ -114,18 +136,19 @@ json_node* parse_json(dstring* json_string)
 			}
 			case '[' :
 			{
-				push_state(state_stack, READING_ARRAY);
-				initialize_json_node(jnode_p, ARRAY, 30);
+				// insert a new json node, on the stack and update the state to READING OBJECT
+				push_state(state_stack, READING_ARRAY, get_new_json_node());
 
-				// create a new array element and save it in array, and update jnode_p
-
+				// initialize the last added json_node to an array
+				initialize_json_node(get_current_state_reinstate_node(state_stack), ARRAY, 30);
 				break;
 			}
 			case ']' :
 			{
 				if((*get_current_state(state_stack)) == READING_ARRAY)
 				{
-					pop_state(state_stack);
+					// we need to return the outer most array
+					return_node = pop_state(state_stack);
 				}
 				else
 				{
@@ -155,12 +178,17 @@ json_node* parse_json(dstring* json_string)
 					// make a string from the character and append it to the dstring
 					char temp_cstring[2] = "Z";
 					temp_cstring[0] = *inst;
-					append_to_dstring(jnode_p->data_p, temp_cstring);
+					append_to_dstring(temp_dstr, temp_cstring);
 				}
 				break;
 			}
 		}
 		inst++;
+	}
+
+	if(temp_dstr != NULL)
+	{
+		delete_dstring(temp_dstr);
 	}
 
 	// delete all the contents of the stack and the stack itself

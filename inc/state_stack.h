@@ -37,6 +37,9 @@ stack* get_state_stack(dstring* json_string);
 // gets the currentr state pf the parser from the given state
 parse_state* get_current_state(stack* state_stack);
 
+// gives you the current, json node, to be reinstated for the last state that was pushed
+json_node* get_current_state_reinstate_node(stack* state_stack);
+
 // incremnts, the number of elements read when in current state, i.e. the state at the top of the stack
 // and returns the incremented value
 unsigned long long int increment_current_state_elements_read(stack* state_stack);

@@ -31,8 +31,14 @@ stack* get_state_stack(dstring* json_string)
 
 parse_state* get_current_state(stack* state_stack)
 {
-	// return the pointer to the same type casted element, as on top of the stack
+	// return state of the state_desc that is on top of the stack
 	return ((state_desc*)get_top_stack(state_stack))->state;
+}
+
+json_node* get_current_state_reinstate_node(stack* state_stack)
+{
+	// return reinstate node pointer of the state_desc that is on top of the stack
+	return ((state_desc*)get_top_stack(state_stack))->reinstate_to_node;
 }
 
 unsigned long long int increment_current_state_elements_read()
