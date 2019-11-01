@@ -32,17 +32,27 @@ json_node* parse_json(dstring* json_string)
 				if(get_current_state(state_stack) == READING_OBJECT)
 				{
 					push_state(state_stack, READING_KEY, get_new_json_node());
+
+					// initialize the new STRING json_node to 10 characters
+					initialize_json_node(get_current_state_reinstate_node(state_stack), STRING, 10);
 				}
 				// or a string element of an array
 				else if(get_current_state(state_stack) == READING_ARRAY)
 				{
 					push_state(state_stack, READING_STRING, get_new_json_node());
+
+					// initialize the new STRING json_node to 10 characters
+					initialize_json_node(get_current_state_reinstate_node(state_stack), STRING, 10);
 				}
 				// or a value to be read, for an array of object
 				else if(get_current_state(state_stack) == VALUE_TO_BE_READ)
 				{
+					// pop the VALUE_TO_BE_READ, because we have got to read the STRING now
 					pop_state(state_stack);
 					push_state(state_stack, READING_STRING, get_new_json_node());
+
+					// initialize the new STRING json_node to 10 characters
+					initialize_json_node(get_current_state_reinstate_node(state_stack), STRING, 10);
 				}
 
 				else if(get_current_state(state_stack) == READING_STRING)
