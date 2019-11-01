@@ -7,7 +7,7 @@ unsigned long long int key_hashing_function(json_node* key)
 
 int key_compare_function(json_node* key1, json_node* key2)
 {
-	return compare_dstring(((dstring*)(key1->data_p))->bytes_occupied, ((dstring*)(key2->data_p))->bytes_occupied);
+	return compare_dstring(((dstring*)(key1->data_p)), ((dstring*)(key2->data_p)));
 }
 
 json_node* get_new_json_node()
@@ -23,6 +23,7 @@ void initialize_json_node(json_node* jnode_p, json_data_type type, unsigned long
 	jnode_p->type = type;
 	switch(jnode_p->type)
 	{
+		case ERROR:
 		case NULLE:
 		case BOOLE:
 		{

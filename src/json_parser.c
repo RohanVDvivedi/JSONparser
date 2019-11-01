@@ -77,11 +77,9 @@ json_node* parse_json(dstring* json_string)
 				// only after reading valid data value, we can add it to an array or an object
 				if(
 						get_current_state(state_stack) == READING_STRING
-					||	get_current_state(state_stack) == READING_NUMBER
 					||	get_current_state(state_stack) == READING_ARRAY
 					||	get_current_state(state_stack) == READING_OBJECT
-					||	get_current_state(state_stack) == READING_BOOLE
-					||	get_current_state(state_stack) == READING_NULLE
+					||	get_current_state(state_stack) == READING_RAW_DATA
 					)
 				{
 					json_node* value = pop_state(state_stack);
@@ -197,9 +195,7 @@ json_node* parse_json(dstring* json_string)
 				else if( 	
 							get_current_state(state_stack) == READING_STRING
 						||	get_current_state(state_stack) == READING_KEY
-						||	get_current_state(state_stack) == READING_NUMBER
-						||	get_current_state(state_stack) == READING_BOOLE
-						||	get_current_state(state_stack) == READING_NULLE 
+						||	get_current_state(state_stack) == READING_RAW_DATA 
 					)
 				{
 					// make a string from the character and append it to the dstring
@@ -207,9 +203,18 @@ json_node* parse_json(dstring* json_string)
 					temp_cstring[0] = *inst;
 					append_to_dstring((dstring*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p), temp_cstring);
 				}
-				else if(get_current_state(state_stack) == VALUE_TO_BE_READ && (*inst == ' ' || *inst == '\r' || *inst == '\n' || *inst == '\t'))
+				else if(get_current_state(state_stack) == VALUE_TO_BE_READ)
 				{
 					// do nothing just skip
+					if(*inst == ' ' || *inst == '\r' || *inst == '\n' || *inst == '\t')
+					{}
+					else
+					{
+						// now ther has to be a node where we can read
+						pop_state(state_stack);
+
+						push_state(state_stack, READING_RAW_DATA, get_new_json_node());
+					}
 				}
 				else
 				{

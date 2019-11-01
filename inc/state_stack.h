@@ -16,11 +16,11 @@ enum parse_state
 	KEY_PARSED,
 	VALUE_TO_BE_READ,
 	READING_STRING,
-	READING_NUMBER,
-	READING_NULLE,
-	READING_BOOLE,
 	READING_ARRAY,
-	READING_OBJECT
+	READING_OBJECT,
+
+	// if the data is not identified yet, it can be a NUMBER, BOOLE or NULLE
+	READING_RAW_DATA
 };
 
 typedef struct state_desc state_desc;

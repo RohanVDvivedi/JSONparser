@@ -19,6 +19,7 @@ enum json_data_type
 	OBJECT,		// hashmap  (standard cutlery hashmap of json_node*(STRING mandatorily) vs json_node*)
 
 	ERROR		// this is when the json string has error and is not valid and can not be parsed
+				// ERROR dstring (*)
 };
 
 typedef struct json_node json_node;
@@ -35,7 +36,7 @@ struct json_node
 	// ARRAY 			=> array   (standard cutlery array of json_node*)
 	// OBJECT 			=> hashmap (standard cutlery hashmap of json_node*(STRING mandatorily) vs json_node*)
 	
-	// ERROR 			=> NULL
+	// ERROR 			=> dstring (*)
 	void* data_p;
 };
 
