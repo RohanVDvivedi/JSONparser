@@ -61,8 +61,3 @@ json_node* parse_json(dstring* json_string)
 
 	return jnode;
 }
-
-void delete_json(json_node* jnode)
-{
-
-}
