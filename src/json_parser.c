@@ -52,9 +52,13 @@ json_node* parse_json(dstring* json_string)
 			}
 			case ',' :
 			{
-				if((*get_current_state(state_stack)) == READING_STRING)
+				if((*get_current_state(state_stack)) == READING_OBJECT || (*get_current_state(state_stack)) == READING_NUMBER)
 				{
-					
+					// add a new element if it is an OBJECT or an ARRAY
+				}
+				else
+				{
+					// ERROR
 				}
 				break;
 			}
@@ -94,6 +98,7 @@ json_node* parse_json(dstring* json_string)
 				}
 				break;
 			}
+			// loop over the elements from the characters, reading and completing, a string, number, boolean or null
 			default  :
 			{
 				break;
