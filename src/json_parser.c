@@ -17,7 +17,7 @@ json_node* parse_json(dstring* json_string)
 	stack* state_stack = get_stack((json_string->bytes_occupied / 10) + 10);
 
 	// this is what the result will pointed to by
-	json_node* jnode = NULL;
+	json_node* jnode_p = get_new_json_node();
 
 	char* inst = json_string->cstring;
 	while((*inst) != '\0')
@@ -38,17 +38,33 @@ json_node* parse_json(dstring* json_string)
 			}
 			case '{' :
 			{
+				push_state(state_stack, READING_OBJECT);
+				initialize_json_node(jnode_p, OBJECT, 30);
 				break;
 			}
 			case '}' :
 			{
+				if((*get_current_state(state_stack)) == READING_OBJECT)
+				{
+					pop_state(state_stack);
+				}
 				break;
 			}
 			case '[' :
 			{
+				push_state(state_stack, READING_ARRAY);
+				initialize_json_node(jnode_p, ARRAY, 30);
 				break;
 			}
 			case ']' :
+			{
+				if((*get_current_state(state_stack)) == READING_ARRAY)
+				{
+					pop_state(state_stack);
+				}
+				break;
+			}
+			default  :
 			{
 				break;
 			}
@@ -59,5 +75,5 @@ json_node* parse_json(dstring* json_string)
 	// delete all the contents of the stack and the stack itself
 	delete_state_stack(state_stack);
 
-	return jnode;
+	return jnode_p;
 }

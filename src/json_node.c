@@ -20,6 +20,9 @@ void initialize_json_node(json_node* jnode_p, json_data_type type, unsigned long
 	{
 		case NULLE:
 		case BOOLE:
+		{
+			jnode_p->data_p = get_dstring("", 10);
+		}
 		case NUMBER:
 		case STRING:
 		{
