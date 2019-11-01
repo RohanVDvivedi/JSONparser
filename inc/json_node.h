@@ -11,12 +11,12 @@
 typedef enum json_data_type json_data_type;
 enum json_data_type
 {
-	NULLE,		// dstring
-	BOOLE,		// dstring
-	NUMBER,		// dstring
-	STRING,		// dstring
-	ARRAY,		// array
-	OBJECT,		// hashmap of dstring vs any other json_type
+	NULLE,		// dstring	(null)
+	BOOLE,		// dstring  (true, false)
+	NUMBER,		// dstring  ([-][0-9][.][0-9])
+	STRING,		// dstring  (*)
+	ARRAY,		// array    (standard cutlery array of json_node*)
+	OBJECT,		// hashmap  (standard cutlery hashmap of dstring* vs json_node*)
 
 	ERROR		// this is when the json string has error and is not valid and can not be parsed
 };
@@ -30,9 +30,11 @@ struct json_node
 	// data for the node
 	// NULLE			=> dstring (null)
 	// BOOLE 			=> dstring (true, false)
-	// NUMBER, STRING 	=> dstring ([-][0-9][.][0-9])
+	// NUMBER		 	=> dstring ([-][0-9][.][0-9])
+	// STRING 			=> dstring (*)
 	// ARRAY 			=> array   (standard cutlery array of json_node*)
 	// OBJECT 			=> hashmap (standard cutlery hashmap of dstring* vs json_node*)
+	
 	// ERROR 			=> NULL
 	void* data_p;
 };
