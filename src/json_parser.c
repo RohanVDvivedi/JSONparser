@@ -18,6 +18,7 @@ json_node* parse_json(dstring* json_string)
 
 	// this is what the result will pointed to by
 	json_node* jnode_p = get_new_json_node();
+	json_node* json_parent_most_node_p = jnode_p;
 
 	char* inst = json_string->cstring;
 	while((*inst) != '\0')
@@ -26,10 +27,23 @@ json_node* parse_json(dstring* json_string)
 		{
 			case '\"' :
 			{
+				if((*get_current_state(state_stack)) == READING_OBJECT)
+				{
+					push_state(state_stack, READING_KEY);
+				}
+				else if((*get_current_state(state_stack)) == READING_OBJECT)
+				{
+					push_state(state_stack, READING_STRING);
+				}
+				else if((*get_current_state(state_stack)) == READING_STRING || (*get_current_state(state_stack)) == READING_KEY)
+				{
+					pop_state(state_stack);
+				}
 				break;
 			}
 			case ':' :
 			{
+
 				break;
 			}
 			case ',' :
@@ -75,5 +89,5 @@ json_node* parse_json(dstring* json_string)
 	// delete all the contents of the stack and the stack itself
 	delete_state_stack(state_stack);
 
-	return jnode_p;
+	return json_parent_most_node_p;
 }
