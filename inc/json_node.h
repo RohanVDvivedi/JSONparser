@@ -11,6 +11,7 @@
 typedef enum json_data_type json_data_type;
 enum json_data_type
 {
+	NULLE,		// dstring
 	BOOLE,		// dstring
 	NUMBER,		// dstring
 	STRING,		// dstring
@@ -35,8 +36,13 @@ struct json_node
 	void* data_p;
 };
 
-json_node* get_new_json_node(json_data_type type);
+// givens you a json_node with data_p as NULL 
+json_node* get_new_json_node();
 
-void delete_json_node(json_node* jnode);
+// initializes the given json_node
+void initialize_json_node(json_node* jnode_p, json_data_type type, unsigned long long int expected_size);
+
+// deletes the given json_node and all its children, and their children,,... recursively
+void delete_json_node(json_node* jnode_p);
 
 #endif

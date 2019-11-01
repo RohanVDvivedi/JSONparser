@@ -5,9 +5,16 @@ unsigned long long int key_hashing_function(dstring* key)
 	return key->bytes_occupied;
 }
 
-json_node* get_new_json_node(json_data_type type)
+json_node* get_new_json_node()
 {
 	json_node* jnode_p = (json_node*) malloc(sizeof(json_node));
+	jnode_p->type = NULLE;
+	jnode_p->data_p = NULL;
+	return jnode_p;
+}
+
+void initialize_json_node(json_node* jnode_p, json_data_type type, unsigned long long int expected_size)
+{
 	jnode_p->type = type;
 	switch(jnode_p->type)
 	{
@@ -15,26 +22,24 @@ json_node* get_new_json_node(json_data_type type)
 		case NUMBER:
 		case STRING:
 		{
-			jnode_p->data_p = get_dstring("", 10);
+			jnode_p->data_p = get_dstring("", expected_size);
 			break;
 		}
 		case ARRAY:
 		{
-			jnode_p->data_p = get_array(10);
+			jnode_p->data_p = get_array(expected_size);
 			break;
 		}
 		case OBJECT:
 		{
-			jnode_p->data_p = get_hashmap(10, (unsigned long long int(*)(const void*))key_hashing_function, (int(*)(const void*, const void*))compare_dstring, ELEMENTS_AS_RED_BLACK_BST);
+			jnode_p->data_p = get_hashmap(expected_size, (unsigned long long int(*)(const void*))key_hashing_function, (int(*)(const void*, const void*))compare_dstring, ELEMENTS_AS_RED_BLACK_BST);
 			break;
 		}
 		default:
 		{
-			jnode_p->data_p = NULL;
 			break;
 		}
 	}
-	return jnode_p;
 }
 
 void delete_json_node(json_node* jnode_p)
@@ -51,6 +56,7 @@ void delete_json_node(json_node* jnode_p)
 		case ARRAY:
 		{
 			// delete the contents of the array, each of which is a json_node
+
 			// delete the array itself
 			delete_array(jnode_p->data_p);
 			break;
