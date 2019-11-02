@@ -29,10 +29,10 @@ stack* get_state_stack(dstring* json_string)
 	return get_stack((json_string->bytes_occupied / 10) + 10);
 }
 
-parse_state get_current_state(stack* state_stack)
+int is_current_state_equals(stack* state_stack, parse_state state)
 {
 	// return state of the state_desc that is on top of the stack
-	return ((state_desc*)get_top_stack(state_stack))->state;
+	return state_stack->stack_size > 0 ? ((state_desc*)get_top_stack(state_stack))->state == state : 0;
 }
 
 json_node* get_current_state_reinstate_node(stack* state_stack)

@@ -36,8 +36,8 @@ struct state_desc
 // gets a new state stack for the given json string
 stack* get_state_stack(dstring* json_string);
 
-// gets the currentr state pf the parser from the given state
-parse_state get_current_state(stack* state_stack);
+// returns 1 if the current state of state stack equals the state as passed in the parameter
+int is_current_state_equals(stack* state_stack, parse_state state);
 
 // gives you the current, json node, to be reinstated for the last state that was pushed
 json_node* get_current_state_reinstate_node(stack* state_stack);

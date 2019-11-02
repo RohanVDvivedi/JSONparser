@@ -39,7 +39,7 @@ json_node* parse_json(dstring* json_string)
 			{
 				// if it is starting of the reading of a string,
 				// it can be a key for a json object
-				if(get_current_state(state_stack) == READING_OBJECT)
+				if(is_current_state_equals(state_stack, READING_OBJECT))
 				{
 					push_state(state_stack, READING_KEY, get_new_json_node());
 
@@ -47,7 +47,7 @@ json_node* parse_json(dstring* json_string)
 					initialize_json_node(get_current_state_reinstate_node(state_stack), STRING, 10);
 				}
 				// or a string element of an array
-				else if(get_current_state(state_stack) == READING_ARRAY)
+				else if(is_current_state_equals(state_stack, READING_ARRAY))
 				{
 					push_state(state_stack, READING_STRING, get_new_json_node());
 
@@ -55,7 +55,7 @@ json_node* parse_json(dstring* json_string)
 					initialize_json_node(get_current_state_reinstate_node(state_stack), STRING, 10);
 				}
 				// or a value to be read, for an array of object
-				else if(get_current_state(state_stack) == VALUE_TO_BE_READ)
+				else if(is_current_state_equals(state_stack, VALUE_TO_BE_READ))
 				{
 					// pop the VALUE_TO_BE_READ, because we have got to read the STRING now
 					pop_state(state_stack);
@@ -65,11 +65,11 @@ json_node* parse_json(dstring* json_string)
 					initialize_json_node(get_current_state_reinstate_node(state_stack), STRING, 10);
 				}
 
-				else if(get_current_state(state_stack) == READING_STRING)
+				else if(is_current_state_equals(state_stack, READING_STRING))
 				{
 					pop_state(state_stack);
 				}
-				else if(get_current_state(state_stack) == READING_KEY)
+				else if(is_current_state_equals(state_stack, READING_KEY))
 				{
 					push_state(state_stack, KEY_PARSED, NULL);
 				}
@@ -81,7 +81,7 @@ json_node* parse_json(dstring* json_string)
 			}
 			case ':' :
 			{
-				if(get_current_state(state_stack) == KEY_PARSED)
+				if(is_current_state_equals(state_stack, KEY_PARSED))
 				{
 					pop_state(state_stack);
 					push_state(state_stack, VALUE_TO_BE_READ, NULL);
@@ -96,17 +96,17 @@ json_node* parse_json(dstring* json_string)
 			{
 				// only after reading valid data value, we can add it to an array or an object
 				if(
-						get_current_state(state_stack) == READING_STRING
-					||	get_current_state(state_stack) == READING_ARRAY
-					||	get_current_state(state_stack) == READING_OBJECT
-					||	get_current_state(state_stack) == READING_RAW_DATA
+						is_current_state_equals(state_stack, READING_STRING)
+					||	is_current_state_equals(state_stack, READING_ARRAY)
+					||	is_current_state_equals(state_stack, READING_OBJECT)
+					||	is_current_state_equals(state_stack, READING_RAW_DATA)
 					)
 				{
 					json_node* value = pop_state(state_stack);
-					if(get_current_state(state_stack) == READING_KEY)
+					if(is_current_state_equals(state_stack, READING_KEY))
 					{
 						json_node* key = pop_state(state_stack);
-						if(get_current_state(state_stack) == READING_OBJECT)
+						if(is_current_state_equals(state_stack, READING_OBJECT))
 						{
 							// increment the number of elements in the current state, either array or hashmap
 							increment_current_state_elements_read(state_stack);
@@ -119,7 +119,7 @@ json_node* parse_json(dstring* json_string)
 							// ERROR
 						}
 					}
-					else if(get_current_state(state_stack) == READING_ARRAY)
+					else if(is_current_state_equals(state_stack, READING_ARRAY))
 					{
 						// increment the number of elements in the current state, either array or hashmap
 						unsigned long long int index = increment_current_state_elements_read(state_stack);
@@ -140,7 +140,7 @@ json_node* parse_json(dstring* json_string)
 			}
 			case '{' :
 			{
-				if(get_current_state(state_stack) == VALUE_TO_BE_READ)
+				if(is_current_state_equals(state_stack, VALUE_TO_BE_READ))
 				{
 					pop_state(state_stack);
 				}
@@ -155,7 +155,7 @@ json_node* parse_json(dstring* json_string)
 			case '}' :
 			{
 				// the value for the key is going to be an array
-				if(get_current_state(state_stack) == READING_OBJECT)
+				if(is_current_state_equals(state_stack, READING_OBJECT))
 				{
 					// we need to return the outer most object
 					return_node = pop_state(state_stack);
@@ -169,7 +169,7 @@ json_node* parse_json(dstring* json_string)
 			case '[' :
 			{
 				// the value for the key is going to be an array
-				if(get_current_state(state_stack) == VALUE_TO_BE_READ)
+				if(is_current_state_equals(state_stack, VALUE_TO_BE_READ))
 				{
 					pop_state(state_stack);
 				}
@@ -183,7 +183,7 @@ json_node* parse_json(dstring* json_string)
 			}
 			case ']' :
 			{
-				if(get_current_state(state_stack) == READING_ARRAY)
+				if(is_current_state_equals(state_stack, READING_ARRAY))
 				{
 					// we need to return the outer most array
 					return_node = pop_state(state_stack);
@@ -198,7 +198,8 @@ json_node* parse_json(dstring* json_string)
 			default :
 			{
 				// \ is escape character
-				if(*inst == '\\' && (get_current_state(state_stack) == READING_STRING || get_current_state(state_stack) == READING_KEY))
+				if(*inst == '\\' && (is_current_state_equals(state_stack, READING_STRING) 
+										|| is_current_state_equals(state_stack, READING_KEY)))
 				{
 					inst++;
 					// handle escaped character
@@ -213,9 +214,9 @@ json_node* parse_json(dstring* json_string)
 				}
 				// if it is some json node that is a dstring, we append the new data at its end
 				else if( 	
-							get_current_state(state_stack) == READING_STRING
-						||	get_current_state(state_stack) == READING_KEY
-						||	get_current_state(state_stack) == READING_RAW_DATA 
+							is_current_state_equals(state_stack, READING_STRING)
+						||	is_current_state_equals(state_stack, READING_KEY)
+						||	is_current_state_equals(state_stack, READING_RAW_DATA) 
 					)
 				{
 					// make a string from the character and append it to the dstring
@@ -223,7 +224,7 @@ json_node* parse_json(dstring* json_string)
 					temp_cstring[0] = *inst;
 					append_to_dstring((dstring*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p), temp_cstring);
 				}
-				else if(get_current_state(state_stack) == VALUE_TO_BE_READ)
+				else if(is_current_state_equals(state_stack, VALUE_TO_BE_READ))
 				{
 					// do nothing just skip
 					if(*inst == ' ' || *inst == '\r' || *inst == '\n' || *inst == '\t')
