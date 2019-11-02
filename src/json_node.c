@@ -128,3 +128,24 @@ void delete_json_node(json_node* jnode_p)
 	}
 	free(jnode_p);
 }
+
+void print_json_node(json_node* jnodep)
+{
+	if(jnodep == NULL)
+	{
+		printf("NODE IS NULL\n");
+		return;
+	}
+	else if(jnodep->type == ARRAY)
+	{
+		print_array(((array*)(jnodep->data_p)), ((void (*)(const void* value))(print_json_node)));
+	}
+	else if(jnodep->type == OBJECT)
+	{
+		print_hashmap(((hashmap*)(jnodep->data_p)), ((void (*)(const void* value))(print_json_node)), ((void (*)(const void* value))(print_json_node)));
+	}
+	else
+	{
+		printf("(%d)<%s>", jnodep->type, ((dstring*)(jnodep->data_p))->cstring);
+	}
+}

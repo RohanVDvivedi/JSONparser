@@ -52,4 +52,6 @@ void identify_dstring_json_node(json_node* jnode_p);
 // deletes the given json_node and all its children, and their children,,... recursively
 void delete_json_node(json_node* jnode_p);
 
+void print_json_node(json_node* jnodep);
+
 #endif

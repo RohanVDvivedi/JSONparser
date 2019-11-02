@@ -8,6 +8,4 @@
 
 json_node* parse_json(dstring* json_string);
 
-void print_json_node(json_node* jnodep);
-
 #endif
