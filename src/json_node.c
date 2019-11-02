@@ -52,6 +52,47 @@ void initialize_json_node(json_node* jnode_p, json_data_type type, unsigned long
 	}
 }
 
+void identify_dstring_json_node(json_node* jnode_p)
+{
+	if(jnode_p->type == ERROR)
+	{
+		static char* nulle       = "null";
+		static char* boole_true  = "true";
+		static char* boole_false = "false";
+		if(strcmp(((dstring*)(jnode_p->data_p))->cstring, nulle) == 0)
+		{
+			jnode_p->type = NULLE;
+		}
+		else if(strcmp(((dstring*)(jnode_p->data_p))->cstring, boole_true) == 0
+		|| strcmp(((dstring*)(jnode_p->data_p))->cstring, boole_false) == 0)
+		{
+			jnode_p->type = BOOLE;
+		}
+		else
+		{
+			jnode_p->type = NUMBER;
+			char* cstr_iter = ((dstring*)(jnode_p->data_p))->cstring;
+			int first_char = 1;
+			int seen_decimal = 0;
+			while(*cstr_iter != '\0')
+			{
+				if(seen_decimal == 0 && *cstr_iter == '.')
+				{
+					seen_decimal = 1;
+				}
+				else if( (first_char == 0 || *cstr_iter != '-')
+				 && (*cstr_iter < '0' || '9' < *cstr_iter) )
+				{
+					jnode_p->type = ERROR;
+					break;
+				}
+				first_char = 0;
+				cstr_iter++;
+			}
+		}
+	}
+}
+
 void delete_json_node(json_node* jnode_p)
 {
 	switch(jnode_p->type)
