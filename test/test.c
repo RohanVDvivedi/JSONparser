@@ -9,7 +9,9 @@ int main()
 		\"name\" : \"Rohan\", \
 		\"age\" : 23, \
 		\"smart\" : true, \
-		\"dependents\" : null \
+		\"dependents\" : null, \
+		\"family members\" : [[1,2,3,4] \
+		,[\"1\",\"2\",\"3\",\"4\"]]\
 	} \
 	", 10);
 

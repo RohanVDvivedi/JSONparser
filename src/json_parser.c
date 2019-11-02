@@ -1,36 +1,6 @@
 #include<json_parser.h>
 
-void start_array_reading(stack* state_stack)
-{
-	// having an EMPTY node of type VALUE_TO_BE_READ only specifies that some other object is waiting for this array to be formed completely
-	if(is_current_state_equals(state_stack, VALUE_TO_BE_READ))
-	{
-		pop_state(state_stack);
-	}
-
-	// insert a new json node, on the stack and update the state to READING OBJECT
-	push_state(state_stack, READING_ARRAY, get_new_json_node());
-
-	// initialize the last added json_node to an array
-	initialize_json_node(get_current_state_reinstate_node(state_stack), ARRAY, 30);
-}
-
-void start_object_reading(stack* state_stack)
-{
-	// having an EMPTY node of type VALUE_TO_BE_READ only specifies that some other object is waiting for this object to be formed completely
-	if(is_current_state_equals(state_stack, VALUE_TO_BE_READ))
-	{
-		pop_state(state_stack);
-	}
-
-	// insert a new json node, on the stack and update the state to READING OBJECT
-	push_state(state_stack, READING_OBJECT, get_new_json_node());
-
-	// initialize the last added json_node to an object
-	initialize_json_node(get_current_state_reinstate_node(state_stack), OBJECT, 30);
-}
-
-void start_raw_data_reading(stack* state_stack)
+void start_reading(stack* state_stack, json_data_type data_type_to_expect, parse_state reading_state)
 {
 	// if we have been asked to read Value, we first pop the empty state
 	if(is_current_state_equals(state_stack, VALUE_TO_BE_READ))
@@ -38,11 +8,11 @@ void start_raw_data_reading(stack* state_stack)
 		pop_state(state_stack);
 	}
 
-	// now ther has to be a node where we can read
-	push_state(state_stack, READING_RAW_DATA, get_new_json_node());
+	// now there has to be a node where we can parse and put out data
+	push_state(state_stack, reading_state, get_new_json_node());
 
-	// initialize it to an ERROR
-	initialize_json_node(get_current_state_reinstate_node(state_stack), ERROR, 10);
+	// initialize it to expected data type
+	initialize_json_node(get_current_state_reinstate_node(state_stack), data_type_to_expect, 10);
 }
 
 void start_string_reading(stack* state_stack)
@@ -114,6 +84,12 @@ void perform_composite_operation(stack* state_stack, operation_type optype)
 			// increment the number of elements in the current state, either array or hashmap
 			unsigned long long int index = increment_current_state_elements_read(state_stack);
 
+			// if that array is full we need to expand it
+			if(index == ((array*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p))->total_size)
+			{
+				expand_array(((array*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p)));
+			}
+
 			// create a new array element and save it in array
 			set_element(((array*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p)), value, index);
 		}
@@ -128,37 +104,16 @@ void perform_composite_operation(stack* state_stack, operation_type optype)
 	}
 }
 
-json_node* complete_array_reading(stack* state_stack)
+json_node* complete_reading(stack* state_stack, parse_state expected_current_state)
 {
-	if(is_current_state_equals(state_stack, READING_ARRAY))
+	if(is_current_state_equals(state_stack, expected_current_state))
 	{
 		if(state_stack->stack_size > 1)
 		{
-			// push a state mentioning that the reading is complete for the current json array
+			// push a state mentioning that the reading is complete for the current json array or object
 			push_state(state_stack, READING_COMPLETE, NULL);
 		}
-		else
-		{
-			return pop_state(state_stack);
-		}
-	}
-	else
-	{
-		// ERROR
-	}
-	return NULL;
-}
-
-json_node* complete_object_reading(stack* state_stack)
-{
-	// the value for the key is going to be an array
-	if(is_current_state_equals(state_stack, READING_OBJECT))
-	{
-		if(state_stack->stack_size > 1)
-		{
-			// push a state mentioning that the reading is complete for the current json object
-			push_state(state_stack, READING_COMPLETE, NULL);
-		}
+		// else return the array of json object since it can be an outer most object
 		else
 		{
 			return pop_state(state_stack);
@@ -269,12 +224,12 @@ json_node* parse_json(dstring* json_string)
 			}
 			case '{' :
 			{
-				start_object_reading(state_stack);
+				start_reading(state_stack, OBJECT, READING_OBJECT);
 				break;
 			}
 			case '[' :
 			{
-				start_array_reading(state_stack);
+				start_reading(state_stack, ARRAY, READING_ARRAY);
 				break;
 			}
 			case ',' :
@@ -296,7 +251,7 @@ json_node* parse_json(dstring* json_string)
 				// read and push in the last element of the json object
 				perform_composite_operation(state_stack, INSERT_ENTRY_IN_OBJECT);
 
-				return_node = complete_object_reading(state_stack);
+				return_node = complete_reading(state_stack, READING_OBJECT);
 				break;
 			}
 			case ']' :
@@ -308,7 +263,7 @@ json_node* parse_json(dstring* json_string)
 				// read and push in the last element of the json array
 				perform_composite_operation(state_stack, APPEND_ELEMENT_IN_ARRAY);
 
-				return_node = complete_array_reading(state_stack);
+				return_node = complete_reading(state_stack, READING_ARRAY);
 				break;
 			}
 			// handling escape chacters
@@ -325,7 +280,7 @@ json_node* parse_json(dstring* json_string)
 				if((is_current_state_equals(state_stack, VALUE_TO_BE_READ) || is_current_state_equals(state_stack, READING_ARRAY)) 
 						&& (!(*inst == ' ' || *inst == '\r' || *inst == '\n' || *inst == '\t')) )
 				{
-					start_raw_data_reading(state_stack);
+					start_reading(state_stack, ERROR, READING_RAW_DATA);
 				}
 				// READING_RAW_DATA is terminated by any white space character
 				else if(is_current_state_equals(state_stack, READING_RAW_DATA) 
