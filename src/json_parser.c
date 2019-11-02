@@ -154,6 +154,38 @@ json_node* parse_json(dstring* json_string)
 			}
 			case '}' :
 			{
+				if(		is_current_state_equals(state_stack, READING_STRING)
+					||	is_current_state_equals(state_stack, READING_ARRAY)
+					||	is_current_state_equals(state_stack, READING_OBJECT)
+					||	is_current_state_equals(state_stack, READING_RAW_DATA)	)
+				{
+					json_node* value = pop_state(state_stack);
+					if(is_current_state_equals(state_stack, READING_KEY))
+					{
+						json_node* key = pop_state(state_stack);
+						if(is_current_state_equals(state_stack, READING_OBJECT))
+						{
+							// increment the number of elements in the current state, either array or hashmap
+							increment_current_state_elements_read(state_stack);
+
+							// insert entry in the hashmap
+							insert_entry_in_hash(((hashmap*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p)), key, value);
+						}
+						else
+						{
+							// ERROR
+						}
+					}
+					else
+					{
+						// ERROR
+					}
+				}
+				else
+				{
+					// ERROR
+				}
+
 				// the value for the key is going to be an array
 				if(is_current_state_equals(state_stack, READING_OBJECT))
 				{
@@ -183,6 +215,31 @@ json_node* parse_json(dstring* json_string)
 			}
 			case ']' :
 			{
+				// read and push in the last element of the json array
+				if(		is_current_state_equals(state_stack, READING_STRING)
+					||	is_current_state_equals(state_stack, READING_ARRAY)
+					||	is_current_state_equals(state_stack, READING_OBJECT)
+					||	is_current_state_equals(state_stack, READING_RAW_DATA)	)
+				{
+					json_node* value = pop_state(state_stack);
+					if(is_current_state_equals(state_stack, READING_ARRAY))
+					{
+						// increment the number of elements in the current state, either array or hashmap
+						unsigned long long int index = increment_current_state_elements_read(state_stack);
+
+						// create a new array element and save it in array
+						set_element(((array*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p)), value, index);
+					}
+					else
+					{
+						// ERROR
+					}
+				}
+				else
+				{
+					// ERROR
+				}
+
 				if(is_current_state_equals(state_stack, READING_ARRAY))
 				{
 					// we need to return the outer most array
