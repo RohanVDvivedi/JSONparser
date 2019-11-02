@@ -6,9 +6,9 @@ int main()
 
 	dstring* json_str = get_dstring("\
 	{ \
-		\"name\" : \"Rohan\" \
-		\"age\" : 23 \
-		\"smart\" : true \
+		\"name\" : \"Rohan\", \
+		\"age\" : 23, \
+		\"smart\" : true, \
 		\"dependents\" : null \
 	} \
 	", 10);

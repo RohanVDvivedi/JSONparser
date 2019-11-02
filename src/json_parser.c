@@ -17,7 +17,7 @@ void print_json_node(json_node* jnodep)
 	}
 	else
 	{
-		printf("%d => %s\n", jnodep->type, ((dstring*)(jnodep->data_p))->cstring);
+		printf("%d => <%s>\n", jnodep->type, ((dstring*)(jnodep->data_p))->cstring);
 	}
 }
 
@@ -36,7 +36,7 @@ json_node* parse_json(dstring* json_string)
 		switch(*inst)
 		{
 			case '\"' :
-			{
+			{printf("\"\n");
 				// if it is starting of the reading of a string,
 				// it can be a key for a json object
 				if(is_current_state_equals(state_stack, READING_OBJECT))
@@ -166,6 +166,10 @@ json_node* parse_json(dstring* json_string)
 				// read and push in the last element of the json object
 				if(is_current_state_equals(state_stack, READING_COMPLETE))
 				{
+					// pop the state of READING_COMPLETE
+					pop_state(state_stack);
+
+					// pop and collect the node whose reading was completed
 					json_node* value = pop_state(state_stack);
 					if(is_current_state_equals(state_stack, READING_KEY))
 					{
