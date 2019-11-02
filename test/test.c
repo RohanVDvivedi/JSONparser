@@ -9,7 +9,7 @@ int main()
 		\"name\" : \"Rohan\" \
 		\"age\" : 23 \
 		\"smart\" : true \
-		\"dependent on luck\" : null \
+		\"dependents\" : null \
 	} \
 	", 10);
 
