@@ -9,11 +9,11 @@ void print_json_node(json_node* jnodep)
 	}
 	else if(jnodep->type == ARRAY)
 	{
-		print_array(((array*)(jnodep->data_p)), print_json_node);
+		print_array(((array*)(jnodep->data_p)), ((void (*)(const void* value))(print_json_node)));
 	}
 	else if(jnodep->type == OBJECT)
 	{
-		print_hashmap(((hashmap*)(jnodep->data_p)), print_json_node, print_json_node);
+		print_hashmap(((hashmap*)(jnodep->data_p)), ((void (*)(const void* value))(print_json_node)), ((void (*)(const void* value))(print_json_node)));
 	}
 	else
 	{
@@ -39,39 +39,86 @@ void start_object_reading(stack* state_stack)
 	initialize_json_node(get_current_state_reinstate_node(state_stack), OBJECT, 30);
 }
 
-// appends the value in to the last node(ARRAY)
-void append_array_element(stack* state_stack, json_node* value)
+void start_raw_data_reading(stack* state_stack)
 {
-	if(is_current_state_equals(state_stack, READING_ARRAY))
-	{
-		// increment the number of elements in the current state, either array or hashmap
-		unsigned long long int index = increment_current_state_elements_read(state_stack);
+	// now ther has to be a node where we can read
+	push_state(state_stack, READING_RAW_DATA, get_new_json_node());
 
-		// create a new array element and save it in array
-		set_element(((array*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p)), value, index);
+	// initialize it to an ERROR
+	initialize_json_node(get_current_state_reinstate_node(state_stack), ERROR, 10);
+}
+
+void start_string_reading(stack* state_stack)
+{
+	parse_state string_state;
+	if(is_current_state_equals(state_stack, READING_OBJECT))
+	{
+		string_state = READING_KEY;
+	}
+	// or a string element of an array
+	else if(is_current_state_equals(state_stack, READING_ARRAY))
+	{
+		string_state = READING_STRING;
+	}
+	// or a value to be read, for an array of object
+	else if(is_current_state_equals(state_stack, VALUE_TO_BE_READ))
+	{
+		// pop the VALUE_TO_BE_READ, because we have got to read the STRING now
+		pop_state(state_stack);
+		string_state = READING_STRING;
 	}
 	else
 	{
 		// ERROR
 	}
 
-	// success
+	push_state(state_stack, string_state, get_new_json_node());
+
+	// initialize the new STRING json_node to 10 characters
+	initialize_json_node(get_current_state_reinstate_node(state_stack), STRING, 10);
 }
 
-// pushes the value and last node (key), in to the last second node(OBJECT)
-void insert_object_entry(stack* state_stack, json_node* value)
+typedef enum operation_type operation_type;
+enum operation_type
 {
-	if(is_current_state_equals(state_stack, READING_KEY))
+	INSERT_ENTRY_IN_OBJECT   = 0x01,
+	APPEND_ELEMENT_IN_ARRAY  = 0x10
+};
+
+void perform_composite_operation(stack* state_stack, operation_type optype)
+{
+	// only after reading valid data value, we can add it to an array or an object
+	if(is_current_state_equals(state_stack, READING_COMPLETE))
 	{
-		// pop and collect the key node whose reading was completed
-		json_node* key = pop_state(state_stack);
-		if(is_current_state_equals(state_stack, READING_OBJECT))
+		// pop the state of READING_COMPLETE
+		pop_state(state_stack);
+
+		// pop and collect the value node whose reading was completed
+		json_node* value = pop_state(state_stack);
+		if( (optype & INSERT_ENTRY_IN_OBJECT) && is_current_state_equals(state_stack, READING_KEY))
+		{
+			// pop and collect the key node whose reading was completed
+			json_node* key = pop_state(state_stack);
+			if(is_current_state_equals(state_stack, READING_OBJECT))
+			{
+				// increment the number of elements in the current state, either array or hashmap
+				increment_current_state_elements_read(state_stack);
+
+				// insert entry in the hashmap
+				insert_entry_in_hash(((hashmap*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p)), key, value);
+			}
+			else
+			{
+				// ERROR
+			}
+		}
+		else if( (optype & APPEND_ELEMENT_IN_ARRAY) && is_current_state_equals(state_stack, READING_ARRAY))
 		{
 			// increment the number of elements in the current state, either array or hashmap
-			increment_current_state_elements_read(state_stack);
+			unsigned long long int index = increment_current_state_elements_read(state_stack);
 
-			// insert entry in the hashmap
-			insert_entry_in_hash(((hashmap*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p)), key, value);
+			// create a new array element and save it in array
+			set_element(((array*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p)), value, index);
 		}
 		else
 		{
@@ -82,8 +129,6 @@ void insert_object_entry(stack* state_stack, json_node* value)
 	{
 		// ERROR
 	}
-
-	// success
 }
 
 json_node* complete_array_reading(stack* state_stack)
@@ -142,36 +187,6 @@ void complete_raw_data_reading(stack* state_stack)
 	}
 }
 
-void start_string_reading(stack* state_stack)
-{
-	parse_state string_state;
-	if(is_current_state_equals(state_stack, READING_OBJECT))
-	{
-		string_state = READING_KEY;
-	}
-	// or a string element of an array
-	else if(is_current_state_equals(state_stack, READING_ARRAY))
-	{
-		string_state = READING_STRING;
-	}
-	// or a value to be read, for an array of object
-	else if(is_current_state_equals(state_stack, VALUE_TO_BE_READ))
-	{
-		// pop the VALUE_TO_BE_READ, because we have got to read the STRING now
-		pop_state(state_stack);
-		string_state = READING_STRING;
-	}
-	else
-	{
-		// ERROR
-	}
-
-	push_state(state_stack, string_state, get_new_json_node());
-
-	// initialize the new STRING json_node to 10 characters
-	initialize_json_node(get_current_state_reinstate_node(state_stack), STRING, 10);
-}
-
 void complete_string_reading(stack* state_stack)
 {
 	if(is_current_state_equals(state_stack, READING_STRING))
@@ -185,6 +200,20 @@ void complete_string_reading(stack* state_stack)
 	else
 	{
 		// ERROR
+	}
+}
+
+void append_character(stack* state_stack, char to_append)
+{
+	if( is_current_state_equals(state_stack, READING_STRING)
+		|| is_current_state_equals(state_stack, READING_KEY)
+		|| is_current_state_equals(state_stack, READING_RAW_DATA) )
+	{
+		// make a string from the character
+		char temp_cstring[2] = "Z"; temp_cstring[0] = to_append;
+
+		// and append it to the dstring
+		append_to_dstring((dstring*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p), temp_cstring);
 	}
 }
 
@@ -270,26 +299,7 @@ json_node* parse_json(dstring* json_string)
 				complete_raw_data_reading(state_stack);
 
 				// only after reading valid data value, we can add it to an array or an object
-				if(is_current_state_equals(state_stack, READING_COMPLETE))
-				{
-					// pop the state of READING_COMPLETE
-					pop_state(state_stack);
-
-					// pop and collect the value node whose reading was completed
-					json_node* value = pop_state(state_stack);
-					if(is_current_state_equals(state_stack, READING_KEY))
-					{
-						insert_object_entry(state_stack, value);
-					}
-					else if(is_current_state_equals(state_stack, READING_ARRAY))
-					{
-						append_array_element(state_stack, value);
-					}
-				}
-				else
-				{
-					// ERROR
-				}
+				perform_composite_operation(state_stack, INSERT_ENTRY_IN_OBJECT | APPEND_ELEMENT_IN_ARRAY);
 				break;
 			}
 			case '}' :
@@ -299,18 +309,7 @@ json_node* parse_json(dstring* json_string)
 				complete_raw_data_reading(state_stack);
 
 				// read and push in the last element of the json object
-				if(is_current_state_equals(state_stack, READING_COMPLETE))
-				{
-					// pop the state of READING_COMPLETE
-					pop_state(state_stack);
-
-					// inserting last entry, in to last the object
-					insert_object_entry(state_stack, pop_state(state_stack));
-				}
-				else
-				{
-					// ERROR
-				}
+				perform_composite_operation(state_stack, INSERT_ENTRY_IN_OBJECT);
 
 				return_node = complete_object_reading(state_stack);
 				break;
@@ -322,21 +321,16 @@ json_node* parse_json(dstring* json_string)
 				complete_raw_data_reading(state_stack);
 
 				// read and push in the last element of the json array
-				if(is_current_state_equals(state_stack, READING_COMPLETE))
-				{
-					// pop the state of READING_COMPLETE
-					pop_state(state_stack);
-
-					// append the last element we read, in to the last array
-					append_array_element(state_stack, pop_state(state_stack));
-				}
-				else
-				{
-					// ERROR
-				}
+				perform_composite_operation(state_stack, APPEND_ELEMENT_IN_ARRAY);
 
 				return_node = complete_array_reading(state_stack);
 				break;
+			}
+			// handling escape chacters
+			case '\\' :
+			{
+				append_character(state_stack, *inst); inst++;
+				append_character(state_stack, *inst);
 			}
 			// loop over the elements from the characters, reading and completing, a string, number, boolean or null
 			default :
@@ -345,8 +339,7 @@ json_node* parse_json(dstring* json_string)
 				if(is_current_state_equals(state_stack, READING_RAW_DATA) 
 					&& (*inst == ' ' || *inst == '\r' || *inst == '\n' || *inst == '\t'))
 				{
-					identify_dstring_json_node(((json_node*)get_current_state_reinstate_node(state_stack)));
-					push_state(state_stack, READING_COMPLETE, NULL);
+					complete_raw_data_reading(state_stack);
 				}
 				// this is where a new READING_RAW_DATA state may start,
 				// when the VALUE_TO_BE_READ or READING_ARRAY and we are not looking at any of white spaces
@@ -359,24 +352,11 @@ json_node* parse_json(dstring* json_string)
 						pop_state(state_stack);
 					}
 
-					// now ther has to be a node where we can read
-					push_state(state_stack, READING_RAW_DATA, get_new_json_node());
-
-					// initialize it to an ERROR
-					initialize_json_node(get_current_state_reinstate_node(state_stack), ERROR, 10);
+					start_raw_data_reading(state_stack);
 				}
 
 				// if it is some json node that is a dstring, we append the new data at its end
-				if(is_current_state_equals(state_stack, READING_STRING)
-				|| is_current_state_equals(state_stack, READING_KEY)
-				|| is_current_state_equals(state_stack, READING_RAW_DATA))
-				{
-
-					// make a string from the character and append it to the dstring
-					char temp_cstring[2] = "Z";
-					temp_cstring[0] = *inst;
-					append_to_dstring((dstring*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p), temp_cstring);
-				}
+				append_character(state_stack, *inst);
 				break;
 			}
 		}
