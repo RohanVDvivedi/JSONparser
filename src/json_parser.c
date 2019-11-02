@@ -83,7 +83,10 @@ json_node* parse_json(dstring* json_string)
 			{printf(":\n");
 				if(is_current_state_equals(state_stack, KEY_PARSED))
 				{
+					// pop the empty KEY_PARSED state
 					pop_state(state_stack);
+
+					// push the empty state that asks to read the value for the KEY_PARSED
 					push_state(state_stack, VALUE_TO_BE_READ, NULL);
 				}
 				else
@@ -309,22 +312,48 @@ json_node* parse_json(dstring* json_string)
 					char temp_cstring[2] = "Z";
 					temp_cstring[0] = *inst;
 					append_to_dstring((dstring*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p), temp_cstring);
-					printf("string append -> %s\n", ((dstring*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p))->cstring);
+					printf("string append -> %s with %s\n", ((dstring*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p))->cstring, temp_cstring);
 				}
 				else if(is_current_state_equals(state_stack, VALUE_TO_BE_READ) || is_current_state_equals(state_stack, READING_ARRAY))
 				{
 					// do nothing just skip
 					if(*inst == ' ' || *inst == '\r' || *inst == '\n' || *inst == '\t')
-					{}
+					{
+
+					}
 					else
 					{
-						// now ther has to be a node where we can read
-						pop_state(state_stack);
+						// if we have been asked to read Value, we first pop the empty state
+						if(is_current_state_equals(state_stack, VALUE_TO_BE_READ))
+						{
+							pop_state(state_stack);
+						}
 
+						// now ther has to be a node where we can read
 						push_state(state_stack, READING_RAW_DATA, get_new_json_node());
 
 						// initialize it to an ERROR
 						initialize_json_node(get_current_state_reinstate_node(state_stack), ERROR, 10);
+					}
+				}
+				else if(is_current_state_equals(state_stack, READING_RAW_DATA))
+				{
+					// do nothing just skip
+					if(*inst == ' ' || *inst == '\r' || *inst == '\n' || *inst == '\t')
+					{
+						push_state(state_stack, READING_COMPLETE, NULL);
+					}
+					else
+					{
+						// ERROR
+					}
+				}
+				else if(is_current_state_equals(state_stack, READING_COMPLETE))
+				{
+					// do nothing just skip
+					if(!(*inst == ' ' || *inst == '\r' || *inst == '\n' || *inst == '\t'))
+					{
+						// ERROR
 					}
 				}
 				else

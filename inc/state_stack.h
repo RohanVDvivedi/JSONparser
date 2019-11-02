@@ -13,8 +13,8 @@ typedef enum parse_state parse_state;
 enum parse_state
 {
 	READING_KEY,
-	KEY_PARSED,
-	VALUE_TO_BE_READ,
+	KEY_PARSED,					// empty state
+	VALUE_TO_BE_READ,			// empty state
 	READING_STRING,				// this state is pushed when we encounter "
 	READING_ARRAY,				// this state is pushed when we encounter [
 	READING_OBJECT,				// this state is pushed when we encounter {
