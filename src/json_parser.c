@@ -9,10 +9,12 @@ void print_json_node(json_node* jnodep)
 	}
 	else if(jnodep->type == ARRAY)
 	{
+		printf("NODE IS ARRAY\n");
 		print_array(((array*)(jnodep->data_p)), print_json_node);
 	}
-	else if(jnodep->type == ARRAY)
+	else if(jnodep->type == OBJECT)
 	{
+		printf("NODE IS HASHMAP\n");
 		print_hashmap(((hashmap*)(jnodep->data_p)), print_json_node, print_json_node);
 	}
 	else
