@@ -196,8 +196,15 @@ json_node* parse_json(dstring* json_string)
 				// the value for the key is going to be an array
 				if(is_current_state_equals(state_stack, READING_OBJECT))
 				{
-					// we need to return the outer most object
-					return_node = pop_state(state_stack);
+					if(state_stack->stack_size > 1)
+					{
+						// push a state mentioning that the reading is complete for the current json object
+						push_state(state_stack, READING_COMPLETE, NULL);
+					}
+					else
+					{
+						return_node = pop_state(state_stack);
+					}
 				}
 				else
 				{
@@ -253,8 +260,15 @@ json_node* parse_json(dstring* json_string)
 
 				if(is_current_state_equals(state_stack, READING_ARRAY))
 				{
-					// we need to return the outer most array
-					return_node = pop_state(state_stack);
+					if(state_stack->stack_size > 1)
+					{
+						// push a state mentioning that the reading is complete for the current json array
+						push_state(state_stack, READING_COMPLETE, NULL);
+					}
+					else
+					{
+						return_node = pop_state(state_stack);
+					}
 				}
 				else
 				{
