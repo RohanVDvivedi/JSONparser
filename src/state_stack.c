@@ -14,12 +14,6 @@ state_desc* get_new_state_desc(parse_state state, json_node* reinstate_to_node)
 	return desc;
 }
 
-// delete function
-void delete_state_desc(state_desc* desc)
-{
-	free(desc);
-}
-
 /*
 	stack state object
 */
@@ -62,7 +56,9 @@ json_node* pop_state(stack* state_stack)
 
 	// get the reinstate node value, so that it can be returned
 	json_node* reinstate_to_node = desc->reinstate_to_node;
-	delete_state_desc(desc);
+
+	// free acquired memory
+	free(desc);
 
 	// pop the freed element from the stack
 	pop_stack(state_stack);
