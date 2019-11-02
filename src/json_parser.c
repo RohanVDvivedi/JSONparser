@@ -344,6 +344,12 @@ json_node* parse_json(dstring* json_string)
 
 						// initialize it to an ERROR
 						initialize_json_node(get_current_state_reinstate_node(state_stack), ERROR, 10);
+
+						// make a string from the character and append it to the dstring
+						char temp_cstring[2] = "Z";
+						temp_cstring[0] = *inst;
+						append_to_dstring((dstring*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p), temp_cstring);
+						printf("string append -> %s with %s\n", ((dstring*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p))->cstring, temp_cstring);
 					}
 				}
 				else if(is_current_state_equals(state_stack, READING_RAW_DATA))
