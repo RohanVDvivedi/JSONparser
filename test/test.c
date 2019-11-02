@@ -6,6 +6,10 @@ int main()
 
 	dstring* json_str = get_dstring("\
 	{ \
+		\"name\" : \"Rohan\" \
+		\"age\" : 23 \
+		\"smart\" : true \
+		\"dependent on luck\" : null \
 	} \
 	", 10);
 
