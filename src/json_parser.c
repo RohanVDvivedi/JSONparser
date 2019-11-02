@@ -2,7 +2,12 @@
 
 void print_json_node(json_node* jnodep)
 {
-	if(jnodep->type == ARRAY)
+	if(jnodep == NULL)
+	{
+		printf("NODE IS NULL\n");
+		return;
+	}
+	else if(jnodep->type == ARRAY)
 	{
 		print_array(((array*)(jnodep->data_p)), print_json_node);
 	}
