@@ -107,9 +107,14 @@ json_node* parse_json(dstring* json_string)
 				// only after reading valid data value, we can add it to an array or an object
 				if(is_current_state_equals(state_stack, READING_COMPLETE))
 				{
+					// pop the state of READING_COMPLETE
+					pop_state(state_stack);
+
+					// pop and collect the value node whose reading was completed
 					json_node* value = pop_state(state_stack);
 					if(is_current_state_equals(state_stack, READING_KEY))
 					{
+						// pop and collect the key node whose reading was completed
 						json_node* key = pop_state(state_stack);
 						if(is_current_state_equals(state_stack, READING_OBJECT))
 						{
@@ -172,10 +177,11 @@ json_node* parse_json(dstring* json_string)
 					// pop the state of READING_COMPLETE
 					pop_state(state_stack);
 
-					// pop and collect the node whose reading was completed
+					// pop and collect the value node whose reading was completed
 					json_node* value = pop_state(state_stack);
 					if(is_current_state_equals(state_stack, READING_KEY))
 					{
+						// pop and collect the key node whose reading was completed
 						json_node* key = pop_state(state_stack);
 						if(is_current_state_equals(state_stack, READING_OBJECT))
 						{
@@ -246,6 +252,10 @@ json_node* parse_json(dstring* json_string)
 				// read and push in the last element of the json array
 				if(is_current_state_equals(state_stack, READING_COMPLETE))
 				{
+					// pop the state of READING_COMPLETE
+					pop_state(state_stack);
+
+					// pop and collect the node whose reading was completed
 					json_node* value = pop_state(state_stack);
 					if(is_current_state_equals(state_stack, READING_ARRAY))
 					{
