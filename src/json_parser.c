@@ -67,7 +67,7 @@ json_node* parse_json(dstring* json_string)
 
 				else if(is_current_state_equals(state_stack, READING_STRING))
 				{
-					pop_state(state_stack);
+					push_state(state_stack, READING_COMPLETE, NULL);
 				}
 				else if(is_current_state_equals(state_stack, READING_KEY))
 				{
@@ -80,7 +80,7 @@ json_node* parse_json(dstring* json_string)
 				break;
 			}
 			case ':' :
-			{
+			{printf(":\n");
 				if(is_current_state_equals(state_stack, KEY_PARSED))
 				{
 					pop_state(state_stack);
@@ -93,14 +93,16 @@ json_node* parse_json(dstring* json_string)
 				break;
 			}
 			case ',' :
-			{
+			{printf(",\n");
+				// comma ends a NUMBER, BOOLE or NULLE data, hence if we were expected any of them to continue, 
+				// we were wrong, just push READING_COMPLETE, so notify that a valid value has been read
+				if(is_current_state_equals(state_stack, READING_RAW_DATA))
+				{
+					push_state(state_stack, READING_COMPLETE, NULL);
+				}
+
 				// only after reading valid data value, we can add it to an array or an object
-				if(
-						is_current_state_equals(state_stack, READING_STRING)
-					||	is_current_state_equals(state_stack, READING_ARRAY)
-					||	is_current_state_equals(state_stack, READING_OBJECT)
-					||	is_current_state_equals(state_stack, READING_RAW_DATA)
-					)
+				if(is_current_state_equals(state_stack, READING_COMPLETE))
 				{
 					json_node* value = pop_state(state_stack);
 					if(is_current_state_equals(state_stack, READING_KEY))
@@ -139,7 +141,7 @@ json_node* parse_json(dstring* json_string)
 				break;
 			}
 			case '{' :
-			{
+			{printf("{\n");
 				if(is_current_state_equals(state_stack, VALUE_TO_BE_READ))
 				{
 					pop_state(state_stack);
@@ -153,11 +155,16 @@ json_node* parse_json(dstring* json_string)
 				break;
 			}
 			case '}' :
-			{
-				if(		is_current_state_equals(state_stack, READING_STRING)
-					||	is_current_state_equals(state_stack, READING_ARRAY)
-					||	is_current_state_equals(state_stack, READING_OBJECT)
-					||	is_current_state_equals(state_stack, READING_RAW_DATA)	)
+			{printf("}\n");
+				// comma ends a NUMBER, BOOLE or NULLE data, hence if we were expected any of them to continue, 
+				// we were wrong, just push READING_COMPLETE, so notify that a valid value has been read
+				if(is_current_state_equals(state_stack, READING_RAW_DATA))
+				{
+					push_state(state_stack, READING_COMPLETE, NULL);
+				}
+
+				// read and push in the last element of the json object
+				if(is_current_state_equals(state_stack, READING_COMPLETE))
 				{
 					json_node* value = pop_state(state_stack);
 					if(is_current_state_equals(state_stack, READING_KEY))
@@ -199,7 +206,7 @@ json_node* parse_json(dstring* json_string)
 				break;
 			}
 			case '[' :
-			{
+			{printf("[\n");
 				// the value for the key is going to be an array
 				if(is_current_state_equals(state_stack, VALUE_TO_BE_READ))
 				{
@@ -214,12 +221,16 @@ json_node* parse_json(dstring* json_string)
 				break;
 			}
 			case ']' :
-			{
+			{printf("]\n");
+				// comma ends a NUMBER, BOOLE or NULLE data, hence if we were expected any of them to continue, 
+				// we were wrong, just push READING_COMPLETE, so notify that a valid value has been read
+				if(is_current_state_equals(state_stack, READING_RAW_DATA))
+				{
+					push_state(state_stack, READING_COMPLETE, NULL);
+				}
+
 				// read and push in the last element of the json array
-				if(		is_current_state_equals(state_stack, READING_STRING)
-					||	is_current_state_equals(state_stack, READING_ARRAY)
-					||	is_current_state_equals(state_stack, READING_OBJECT)
-					||	is_current_state_equals(state_stack, READING_RAW_DATA)	)
+				if(is_current_state_equals(state_stack, READING_COMPLETE))
 				{
 					json_node* value = pop_state(state_stack);
 					if(is_current_state_equals(state_stack, READING_ARRAY))
@@ -280,8 +291,9 @@ json_node* parse_json(dstring* json_string)
 					char temp_cstring[2] = "Z";
 					temp_cstring[0] = *inst;
 					append_to_dstring((dstring*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p), temp_cstring);
+					printf("string append -> %s\n", ((dstring*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p))->cstring);
 				}
-				else if(is_current_state_equals(state_stack, VALUE_TO_BE_READ))
+				else if(is_current_state_equals(state_stack, VALUE_TO_BE_READ) || is_current_state_equals(state_stack, READING_ARRAY))
 				{
 					// do nothing just skip
 					if(*inst == ' ' || *inst == '\r' || *inst == '\n' || *inst == '\t')

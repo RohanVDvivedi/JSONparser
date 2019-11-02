@@ -15,9 +15,12 @@ enum parse_state
 	READING_KEY,
 	KEY_PARSED,
 	VALUE_TO_BE_READ,
-	READING_STRING,
-	READING_ARRAY,
-	READING_OBJECT,
+	READING_STRING,				// this state is pushed when we encounter "
+	READING_ARRAY,				// this state is pushed when we encounter [
+	READING_OBJECT,				// this state is pushed when we encounter {
+
+	READING_COMPLETE,			// this state is pushed when we encounter " or [ or } and 
+								// the previous state is any of READING_OBJECT or READING_STRING or READING_ARRAY
 
 	// if the data is not identified yet, it can be a NUMBER, BOOLE or NULLE
 	READING_RAW_DATA
