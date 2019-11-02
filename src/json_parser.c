@@ -37,6 +37,7 @@ void start_string_reading(stack* state_stack)
 	else
 	{
 		// ERROR
+		return;
 	}
 
 	push_state(state_stack, string_state, get_new_json_node());
@@ -77,6 +78,7 @@ void perform_composite_operation(stack* state_stack, operation_type optype)
 			else
 			{
 				// ERROR
+				return;
 			}
 		}
 		else if( (optype & APPEND_ELEMENT_IN_ARRAY) && is_current_state_equals(state_stack, READING_ARRAY))
@@ -96,11 +98,13 @@ void perform_composite_operation(stack* state_stack, operation_type optype)
 		else
 		{
 			// ERROR
+			return;
 		}
 	}
 	else
 	{
 		// ERROR
+		return;
 	}
 }
 
@@ -122,6 +126,7 @@ json_node* complete_reading(stack* state_stack, parse_state expected_current_sta
 	else
 	{
 		// ERROR
+		return;
 	}
 	return NULL;
 }
@@ -152,6 +157,7 @@ void complete_string_reading(stack* state_stack)
 	else
 	{
 		// ERROR
+		return;
 	}
 }
 
@@ -219,6 +225,7 @@ json_node* parse_json(dstring* json_string)
 				else
 				{
 					// ERROR
+					return;
 				}
 				break;
 			}
