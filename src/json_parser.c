@@ -23,6 +23,12 @@ void print_json_node(json_node* jnodep)
 
 void start_array_reading(stack* state_stack)
 {
+	// having an EMPTY node of type VALUE_TO_BE_READ only specifies that some other object is waiting for this array to be formed completely
+	if(is_current_state_equals(state_stack, VALUE_TO_BE_READ))
+	{
+		pop_state(state_stack);
+	}
+
 	// insert a new json node, on the stack and update the state to READING OBJECT
 	push_state(state_stack, READING_ARRAY, get_new_json_node());
 
@@ -32,6 +38,12 @@ void start_array_reading(stack* state_stack)
 
 void start_object_reading(stack* state_stack)
 {
+	// having an EMPTY node of type VALUE_TO_BE_READ only specifies that some other object is waiting for this object to be formed completely
+	if(is_current_state_equals(state_stack, VALUE_TO_BE_READ))
+	{
+		pop_state(state_stack);
+	}
+
 	// insert a new json node, on the stack and update the state to READING OBJECT
 	push_state(state_stack, READING_OBJECT, get_new_json_node());
 
@@ -41,6 +53,12 @@ void start_object_reading(stack* state_stack)
 
 void start_raw_data_reading(stack* state_stack)
 {
+	// if we have been asked to read Value, we first pop the empty state
+	if(is_current_state_equals(state_stack, VALUE_TO_BE_READ))
+	{
+		pop_state(state_stack);
+	}
+
 	// now ther has to be a node where we can read
 	push_state(state_stack, READING_RAW_DATA, get_new_json_node());
 
@@ -272,23 +290,11 @@ json_node* parse_json(dstring* json_string)
 			}
 			case '{' :
 			{
-				// having an EMPTY node of type VALUE_TO_BE_READ only specifies that some other object is waiting for this object to be formed completely
-				if(is_current_state_equals(state_stack, VALUE_TO_BE_READ))
-				{
-					pop_state(state_stack);
-				}
-
 				start_object_reading(state_stack);
 				break;
 			}
 			case '[' :
 			{
-				// having an EMPTY node of type VALUE_TO_BE_READ only specifies that some other object is waiting for this array to be formed completely
-				if(is_current_state_equals(state_stack, VALUE_TO_BE_READ))
-				{
-					pop_state(state_stack);
-				}
-
 				start_array_reading(state_stack);
 				break;
 			}
@@ -335,24 +341,18 @@ json_node* parse_json(dstring* json_string)
 			// loop over the elements from the characters, reading and completing, a string, number, boolean or null
 			default :
 			{
+				// this is where a new READING_RAW_DATA state may start,
+				// when the VALUE_TO_BE_READ or READING_ARRAY and we are not looking at any of white spaces
+				if((is_current_state_equals(state_stack, VALUE_TO_BE_READ) || is_current_state_equals(state_stack, READING_ARRAY)) 
+						&& (!(*inst == ' ' || *inst == '\r' || *inst == '\n' || *inst == '\t')) )
+				{
+					start_raw_data_reading(state_stack);
+				}
 				// READING_RAW_DATA is terminated by any white space character
-				if(is_current_state_equals(state_stack, READING_RAW_DATA) 
+				else if(is_current_state_equals(state_stack, READING_RAW_DATA) 
 					&& (*inst == ' ' || *inst == '\r' || *inst == '\n' || *inst == '\t'))
 				{
 					complete_raw_data_reading(state_stack);
-				}
-				// this is where a new READING_RAW_DATA state may start,
-				// when the VALUE_TO_BE_READ or READING_ARRAY and we are not looking at any of white spaces
-				else if((is_current_state_equals(state_stack, VALUE_TO_BE_READ) || is_current_state_equals(state_stack, READING_ARRAY)) 
-						&& (!(*inst == ' ' || *inst == '\r' || *inst == '\n' || *inst == '\t')) )
-				{
-					// if we have been asked to read Value, we first pop the empty state
-					if(is_current_state_equals(state_stack, VALUE_TO_BE_READ))
-					{
-						pop_state(state_stack);
-					}
-
-					start_raw_data_reading(state_stack);
 				}
 
 				// if it is some json node that is a dstring, we append the new data at its end
