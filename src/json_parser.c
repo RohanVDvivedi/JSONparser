@@ -1,14 +1,19 @@
 #include<json_parser.h>
 
-// returns character pointer pointing to the next character from the *from and that equals the matched character
-char* get_until(char* from, char matches)
+void print_json_node(json_node* jnodep)
 {
-	char* result = from;
-	while((*result) != matches && (*result) != '\0')
+	if(jnodep->type == ARRAY)
 	{
-		result++;
+		print_array(((array*)(jnodep->data_p)), print_json_node);
 	}
-	return ((*result) == matches) ? result : NULL;
+	else if(jnodep->type == ARRAY)
+	{
+		print_hashmap(((hashmap*)(jnodep->data_p)), print_json_node, print_json_node);
+	}
+	else
+	{
+		printf("%d => %s\n", jnodep->type, ((dstring*)(jnodep->data_p))->cstring);
+	}
 }
 
 json_node* parse_json(dstring* json_string)
