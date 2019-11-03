@@ -90,6 +90,17 @@ void identify_dstring_json_node(json_node* jnode_p)
 	}
 }
 
+void delete_element(void* data_p, unsigned long long int index, const void* additional_params)
+{
+	delete_json_node(((json_node*)(data_p)));
+}
+
+void delete_entry(const void* key, const void* value, const void* additional_params)
+{
+	delete_json_node(((json_node*)(key)));
+	delete_json_node(((json_node*)(value)));
+}
+
 void delete_json_node(json_node* jnode_p)
 {
 	switch(jnode_p->type)
@@ -107,6 +118,7 @@ void delete_json_node(json_node* jnode_p)
 		case ARRAY:
 		{
 			// delete the contents of the array, each of which is a json_node
+			for_each_in_array(jnode_p->data_p, delete_element, NULL);
 
 			// delete the array itself
 			delete_array(jnode_p->data_p);
@@ -115,6 +127,7 @@ void delete_json_node(json_node* jnode_p)
 		case OBJECT:
 		{
 			// delete the keys and the corresponding json_node of the hashmap
+			for_each_entry(jnode_p->data_p, delete_entry, NULL);
 
 			// delete the hash map itself
 			delete_hashmap(jnode_p->data_p);
