@@ -127,7 +127,7 @@ void delete_json_node(json_node* jnode_p)
 		case OBJECT:
 		{
 			// delete the keys and the corresponding json_node of the hashmap
-			for_each_entry(jnode_p->data_p, delete_entry, NULL);
+			for_each_entry_in_hash(jnode_p->data_p, delete_entry, NULL);
 
 			// delete the hash map itself
 			delete_hashmap(jnode_p->data_p);
