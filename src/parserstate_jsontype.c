@@ -15,6 +15,10 @@ parse_state get_parser_state_for(json_data_type type)
 		{
 			return READING_STRING;
 		}
+		case KEY :
+		{
+			return READING_KEY;
+		}
 		case ARRAY :
 		{
 			return READING_ARRAY;

@@ -29,6 +29,7 @@ void initialize_json_node(json_node* jnode_p, json_data_type type, unsigned long
 		{
 			jnode_p->data_p = get_dstring("", 10);
 		}
+		case KEY:
 		case NUMBER:
 		case STRING:
 		{
@@ -43,10 +44,6 @@ void initialize_json_node(json_node* jnode_p, json_data_type type, unsigned long
 		case OBJECT:
 		{
 			jnode_p->data_p = get_hashmap(expected_size, (unsigned long long int(*)(const void*))key_hashing_function, (int(*)(const void*, const void*))key_compare_function, ELEMENTS_AS_RED_BLACK_BST);
-			break;
-		}
-		default:
-		{
 			break;
 		}
 	}
@@ -97,9 +94,11 @@ void delete_json_node(json_node* jnode_p)
 {
 	switch(jnode_p->type)
 	{
+		case ERROR:
 		case NULLE:
 		case BOOLE:
 		case NUMBER:
+		case KEY:
 		case STRING:
 		{
 			delete_dstring(jnode_p->data_p);
@@ -119,10 +118,6 @@ void delete_json_node(json_node* jnode_p)
 
 			// delete the hash map itself
 			delete_hashmap(jnode_p->data_p);
-			break;
-		}
-		default:
-		{
 			break;
 		}
 	}
