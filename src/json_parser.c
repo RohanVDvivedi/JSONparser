@@ -3,9 +3,13 @@
 void start_reading(stack* state_stack, json_data_type data_type_to_expect)
 {
 	// if we have been asked to read Value, we first pop the empty state
-	if(is_current_state_equals(state_stack, VALUE_TO_BE_READ))
+	if(is_current_state_equals(state_stack, VALUE_TO_BE_READ) && data_type_to_expect != KEY)
 	{
 		pop_state(state_stack);
+	}
+	else if(is_current_state_equals(state_stack, VALUE_TO_BE_READ) && data_type_to_expect == KEY)
+	{
+		// ERROR
 	}
 
 	parse_state reading_state = get_parser_state_for(data_type_to_expect);
@@ -15,37 +19,6 @@ void start_reading(stack* state_stack, json_data_type data_type_to_expect)
 
 	// initialize it to expected data type
 	initialize_json_node(get_current_state_reinstate_node(state_stack), data_type_to_expect, 10);
-}
-
-void start_string_reading(stack* state_stack)
-{
-	parse_state string_state;
-	if(is_current_state_equals(state_stack, READING_OBJECT))
-	{
-		string_state = READING_KEY;
-	}
-	// or a string element of an array
-	else if(is_current_state_equals(state_stack, READING_ARRAY))
-	{
-		string_state = READING_STRING;
-	}
-	// or a value to be read, for an array of object
-	else if(is_current_state_equals(state_stack, VALUE_TO_BE_READ))
-	{
-		// pop the VALUE_TO_BE_READ, because we have got to read the STRING now
-		pop_state(state_stack);
-		string_state = READING_STRING;
-	}
-	else
-	{
-		// ERROR
-		return;
-	}
-
-	push_state(state_stack, string_state, get_new_json_node());
-
-	// initialize the new STRING json_node to 10 characters
-	initialize_json_node(get_current_state_reinstate_node(state_stack), STRING, 10);
 }
 
 typedef enum operation_type operation_type;
@@ -110,8 +83,11 @@ void perform_composite_operation(stack* state_stack, operation_type optype)
 	}
 }
 
-json_node* complete_reading(stack* state_stack, parse_state expected_current_state)
+json_node* complete_array_object_reading(stack* state_stack, json_data_type data_type_to_expect)
 {
+	// what should be the expected state, to complete the data type to be expected to be completing
+	parse_state expected_current_state = get_parser_state_for(data_type_to_expect);
+
 	if(is_current_state_equals(state_stack, expected_current_state))
 	{
 		if(state_stack->stack_size > 1)
@@ -146,7 +122,7 @@ void complete_raw_data_reading(stack* state_stack)
 	}
 }
 
-void complete_string_reading(stack* state_stack)
+void complete_string_or_key_reading(stack* state_stack)
 {
 	if(is_current_state_equals(state_stack, READING_STRING))
 	{
@@ -193,23 +169,27 @@ json_node* parse_json(dstring* json_string)
 		{
 			case '\"' :
 			{
-				// if it is starting of the reading of a string,
+				// if it is starting of the reading of a STRING or KEY,
 				// it can be a key for a json object
+				if(is_current_state_equals(state_stack, READING_OBJECT))
+				{
+					start_reading(state_stack, KEY);
+				}
 				// or a string element of an array
 				// or a value to be read, for a key of object
-				if( is_current_state_equals(state_stack, READING_OBJECT)
-					|| is_current_state_equals(state_stack, READING_ARRAY)
+				else if(is_current_state_equals(state_stack, READING_ARRAY)
 					|| is_current_state_equals(state_stack, VALUE_TO_BE_READ) )
 				{
-					start_string_reading(state_stack);
+					start_reading(state_stack, STRING);
 				}
 
-				// if the STRING is already being read, either as a READING_STRING or READING_KEY state
+				// if the STRING or KEY is already being read,
+				// either as a READING_STRING or READING_KEY state
 				// the string has to be terminated
 				else if( is_current_state_equals(state_stack, READING_STRING)
 						 || is_current_state_equals(state_stack, READING_KEY) )
 				{
-					complete_string_reading(state_stack);
+					complete_string_or_key_reading(state_stack);
 				}
 				
 				break;
@@ -259,7 +239,7 @@ json_node* parse_json(dstring* json_string)
 				// read and push in the last element of the json object
 				perform_composite_operation(state_stack, INSERT_ENTRY_IN_OBJECT);
 
-				return_node = complete_reading(state_stack, READING_OBJECT);
+				return_node = complete_array_object_reading(state_stack, OBJECT);
 				break;
 			}
 			case ']' :
@@ -271,7 +251,7 @@ json_node* parse_json(dstring* json_string)
 				// read and push in the last element of the json array
 				perform_composite_operation(state_stack, APPEND_ELEMENT_IN_ARRAY);
 
-				return_node = complete_reading(state_stack, READING_ARRAY);
+				return_node = complete_array_object_reading(state_stack, ARRAY);
 				break;
 			}
 			// handling escape chacters
