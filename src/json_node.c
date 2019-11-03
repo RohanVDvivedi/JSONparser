@@ -92,7 +92,10 @@ void identify_dstring_json_node(json_node* jnode_p)
 
 void delete_element(void* data_p, unsigned long long int index, const void* additional_params)
 {
-	delete_json_node(((json_node*)(data_p)));
+	if(data_p != NULL)
+	{
+		delete_json_node(((json_node*)(data_p)));
+	}
 }
 
 void delete_entry(const void* key, const void* value, const void* additional_params)
