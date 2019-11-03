@@ -1,12 +1,14 @@
 #include<json_parser.h>
 
-void start_reading(stack* state_stack, json_data_type data_type_to_expect, parse_state reading_state)
+void start_reading(stack* state_stack, json_data_type data_type_to_expect)
 {
 	// if we have been asked to read Value, we first pop the empty state
 	if(is_current_state_equals(state_stack, VALUE_TO_BE_READ))
 	{
 		pop_state(state_stack);
 	}
+
+	parse_state reading_state = get_parser_state_for(data_type_to_expect);
 
 	// now there has to be a node where we can parse and put out data
 	push_state(state_stack, reading_state, get_new_json_node());
@@ -116,6 +118,7 @@ json_node* complete_reading(stack* state_stack, parse_state expected_current_sta
 		{
 			// push a state mentioning that the reading is complete for the current json array or object
 			push_state(state_stack, READING_COMPLETE, NULL);
+			return NULL;
 		}
 		// else return the array of json object since it can be an outer most object
 		else
@@ -126,9 +129,8 @@ json_node* complete_reading(stack* state_stack, parse_state expected_current_sta
 	else
 	{
 		// ERROR
-		return;
+		return NULL;
 	}
-	return NULL;
 }
 
 void complete_raw_data_reading(stack* state_stack)
@@ -225,18 +227,17 @@ json_node* parse_json(dstring* json_string)
 				else
 				{
 					// ERROR
-					return;
 				}
 				break;
 			}
 			case '{' :
 			{
-				start_reading(state_stack, OBJECT, READING_OBJECT);
+				start_reading(state_stack, OBJECT);
 				break;
 			}
 			case '[' :
 			{
-				start_reading(state_stack, ARRAY, READING_ARRAY);
+				start_reading(state_stack, ARRAY);
 				break;
 			}
 			case ',' :
@@ -287,7 +288,7 @@ json_node* parse_json(dstring* json_string)
 				if((is_current_state_equals(state_stack, VALUE_TO_BE_READ) || is_current_state_equals(state_stack, READING_ARRAY)) 
 						&& (!(*inst == ' ' || *inst == '\r' || *inst == '\n' || *inst == '\t')) )
 				{
-					start_reading(state_stack, ERROR, READING_RAW_DATA);
+					start_reading(state_stack, ERROR);
 				}
 				// READING_RAW_DATA is terminated by any white space character
 				else if(is_current_state_equals(state_stack, READING_RAW_DATA) 

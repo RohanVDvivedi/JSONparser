@@ -1,5 +1,4 @@
-#include<json_data_type.h>
-#include<parser_state.h>
+#include<parserstate_jsontype.h>
 
 parse_state get_parser_state_for(json_data_type type)
 {
