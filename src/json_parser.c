@@ -18,7 +18,7 @@ void start_reading(stack* state_stack, json_data_type data_type_to_expect)
 	push_state(state_stack, reading_state, get_new_json_node());
 
 	// initialize it to expected data type
-	initialize_json_node(get_current_state_reinstate_node(state_stack), data_type_to_expect, 10);
+	initialize_json_node(get_current_state_reinstate_node(state_stack), data_type_to_expect, 4);
 }
 
 typedef enum operation_type operation_type;
@@ -47,8 +47,15 @@ void perform_composite_operation(stack* state_stack, operation_type optype)
 				// increment the number of elements in the current state, either array or hashmap
 				increment_current_state_elements_read(state_stack);
 
+				hashmap* hashmap_p = ((hashmap*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p));
+
+				if(hashmap_p->bucket_count > 3 * hashmap_p->bucket_occupancy)
+				{
+					rehash_to_size(hashmap_p, 4 * hashmap_p->bucket_occupancy);
+				}
+
 				// insert entry in the hashmap
-				insert_entry_in_hash(((hashmap*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p)), key, value);
+				insert_entry_in_hash(hashmap_p, key, value);
 			}
 			else
 			{
@@ -61,14 +68,16 @@ void perform_composite_operation(stack* state_stack, operation_type optype)
 			// increment the number of elements in the current state, either array or hashmap
 			unsigned long long int index = increment_current_state_elements_read(state_stack);
 
+			array* array_p = ((array*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p));
+
 			// if that array is full we need to expand it
-			if(index == ((array*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p))->total_size)
+			if(index == array_p->total_size)
 			{
-				expand_array(((array*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p)));
+				expand_array(array_p);
 			}
 
 			// create a new array element and save it in array
-			set_element(((array*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p)), value, index);
+			set_element(array_p, value, index);
 		}
 		else
 		{
