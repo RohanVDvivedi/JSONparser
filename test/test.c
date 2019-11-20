@@ -11,7 +11,12 @@ int main()
 		\"smart\" : true, \
 		\"dependents\" : null, \
 		\"family membe\" : [[1,2,3,4] \
-		,[\"1\",\"2\",\"3\",\"4\"]]\
+		,[\"1\",\"2\",\"3\",\"4\"]],\
+		\"nick name\" : \"Rohu\", \
+		\"age next year\" : 24, \
+		\"IQ\" : 196, \
+		\"coder\" : true, \
+		\"is dependent\" : false \
 	} \
 	", 10);
 

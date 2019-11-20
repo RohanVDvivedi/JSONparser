@@ -49,9 +49,9 @@ void perform_composite_operation(stack* state_stack, operation_type optype)
 
 				hashmap* hashmap_p = ((hashmap*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p));
 
-				if(hashmap_p->bucket_count > 3 * hashmap_p->bucket_occupancy)
+				if(hashmap_p->bucket_occupancy > 2 * hashmap_p->bucket_count)
 				{
-					rehash_to_size(hashmap_p, 4 * hashmap_p->bucket_occupancy);
+					rehash_to_size(hashmap_p, hashmap_p->bucket_occupancy + 1);
 				}
 
 				// insert entry in the hashmap
