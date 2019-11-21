@@ -33,9 +33,9 @@ int main()
 
 	dstring* result = get_dstring("", 10);
 	serialize_json(result, jnodep);
-	printf("json string : ");
+	printf("json string : <");
 	display_dstring(result);
-	printf("\n");
+	printf(">\n");
 	delete_dstring(result);
 
 	printf("serializing done\n\n");
