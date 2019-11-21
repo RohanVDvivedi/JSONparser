@@ -1,4 +1,5 @@
 #include<json_parser.h>
+#include<json_serializer.h>
 
 int main()
 {
@@ -29,6 +30,15 @@ int main()
 	print_json_node(jnodep);
 
 	printf("Printing done\n\n");
+
+	dstring* result = get_dstring("", 10);
+	serialize_json(result, jnodep);
+	printf("json string : ");
+	display_dstring(result);
+	printf("\n");
+	delete_dstring(result);
+
+	printf("serializing done\n\n");
 
 	if(jnodep != NULL)
 	{
