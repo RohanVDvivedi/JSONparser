@@ -1,10 +1,15 @@
 #include<json_node.h>
 
+// internal function
+// this the hashing fucntion used in the hashmap to hash 
+// a json_node of string type in the json_node of type OBJECT
 unsigned long long int key_hashing_function(json_node* key)
 {
 	return ((dstring*)(key->data_p))->bytes_occupied;
 }
 
+// internal function
+//to compare json_node keys in the hashmap of json_nodes in the json_node of type OBJECT
 int key_compare_function(json_node* key1, json_node* key2)
 {
 	return compare_dstring(((dstring*)(key1->data_p)), ((dstring*)(key2->data_p)));
