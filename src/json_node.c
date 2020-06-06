@@ -21,6 +21,14 @@ json_node* get_new_json_node()
 	return jnode_p;
 }
 
+object_entry* get_new_object_entry(json_node* key, json_node* value)
+{
+	object_entry* entryp = malloc(sizeof(object_entry));
+	entryp->key = key;
+	entryp->value = value;
+	initialize_llnode(&(entryp->generic_hashmap_node));
+}
+
 void initialize_json_node(json_node* jnode_p, json_data_type type, unsigned long long int expected_size)
 {
 	jnode_p->type = type;

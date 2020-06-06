@@ -50,7 +50,7 @@ void perform_composite_operation(stack* state_stack, operation_type optype)
 				hashmap* hashmap_p = ((hashmap*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p));
 
 				// insert entry in the hashmap
-				insert_entry_in_generic_hashmap(hashmap_p, key, value);
+				insert_in_hashmap(hashmap_p, get_new_object_entry(key, value));
 			}
 			else
 			{

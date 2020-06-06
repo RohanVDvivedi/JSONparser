@@ -42,6 +42,9 @@ struct object_entry
 // givens you a json_node with data_p as NULL 
 json_node* get_new_json_node();
 
+// returns a newly created json node for given key and value
+object_entry* get_new_object_entry(json_node* key, json_node* value);
+
 // initializes the given json_node
 void initialize_json_node(json_node* jnode_p, json_data_type type, unsigned long long int expected_size);
 
