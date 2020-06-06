@@ -27,6 +27,7 @@ object_entry* get_new_object_entry(json_node* key, json_node* value)
 	entryp->key = key;
 	entryp->value = value;
 	initialize_llnode(&(entryp->generic_hashmap_node));
+	return entryp;
 }
 
 void initialize_json_node(json_node* jnode_p, json_data_type type, unsigned long long int expected_size)
