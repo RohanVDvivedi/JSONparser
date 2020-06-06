@@ -49,11 +49,6 @@ void perform_composite_operation(stack* state_stack, operation_type optype)
 
 				hashmap* hashmap_p = ((hashmap*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p));
 
-				if(hashmap_p->bucket_occupancy > 2 * hashmap_p->bucket_count)
-				{
-					rehash_to_size(hashmap_p, hashmap_p->bucket_occupancy + 1);
-				}
-
 				// insert entry in the hashmap
 				insert_entry_in_hash(hashmap_p, key, value);
 			}
@@ -165,7 +160,7 @@ void append_character(stack* state_stack, char to_append)
 json_node* parse_json(dstring* json_string)
 {
 	// create a state stack
-	stack* state_stack = get_stack((json_string->bytes_occupied / 10) + 10);
+	stack* state_stack = get_state_stack(json_string);
 
 	// build the iterator
 	char* inst = json_string->cstring;
