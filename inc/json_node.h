@@ -8,6 +8,7 @@
 #include<dstring.h>
 #include<array.h>
 #include<hashmap.h>
+#include<queue.h>
 
 #include<json_data_type.h>
 
