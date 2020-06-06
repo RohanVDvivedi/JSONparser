@@ -48,7 +48,7 @@ void initialize_json_node(json_node* jnode_p, json_data_type type, unsigned long
 		}
 		case OBJECT:
 		{
-			jnode_p->data_p = get_hashmap(expected_size, (unsigned long long int(*)(const void*))key_hashing_function, (int(*)(const void*, const void*))key_compare_function, ELEMENTS_AS_RED_BLACK_BST);
+			jnode_p->data_p = get_generic_hashmap(expected_size, (unsigned long long int(*)(const void*))key_hashing_function, (int(*)(const void*, const void*))key_compare_function);
 			break;
 		}
 	}
@@ -135,10 +135,10 @@ void delete_json_node(json_node* jnode_p)
 		case OBJECT:
 		{
 			// delete the keys and the corresponding json_node of the hashmap
-			for_each_entry_in_hash(jnode_p->data_p, delete_entry, NULL);
+			for_each_entry_in_generic_hashmap(jnode_p->data_p, delete_entry, NULL);
 
 			// delete the hash map itself
-			delete_hashmap(jnode_p->data_p);
+			delete_generic_hashmap(jnode_p->data_p);
 			break;
 		}
 	}
@@ -158,7 +158,7 @@ void print_json_node(json_node* jnodep)
 	}
 	else if(jnodep->type == OBJECT)
 	{
-		print_hashmap(((hashmap*)(jnodep->data_p)), ((void (*)(const void* value))(print_json_node)), ((void (*)(const void* value))(print_json_node)));
+		print_generic_hashmap(((hashmap*)(jnodep->data_p)), ((void (*)(const void*))(print_json_node)), ((void (*)(const void*))(print_json_node)));
 	}
 	else
 	{

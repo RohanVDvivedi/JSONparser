@@ -6,7 +6,7 @@
 
 #include<dstring.h>
 #include<array.h>
-#include<hashmap.h>
+#include<generic_hashmap.h>
 
 #include<json_data_type.h>
 
@@ -22,7 +22,7 @@ struct json_node
 	// NUMBER		 	=> dstring ([-][0-9][.][0-9])
 	// STRING 			=> dstring (*)
 	// ARRAY 			=> array   (standard cutlery array of json_node*)
-	// OBJECT 			=> hashmap (standard cutlery hashmap of json_node*(STRING mandatorily) vs json_node*)
+	// OBJECT 			=> generic_hashmap (of json_node*(STRING mandatorily) vs json_node*)
 	
 	// ERROR 			=> dstring (*), used when the json data is unidentified
 	void* data_p;
