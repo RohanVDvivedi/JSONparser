@@ -7,7 +7,7 @@ struct state_dstring
 	dstring* result;
 };
 
-void serialize_json_wrapper_array(json_node* node_p, unsigned long long int index, state_dstring* state_result)
+static void serialize_json_wrapper_array(json_node* node_p, unsigned long long int index, state_dstring* state_result)
 {
 	if(state_result->state != -1 && node_p != NULL)
 	{
@@ -19,8 +19,10 @@ void serialize_json_wrapper_array(json_node* node_p, unsigned long long int inde
 	}
 }
 
-void serialize_json_wrapper_hashmap(const json_node* key_node_p, const json_node* value_node_p, state_dstring* state_result)
+static void serialize_json_wrapper_hashmap(const object_entry* entryp, state_dstring* state_result)
 {
+	const json_node* key_node_p = entryp->key;
+	const json_node* value_node_p = entryp->value;
 	if(state_result->state != -1)
 	{
 		if(state_result->state != 0)
@@ -76,7 +78,7 @@ int serialize_json(dstring* result, const json_node* node_p)
 		{
 			append_to_dstring(result, "{");
 			state_dstring state_result = {.state = 0, .result = result};
-			for_each_entry_in_hash(((hashmap*)(node_p->data_p)), (void (*)(const void*, const void*, const void*))serialize_json_wrapper_hashmap, &state_result);
+			for_each_in_hashmap(((hashmap*)(node_p->data_p)), (void (*)(const void*, const void*))serialize_json_wrapper_hashmap, &state_result);
 			append_to_dstring(result, "}");
 			if(state_result.state != 0)
 			{

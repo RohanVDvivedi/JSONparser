@@ -3,10 +3,11 @@
 
 #include<stdio.h>
 #include<stdlib.h>
+#include<stddef.h>
 
 #include<dstring.h>
 #include<array.h>
-#include<generic_hashmap.h>
+#include<hashmap.h>
 
 #include<json_data_type.h>
 
@@ -22,10 +23,20 @@ struct json_node
 	// NUMBER		 	=> dstring ([-][0-9][.][0-9])
 	// STRING 			=> dstring (*)
 	// ARRAY 			=> array   (standard cutlery array of json_node*)
-	// OBJECT 			=> generic_hashmap (of json_node*(STRING mandatorily) vs json_node*)
+	// OBJECT 			=> hashmap (standard cutlery hashmap of json_node*(STRING mandatorily) vs json_node*)
 	
 	// ERROR 			=> dstring (*), used when the json data is unidentified
 	void* data_p;
+};
+
+typedef struct object_entry object_entry;
+struct object_entry
+{
+	json_node* key;
+	json_node* value;
+
+	// used for resolving collisions
+	llnode generic_hashmap_node;
 };
 
 // givens you a json_node with data_p as NULL 
