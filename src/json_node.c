@@ -148,7 +148,7 @@ void delete_json_node(json_node* jnode_p)
 			// delete the keys and the corresponding json_node of the hashmap
 			for_each_in_hashmap(((hashmap*)(jnode_p->data_p)), queue_all_object_entries_wrapper, &entries_to_delete);
 
-			while(isQueueEmpty(&entries_to_delete))
+			while(!isQueueEmpty(&entries_to_delete))
 			{
 				object_entry* entryp = (void*) get_top_queue(&entries_to_delete);
 				delete_json_node(entryp->key);
