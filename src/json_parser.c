@@ -1,6 +1,6 @@
 #include<json_parser.h>
 
-void start_reading(stack* state_stack, json_data_type data_type_to_expect)
+static void start_reading(stack* state_stack, json_data_type data_type_to_expect)
 {
 	// if we have been asked to read Value, we first pop the empty state
 	if(is_current_state_equals(state_stack, VALUE_TO_BE_READ) && data_type_to_expect != KEY)
@@ -28,7 +28,7 @@ enum operation_type
 	APPEND_ELEMENT_IN_ARRAY  = 0x10
 };
 
-void perform_composite_operation(stack* state_stack, operation_type optype)
+static void perform_composite_operation(stack* state_stack, operation_type optype)
 {
 	// only after reading valid data value, we can add it to an array or an object
 	if(is_current_state_equals(state_stack, READING_COMPLETE))
@@ -87,7 +87,7 @@ void perform_composite_operation(stack* state_stack, operation_type optype)
 	}
 }
 
-json_node* complete_array_object_reading(stack* state_stack, json_data_type data_type_to_expect)
+static json_node* complete_array_object_reading(stack* state_stack, json_data_type data_type_to_expect)
 {
 	// what should be the expected state, to complete the data type to be expected to be completing
 	parse_state expected_current_state = get_parser_state_for(data_type_to_expect);
@@ -113,7 +113,7 @@ json_node* complete_array_object_reading(stack* state_stack, json_data_type data
 	}
 }
 
-void complete_raw_data_reading(stack* state_stack)
+static void complete_raw_data_reading(stack* state_stack)
 {
 	// if it is a READING_RAW_DATA state, just push READING_COMPLETE, so notify that a valid value has been read
 	if(is_current_state_equals(state_stack, READING_RAW_DATA))
@@ -126,7 +126,7 @@ void complete_raw_data_reading(stack* state_stack)
 	}
 }
 
-void complete_string_or_key_reading(stack* state_stack)
+static void complete_string_or_key_reading(stack* state_stack)
 {
 	if(is_current_state_equals(state_stack, READING_STRING))
 	{
@@ -143,7 +143,7 @@ void complete_string_or_key_reading(stack* state_stack)
 	}
 }
 
-void append_character(stack* state_stack, char to_append)
+static void append_character(stack* state_stack, char to_append)
 {
 	if( is_current_state_equals(state_stack, READING_STRING)
 		|| is_current_state_equals(state_stack, READING_KEY)
