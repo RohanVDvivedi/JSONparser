@@ -20,8 +20,8 @@ struct state_desc
 	unsigned long long int elements_read;
 };
 
-// gets a new state stack for the given json string
-stack* get_state_stack(dstring* json_string);
+// initializes as a new state stack for the given json string
+void initialize_state_stack(stack* state_stack, dstring* json_string);
 
 // returns 1 if the current state of state stack equals the state as passed in the parameter
 int is_current_state_equals(stack* state_stack, parse_state state);
@@ -43,7 +43,6 @@ void push_state(stack* state_stack, parse_state state, json_node* reinstate_to_n
 // this can be used to reinstate the json_node pinter functionality, in the parser
 json_node* pop_state(stack* state_stack);
 
-// deletes all of the state stack, and all its elements freed and popped
-void delete_state_stack(stack* state_stack);
+void deinitialize_state_stack(stack* state_stack);
 
 #endif

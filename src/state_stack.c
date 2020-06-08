@@ -18,11 +18,9 @@ state_desc* get_new_state_desc(parse_state state, json_node* reinstate_to_node)
 	stack state object
 */
 
-stack* get_state_stack(dstring* json_string)
+void initialize_state_stack(stack* state_stack, dstring* json_string)
 {
-	stack* state_stack = malloc(sizeof(stack));
 	initialize_stack(state_stack, (json_string->bytes_occupied / 10) + 10);
-	return state_stack;
 }
 
 int is_current_state_equals(stack* state_stack, parse_state state)
@@ -69,7 +67,7 @@ json_node* pop_state(stack* state_stack)
 	return reinstate_to_node;
 }
 
-void delete_state_stack(stack* state_stack)
+void deinitialize_state_stack(stack* state_stack)
 {
 	// delete/pop 
 	while(state_stack->stack_size > 0)
@@ -77,5 +75,4 @@ void delete_state_stack(stack* state_stack)
 		pop_state(state_stack);
 	}
 	deinitialize_stack(state_stack);
-	free(state_stack);
 }

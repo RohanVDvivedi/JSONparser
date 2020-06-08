@@ -160,7 +160,9 @@ void append_character(stack* state_stack, char to_append)
 json_node* parse_json(dstring* json_string)
 {
 	// create a state stack
-	stack* state_stack = get_state_stack(json_string);
+	stack state_stack_val;
+	stack* state_stack = &state_stack_val;
+	initialize_state_stack(state_stack, json_string);
 
 	// build the iterator
 	char* inst = json_string->cstring;
@@ -290,7 +292,7 @@ json_node* parse_json(dstring* json_string)
 	}
 
 	// delete all the contents of the stack and the stack itself
-	delete_state_stack(state_stack);
+	deinitialize_state_stack(state_stack);
 
 	return return_node;
 }
