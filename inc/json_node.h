@@ -47,7 +47,7 @@ json_node* get_new_json_node();
 object_entry* get_new_object_entry(json_node* key, json_node* value);
 
 // initializes the given json_node
-void initialize_json_node(json_node* jnode_p, json_data_type type, unsigned long long int expected_size);
+void initialize_json_node(json_node* jnode_p, json_data_type type, unsigned int expected_size);
 
 // used to convert ERROR -> NULLE, BOOLE, NUMBER
 void identify_dstring_json_node(json_node* jnode_p);

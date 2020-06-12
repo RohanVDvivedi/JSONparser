@@ -2,7 +2,7 @@
 
 // this the hashing fucntion used in the hashmap to hash 
 // a json_node of string type in the json_node of type OBJECT
-static unsigned long long int key_hashing_function(const void* entryp)
+static unsigned int key_hashing_function(const void* entryp)
 {
 	return ((dstring*)(((object_entry*)entryp)->key->data_p))->bytes_occupied;
 }
@@ -30,7 +30,7 @@ object_entry* get_new_object_entry(json_node* key, json_node* value)
 	return entryp;
 }
 
-void initialize_json_node(json_node* jnode_p, json_data_type type, unsigned long long int expected_size)
+void initialize_json_node(json_node* jnode_p, json_data_type type, unsigned int expected_size)
 {
 	jnode_p->type = type;
 	switch(jnode_p->type)
@@ -104,7 +104,7 @@ void identify_dstring_json_node(json_node* jnode_p)
 	}
 }
 
-void delete_element(void* data_p, unsigned long long int index, const void* additional_params)
+void delete_element(void* data_p, unsigned int index, const void* additional_params)
 {
 	if(data_p != NULL)
 	{

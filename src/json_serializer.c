@@ -3,11 +3,11 @@
 typedef struct state_dstring state_dstring;
 struct state_dstring
 {
-	unsigned long long int state;
+	unsigned int state;
 	dstring* result;
 };
 
-static void serialize_json_wrapper_array(json_node* node_p, unsigned long long int index, state_dstring* state_result)
+static void serialize_json_wrapper_array(json_node* node_p, unsigned int index, state_dstring* state_result)
 {
 	if(state_result->state != -1 && node_p != NULL)
 	{
@@ -66,7 +66,7 @@ int serialize_json(dstring* result, const json_node* node_p)
 		{
 			append_to_dstring(result, "[");
 			state_dstring state_result = {.state = 0, .result = result};
-			for_each_in_array(((array*)(node_p->data_p)), (void (*)(void*, unsigned long long int, const void*))serialize_json_wrapper_array, &state_result);
+			for_each_in_array(((array*)(node_p->data_p)), (void (*)(void*, unsigned int, const void*))serialize_json_wrapper_array, &state_result);
 			append_to_dstring(result, "]");
 			if(state_result.state != 0)
 			{

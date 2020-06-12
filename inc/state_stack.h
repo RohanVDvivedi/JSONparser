@@ -17,7 +17,7 @@ struct state_desc
 
 	json_node* reinstate_to_node;
 
-	unsigned long long int elements_read;
+	unsigned int elements_read;
 };
 
 // initializes as a new state stack for the given json string
@@ -31,7 +31,7 @@ json_node* get_current_state_reinstate_node(stack* state_stack);
 
 // incremnts, the number of elements read when in current state, i.e. the state at the top of the stack
 // and returns the incremented value
-unsigned long long int increment_current_state_elements_read(stack* state_stack);
+unsigned int increment_current_state_elements_read(stack* state_stack);
 
 // pushes a new state to the given state stack
 // along with the state you also push the current parent json node that you are playing with

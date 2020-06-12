@@ -61,7 +61,7 @@ static void perform_composite_operation(stack* state_stack, operation_type optyp
 		else if( (optype & APPEND_ELEMENT_IN_ARRAY) && is_current_state_equals(state_stack, READING_ARRAY))
 		{
 			// increment the number of elements in the current state, either array or hashmap
-			unsigned long long int index = increment_current_state_elements_read(state_stack);
+			unsigned int index = increment_current_state_elements_read(state_stack);
 
 			array* array_p = ((array*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p));
 

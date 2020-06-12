@@ -35,7 +35,7 @@ json_node* get_current_state_reinstate_node(stack* state_stack)
 	return ((state_desc*)get_top_stack(state_stack))->reinstate_to_node;
 }
 
-unsigned long long int increment_current_state_elements_read(stack* state_stack)
+unsigned int increment_current_state_elements_read(stack* state_stack)
 {
 	return ((state_desc*)get_top_stack(state_stack))->elements_read++;
 }
