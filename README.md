@@ -14,3 +14,9 @@ for the block operator the parent remains same so "mainparent" : {"foam":"stud",
 here main parent has two child "foam" and "rude".
 
 The tree can be further used to extract data from the file in its format. It does not support null,true and false.
+
+setup instructions
+ * git clone https://github.com/RohanVDvivedi/JSONparser.git
+ * cd JSONparser
+ * sudo make clean install
+ * add "-ljsonpar" linker flag, while compiling your application
