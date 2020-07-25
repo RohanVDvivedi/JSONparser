@@ -20,7 +20,7 @@ BINARY:=${BIN_DIR}/jsonpar.out
 # compiler flags
 CFLAGS=-Wall -O3 -I${INC_DIR}
 # linker flags, this will used to compile the binary
-LFLAGS=-ljsonpar -lcutlery
+LFLAGS=-L${LIB_DIR} -ljsonpar -lcutlery
 
 # rule to make the object directory
 ${OBJ_DIR} :
