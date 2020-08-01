@@ -112,10 +112,13 @@ void delete_element(void* data_p, unsigned int index, const void* additional_par
 	}
 }
 
-static void queue_all_object_entries_wrapper(const void* entryp, const void* additional_params)
+static void delete_object_entry(const void* entryp, const void* additional_params)
 {
-	push_queue((queue*)additional_params, entryp);
+	delete_json_node(((object_entry*)entryp)->key);
+	delete_json_node(((object_entry*)entryp)->value);
+	free(((object_entry*)entryp));
 }
+
 
 void delete_json_node(json_node* jnode_p)
 {
@@ -142,23 +145,8 @@ void delete_json_node(json_node* jnode_p)
 		}
 		case OBJECT:
 		{
-			queue entries_to_delete;
-
-			initialize_queue(&entries_to_delete, ((hashmap*)(jnode_p->data_p))->occupancy);
-
 			// delete the keys and the corresponding json_node of the hashmap
-			for_each_in_hashmap(((hashmap*)(jnode_p->data_p)), queue_all_object_entries_wrapper, &entries_to_delete);
-
-			while(!isQueueEmpty(&entries_to_delete))
-			{
-				object_entry* entryp = (void*) get_top_queue(&entries_to_delete);
-				delete_json_node(entryp->key);
-				delete_json_node(entryp->value);
-				free(entryp);
-				pop_queue(&entries_to_delete);
-			}
-
-			deinitialize_queue(&entries_to_delete);
+			for_each_in_hashmap(((hashmap*)(jnode_p->data_p)), delete_object_entry, NULL);
 
 			// delete the hash map itself
 			deinitialize_hashmap(jnode_p->data_p);
