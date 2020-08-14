@@ -1,5 +1,12 @@
 #include<json_parser.h>
 
+#include<hashmap.h>
+
+#include<state_stack.h>
+#include<parserstate_jsontype.h>
+
+#include<stdio.h>
+
 static void start_reading(stack* state_stack, json_data_type data_type_to_expect)
 {
 	// if we have been asked to read Value, we first pop the empty state

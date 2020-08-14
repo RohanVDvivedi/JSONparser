@@ -1,5 +1,8 @@
 #include<state_stack.h>
 
+#include<stdio.h>
+#include<stdlib.h>
+
 /*
 	stack state object
 */

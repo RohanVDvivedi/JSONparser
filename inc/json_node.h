@@ -1,14 +1,7 @@
 #ifndef JSON_NODE_H
 #define JSON_NODE_H
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<stddef.h>
-
-#include<dstring.h>
-#include<array.h>
-#include<hashmap.h>
-#include<queue.h>
+#include<linkedlist.h>
 
 #include<json_data_type.h>
 

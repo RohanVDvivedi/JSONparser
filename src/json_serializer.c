@@ -1,5 +1,10 @@
 #include<json_serializer.h>
 
+#include<stdio.h>
+
+#include<array.h>
+#include<hashmap.h>
+
 typedef struct state_dstring state_dstring;
 struct state_dstring
 {

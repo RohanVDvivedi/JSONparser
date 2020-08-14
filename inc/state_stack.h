@@ -1,9 +1,6 @@
 #ifndef STATE_STACK_H
 #define STATE_STACK_H
 
-#include<stdio.h>
-#include<stdlib.h>
-
 #include<dstring.h>
 #include<stack.h>
 

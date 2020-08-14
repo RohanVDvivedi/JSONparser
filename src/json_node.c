@@ -1,5 +1,14 @@
 #include<json_node.h>
 
+#include<dstring.h>
+#include<array.h>
+#include<hashmap.h>
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<stddef.h>
+#include<string.h>
+
 // this the hashing fucntion used in the hashmap to hash 
 // a json_node of string type in the json_node of type OBJECT
 static unsigned int key_hashing_function(const void* entryp)
