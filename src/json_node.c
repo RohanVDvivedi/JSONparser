@@ -60,7 +60,8 @@ void initialize_json_node(json_node* jnode_p, json_data_type type, unsigned int 
 		}
 		case ARRAY:
 		{
-			jnode_p->data_p = get_array(expected_size);
+			jnode_p->data_p = malloc(sizeof(array));
+			initialize_array(jnode_p->data_p, expected_size);
 			break;
 		}
 		case OBJECT:
@@ -149,7 +150,8 @@ void delete_json_node(json_node* jnode_p)
 			for_each_in_array(jnode_p->data_p, delete_element, NULL);
 
 			// delete the array itself
-			delete_array(jnode_p->data_p);
+			deinitialize_array(jnode_p->data_p);
+			free(jnode_p->data_p);
 			break;
 		}
 		case OBJECT:
@@ -159,7 +161,6 @@ void delete_json_node(json_node* jnode_p)
 
 			// delete the hash map itself
 			deinitialize_hashmap(jnode_p->data_p);
-
 			free(jnode_p->data_p);
 			break;
 		}
