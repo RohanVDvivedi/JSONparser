@@ -80,12 +80,12 @@ void identify_dstring_json_node(json_node* jnode_p)
 		static char* nulle       = "null";
 		static char* boole_true  = "true";
 		static char* boole_false = "false";
-		if(strcmp(((dstring*)(jnode_p->data_p))->cstring, nulle) == 0)
+		if(compare_dstring_cstring(((dstring*)(jnode_p->data_p)), nulle) == 0)
 		{
 			jnode_p->type = NULLE;
 		}
-		else if(strcmp(((dstring*)(jnode_p->data_p))->cstring, boole_true) == 0
-		|| strcmp(((dstring*)(jnode_p->data_p))->cstring, boole_false) == 0)
+		else if(compare_dstring_cstring(((dstring*)(jnode_p->data_p)), boole_true) == 0
+		|| compare_dstring_cstring(((dstring*)(jnode_p->data_p)), boole_false) == 0)
 		{
 			jnode_p->type = BOOLE;
 		}
