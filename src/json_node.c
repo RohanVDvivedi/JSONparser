@@ -48,14 +48,14 @@ void initialize_json_node(json_node* jnode_p, json_data_type type, unsigned int 
 		case NULLE:
 		case BOOLE:
 		{
-			jnode_p->data_p = get_dstring("", 10);
+			jnode_p->data_p = get_dstring_data(NULL, 0);
 			break;
 		}
 		case KEY:
 		case NUMBER:
 		case STRING:
 		{
-			jnode_p->data_p = get_dstring("", expected_size);
+			jnode_p->data_p = get_dstring_data(NULL, 0);
 			break;
 		}
 		case ARRAY:
@@ -191,6 +191,8 @@ void print_json_node(json_node* jnodep)
 	}
 	else
 	{
-		printf("(%d)<%s>", jnodep->type, ((dstring*)(jnodep->data_p))->cstring);
+		printf("(%d)<", jnodep->type);
+		display_dstring(((dstring*)(jnodep->data_p)));
+		printf(">");
 	}
 }

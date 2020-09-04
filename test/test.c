@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include<string.h>
 
 #include<json_parser.h>
 #include<json_serializer.h>
@@ -7,8 +8,7 @@ int main()
 {
 	printf("json string building start\n\n");
 
-	dstring* json_str = get_dstring("\
-	{ \
+	char* json_cstr = "{ \
 		\"name\" : \"Rohan\", \
 		\"age\" : 23, \
 		\"smart\" : true, \
@@ -20,10 +20,13 @@ int main()
 		\"IQ\" : 196, \
 		\"coder\" : true, \
 		\"is dependent\" : false \
-	} \
-	", 10);
+	}";
 
-	printf("String built : %s\n\n", json_str->cstring);
+	dstring* json_str = get_dstring_data(json_cstr, strlen(json_cstr));
+
+	printf("String built : ");
+	display_dstring(json_str);
+	printf("\n\n");
 
 	json_node* jnodep = parse_json(json_str);
 
@@ -33,7 +36,7 @@ int main()
 
 	printf("Printing done\n\n");
 
-	dstring* result = get_dstring("", 10);
+	dstring* result = get_dstring_data(NULL, 0);
 	serialize_json(result, jnodep);
 	printf("json string : <");
 	display_dstring(result);
