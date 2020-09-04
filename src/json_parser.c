@@ -176,7 +176,7 @@ json_node* parse_json(dstring* json_string)
 
 	json_node* return_node = NULL;
 
-	while((*inst) != '\0')
+	while(inst < json_string->cstring + json_string->bytes_occupied)
 	{
 		switch(*inst)
 		{

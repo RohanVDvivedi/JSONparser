@@ -92,10 +92,12 @@ void identify_dstring_json_node(json_node* jnode_p)
 		else
 		{
 			jnode_p->type = NUMBER;
-			char* cstr_iter = ((dstring*)(jnode_p->data_p))->cstring;
+			char* cstr = ((dstring*)(jnode_p->data_p))->cstring;
+			unsigned int cstr_size = ((dstring*)(jnode_p->data_p))->bytes_occupied;
+			char* cstr_iter = cstr;
 			int first_char = 1;
 			int seen_decimal = 0;
-			while(*cstr_iter != '\0')
+			for(char* cstr_iter = cstr; cstr_iter < cstr + cstr_size;  cstr_iter++;)
 			{
 				if(seen_decimal == 0 && *cstr_iter == '.')
 				{
@@ -108,7 +110,6 @@ void identify_dstring_json_node(json_node* jnode_p)
 					break;
 				}
 				first_char = 0;
-				cstr_iter++;
 			}
 		}
 	}
