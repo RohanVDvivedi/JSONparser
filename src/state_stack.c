@@ -21,7 +21,7 @@ state_desc* get_new_state_desc(parse_state state, json_node* reinstate_to_node)
 	stack state object
 */
 
-void initialize_state_stack(stack* state_stack, dstring* json_string)
+void initialize_state_stack(stack* state_stack, const dstring* json_string)
 {
 	initialize_stack(state_stack, (json_string->bytes_occupied / 10) + 10);
 }

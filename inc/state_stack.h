@@ -18,7 +18,7 @@ struct state_desc
 };
 
 // initializes as a new state stack for the given json string
-void initialize_state_stack(stack* state_stack, dstring* json_string);
+void initialize_state_stack(stack* state_stack, const dstring* json_string);
 
 // returns 1 if the current state of state stack equals the state as passed in the parameter
 int is_current_state_equals(stack* state_stack, parse_state state);

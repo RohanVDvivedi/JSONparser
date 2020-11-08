@@ -161,7 +161,7 @@ static void append_character(stack* state_stack, char to_append)
 	}
 }
 
-json_node* parse_json(dstring* json_string)
+json_node* parse_json(const dstring* json_string)
 {
 	// create a state stack
 	stack state_stack_val;
