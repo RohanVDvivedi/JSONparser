@@ -79,15 +79,12 @@ void identify_dstring_json_node(json_node* jnode_p)
 {
 	if(jnode_p->type == ERROR)
 	{
-		static dstring const * const nulle       = dstring_DUMMY_CSTRING("null");
-		static dstring const * const boole_true  = dstring_DUMMY_CSTRING("true");
-		static dstring const * const boole_false = dstring_DUMMY_CSTRING("false");
-		if(compare_dstring(((dstring*)(jnode_p->data_p)), nulle) == 0)
+		if(compare_dstring(((dstring*)(jnode_p->data_p)), dstring_DUMMY_CSTRING("null")) == 0)
 		{
 			jnode_p->type = NULLE;
 		}
-		else if(compare_dstring(((dstring*)(jnode_p->data_p)), boole_true) == 0
-		|| compare_dstring(((dstring*)(jnode_p->data_p)), boole_false) == 0)
+		else if(compare_dstring(((dstring*)(jnode_p->data_p)), dstring_DUMMY_CSTRING("true")) == 0
+		|| compare_dstring(((dstring*)(jnode_p->data_p)), dstring_DUMMY_CSTRING("false")) == 0)
 		{
 			jnode_p->type = BOOLE;
 		}
