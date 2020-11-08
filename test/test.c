@@ -8,7 +8,7 @@ int main()
 {
 	printf("json string building start\n\n");
 
-	char* json_cstr = "{ \
+	dstring const * const json_str = dstring_DUMMY_CSTRING("{ \
 		\"name\" : \"Rohan\", \
 		\"age\" : 23, \
 		\"smart\" : true, \
@@ -20,12 +20,10 @@ int main()
 		\"IQ\" : 196, \
 		\"coder\" : true, \
 		\"is dependent\" : false \
-	}";
-
-	dstring* json_str = get_dstring_data(json_cstr, strlen(json_cstr));
+	}");
 
 	printf("String built : ");
-	display_dstring(json_str);
+	printf_dstring(json_str);
 	printf("\n\n");
 
 	json_node* jnodep = parse_json(json_str);
@@ -36,12 +34,12 @@ int main()
 
 	printf("Printing done\n\n");
 
-	dstring* result = get_dstring_data(NULL, 0);
-	serialize_json(result, jnodep);
+	dstring result;init_dstring(&result, NULL, 0);
+	serialize_json(&result, jnodep);
 	printf("json string : <");
-	display_dstring(result);
+	printf_dstring(&result);
 	printf(">\n");
-	delete_dstring(result);
+	deinit_dstring(&result);
 
 	printf("serializing done\n\n");
 
@@ -51,8 +49,6 @@ int main()
 
 		printf("Json node deleted\n\n");
 	}
-
-	delete_dstring(json_str);
 
 	printf("deletion of dstring\n\n");
 	return 0;
