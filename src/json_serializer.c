@@ -18,7 +18,7 @@ static void serialize_json_wrapper_array(json_node* node_p, unsigned int index, 
 	{
 		if(index != 0)
 		{
-			append_to_dstring(state_result->result, ",");
+			concatenate_dstring(state_result->result, dstring_DUMMY_CSTRING(","));
 		}
 		state_result->state = serialize_json(state_result->result, node_p);
 	}
@@ -32,11 +32,11 @@ static void serialize_json_wrapper_hashmap(const object_entry* entryp, state_dst
 	{
 		if(state_result->state != 0)
 		{
-			append_to_dstring(state_result->result, ",");
+			concatenate_dstring(state_result->result, dstring_DUMMY_CSTRING(","));
 		}
 		int res1 = 0;
 		res1 = serialize_json(state_result->result, key_node_p);
-		append_to_dstring(state_result->result, ":");
+		concatenate_dstring(state_result->result, dstring_DUMMY_CSTRING(":"));
 		if(res1 != -1)
 		{
 			res1 = serialize_json(state_result->result, value_node_p);
@@ -62,17 +62,17 @@ int serialize_json(dstring* result, const json_node* node_p)
 		case KEY :
 		case STRING :
 		{
-			append_to_dstring(result, "\"");
+			concatenate_dstring(result, dstring_DUMMY_CSTRING("\""));
 			concatenate_dstring(result, ((dstring*)(node_p->data_p)));
-			append_to_dstring(result, "\"");
+			concatenate_dstring(result, dstring_DUMMY_CSTRING("\""));
 			break;
 		}
 		case ARRAY :
 		{
-			append_to_dstring(result, "[");
+			concatenate_dstring(result, dstring_DUMMY_CSTRING("["));
 			state_dstring state_result = {.state = 0, .result = result};
 			for_each_in_array(((array*)(node_p->data_p)), (void (*)(void*, unsigned int, const void*))serialize_json_wrapper_array, &state_result);
-			append_to_dstring(result, "]");
+			concatenate_dstring(result, dstring_DUMMY_CSTRING("]"));
 			if(state_result.state != 0)
 			{
 				return -1;
@@ -81,10 +81,10 @@ int serialize_json(dstring* result, const json_node* node_p)
 		}
 		case OBJECT :
 		{
-			append_to_dstring(result, "{");
+			concatenate_dstring(result, dstring_DUMMY_CSTRING("{"));
 			state_dstring state_result = {.state = 0, .result = result};
 			for_each_in_hashmap(((hashmap*)(node_p->data_p)), (void (*)(const void*, const void*))serialize_json_wrapper_hashmap, &state_result);
-			append_to_dstring(result, "}");
+			concatenate_dstring(result, dstring_DUMMY_CSTRING("}"));
 			if(state_result.state != 0)
 			{
 				return -1;

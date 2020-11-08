@@ -156,11 +156,8 @@ static void append_character(stack* state_stack, char to_append)
 		|| is_current_state_equals(state_stack, READING_KEY)
 		|| is_current_state_equals(state_stack, READING_RAW_DATA) )
 	{
-		// make a string from the character
-		char temp_cstring[2] = "Z"; temp_cstring[0] = to_append;
-
 		// and append it to the dstring
-		append_to_dstring((dstring*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p), temp_cstring);
+		concatenate_dstring((dstring*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p), dstring_DUMMY_DATA(&to_append, 1));
 	}
 }
 

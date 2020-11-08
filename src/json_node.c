@@ -48,14 +48,16 @@ void initialize_json_node(json_node* jnode_p, json_data_type type, unsigned int 
 		case NULLE:
 		case BOOLE:
 		{
-			jnode_p->data_p = get_dstring_data(NULL, 0);
+			jnode_p->data_p = malloc(sizeof(dstring));
+			init_dstring(jnode_p->data_p, NULL, 0);
 			break;
 		}
 		case KEY:
 		case NUMBER:
 		case STRING:
 		{
-			jnode_p->data_p = get_dstring_data(NULL, 0);
+			jnode_p->data_p = malloc(sizeof(dstring));
+			init_dstring(jnode_p->data_p, NULL, 0);
 			break;
 		}
 		case ARRAY:
@@ -77,15 +79,15 @@ void identify_dstring_json_node(json_node* jnode_p)
 {
 	if(jnode_p->type == ERROR)
 	{
-		static char* nulle       = "null";
-		static char* boole_true  = "true";
-		static char* boole_false = "false";
-		if(compare_dstring_cstring(((dstring*)(jnode_p->data_p)), nulle) == 0)
+		static dstring const * const nulle       = dstring_DUMMY_CSTRING("null");
+		static dstring const * const boole_true  = dstring_DUMMY_CSTRING("true");
+		static dstring const * const boole_false = dstring_DUMMY_CSTRING("false");
+		if(compare_dstring(((dstring*)(jnode_p->data_p)), nulle) == 0)
 		{
 			jnode_p->type = NULLE;
 		}
-		else if(compare_dstring_cstring(((dstring*)(jnode_p->data_p)), boole_true) == 0
-		|| compare_dstring_cstring(((dstring*)(jnode_p->data_p)), boole_false) == 0)
+		else if(compare_dstring(((dstring*)(jnode_p->data_p)), boole_true) == 0
+		|| compare_dstring(((dstring*)(jnode_p->data_p)), boole_false) == 0)
 		{
 			jnode_p->type = BOOLE;
 		}
@@ -141,7 +143,8 @@ void delete_json_node(json_node* jnode_p)
 		case KEY:
 		case STRING:
 		{
-			delete_dstring(jnode_p->data_p);
+			deinit_dstring(jnode_p->data_p);
+			free(jnode_p->data_p);
 			break;
 		}
 		case ARRAY:
@@ -192,7 +195,7 @@ void print_json_node(json_node* jnodep)
 	else
 	{
 		printf("(%d)<", jnodep->type);
-		display_dstring(((dstring*)(jnodep->data_p)));
+		printf_dstring(((dstring*)(jnodep->data_p)));
 		printf(">");
 	}
 }
