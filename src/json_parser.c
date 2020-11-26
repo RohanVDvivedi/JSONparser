@@ -101,7 +101,7 @@ static json_node* complete_array_object_reading(stack* state_stack, json_data_ty
 
 	if(is_current_state_equals(state_stack, expected_current_state))
 	{
-		if(state_stack->stack_size > 1)
+		if(get_element_count_stack(state_stack) > 1)
 		{
 			// push a state mentioning that the reading is complete for the current json array or object
 			push_state(state_stack, READING_COMPLETE, NULL);

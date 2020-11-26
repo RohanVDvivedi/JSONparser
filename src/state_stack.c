@@ -29,7 +29,8 @@ void initialize_state_stack(stack* state_stack, const dstring* json_string)
 int is_current_state_equals(stack* state_stack, parse_state state)
 {
 	// return state of the state_desc that is on top of the stack
-	return state_stack->stack_size > 0 ? ((state_desc*)get_top_stack(state_stack))->state == state : 0;
+	state_desc* top_state_desc = (state_desc*)get_top_stack(state_stack);
+	return (top_state_desc != NULL) && (top_state_desc->state == state);
 }
 
 json_node* get_current_state_reinstate_node(stack* state_stack)
@@ -49,6 +50,8 @@ void push_state(stack* state_stack, parse_state state, json_node* reinstate_to_n
 	state_desc* new_state_desc = get_new_state_desc(state, reinstate_to_node);
 
 	// push it on
+	if(is_full_stack(state_stack))
+		expand_stack(state_stack);
 	push_stack(state_stack, new_state_desc);
 }
 
@@ -65,6 +68,8 @@ json_node* pop_state(stack* state_stack)
 
 	// pop the freed element from the stack
 	pop_stack(state_stack);
+	if(get_total_size_stack(state_stack) > (3 * get_element_count_stack(state_stack)))
+		shrink_stack(state_stack);
 
 	// return the json node pointer so that it can be used to fetch other elements
 	return reinstate_to_node;
@@ -72,10 +77,5 @@ json_node* pop_state(stack* state_stack)
 
 void deinitialize_state_stack(stack* state_stack)
 {
-	// delete/pop 
-	while(state_stack->stack_size > 0)
-	{
-		pop_state(state_stack);
-	}
 	deinitialize_stack(state_stack);
 }
