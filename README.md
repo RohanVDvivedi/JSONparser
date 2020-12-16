@@ -2,6 +2,8 @@
 A C library to build parse tree for JSON grammar.
 
 ## Setup instructions
+**Install dependencies :**
+ * [Cutlery](https://github.com/RohanVDvivedi/Cutlery)
 
 **Download source code :**
  * `git clone https://github.com/RohanVDvivedi/JSONparser.git`
