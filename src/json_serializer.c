@@ -16,10 +16,10 @@ static void serialize_json_wrapper_array(json_node* node_p, unsigned int index, 
 {
 	if(state_result->state != -1 && node_p != NULL)
 	{
+		// not the first entry, hence the comma
 		if(index != 0)
-		{
 			concatenate_dstring(state_result->result, dstring_DUMMY_CSTRING(","));
-		}
+
 		state_result->state = serialize_json(state_result->result, node_p);
 	}
 }
@@ -30,21 +30,20 @@ static void serialize_json_wrapper_hashmap(const object_entry* entryp, state_dst
 	const json_node* value_node_p = entryp->value;
 	if(state_result->state != -1)
 	{
+		// not the first entry, hence the comma 
 		if(state_result->state != 0)
-		{
 			concatenate_dstring(state_result->result, dstring_DUMMY_CSTRING(","));
-		}
-		int res1 = 0;
-		res1 = serialize_json(state_result->result, key_node_p);
-		concatenate_dstring(state_result->result, dstring_DUMMY_CSTRING(":"));
+
+		// serialize the entry
+		int res1 = serialize_json(state_result->result, key_node_p);
 		if(res1 != -1)
 		{
+			concatenate_dstring(state_result->result, dstring_DUMMY_CSTRING(":"));
 			res1 = serialize_json(state_result->result, value_node_p);
 		}
+
 		if(res1 != -1)
-		{
 			state_result->state++;
-		}
 	}
 }
 

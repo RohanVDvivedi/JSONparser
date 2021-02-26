@@ -113,12 +113,9 @@ void identify_dstring_json_node(json_node* jnode_p)
 	}
 }
 
-void delete_element(void* data_p, unsigned int index, const void* additional_params)
+static void delete_element(void* data_p, unsigned int index, const void* additional_params)
 {
-	if(data_p != NULL)
-	{
-		delete_json_node(((json_node*)(data_p)));
-	}
+	delete_json_node(((json_node*)(data_p)));
 }
 
 static void delete_object_entry(const void* entryp, const void* additional_params)
@@ -147,7 +144,7 @@ void delete_json_node(json_node* jnode_p)
 		case ARRAY:
 		{
 			// delete the contents of the array, each of which is a json_node
-			for_each_in_array(jnode_p->data_p, delete_element, NULL);
+			for_each_non_null_in_array(jnode_p->data_p, delete_element, NULL);
 
 			// delete the array itself
 			deinitialize_array(jnode_p->data_p);

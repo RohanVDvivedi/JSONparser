@@ -7,6 +7,8 @@
 
 #include<stdio.h>
 
+#define DEFAULT_JSON_CONTAINER_SIZE 4
+
 static void start_reading(stack* state_stack, json_data_type data_type_to_expect)
 {
 	// if we have been asked to read Value, we first pop the empty state
@@ -25,7 +27,7 @@ static void start_reading(stack* state_stack, json_data_type data_type_to_expect
 	push_state(state_stack, reading_state, get_new_json_node());
 
 	// initialize it to expected data type
-	initialize_json_node(get_current_state_reinstate_node(state_stack), data_type_to_expect, 4);
+	initialize_json_node(get_current_state_reinstate_node(state_stack), data_type_to_expect, DEFAULT_JSON_CONTAINER_SIZE);
 }
 
 typedef enum operation_type operation_type;
@@ -56,7 +58,9 @@ static void perform_composite_operation(stack* state_stack, operation_type optyp
 
 				hashmap* hashmap_p = ((hashmap*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p));
 
-				// insert entry in the hashmap
+				// insert entry in the hashmap, expand if necessary
+				if(get_bucket_count_hashmap(hashmap_p) < (1.5 * get_element_count_hashmap(hashmap_p)))
+					expand_hashmap(hashmap_p, 1.5);
 				insert_in_hashmap(hashmap_p, get_new_object_entry(key, value));
 			}
 			else
@@ -72,13 +76,9 @@ static void perform_composite_operation(stack* state_stack, operation_type optyp
 
 			array* array_p = ((array*)(((json_node*)get_current_state_reinstate_node(state_stack))->data_p));
 
-			// if that array is full we need to expand it
+			// insert element in the array, expand if necessary
 			if(index == array_p->total_size)
-			{
 				expand_array(array_p);
-			}
-
-			// create a new array element and save it in array
 			set_element(array_p, value, index);
 		}
 		else
