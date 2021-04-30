@@ -165,31 +165,42 @@ void delete_json_node(json_node* jnode_p)
 	free(jnode_p);
 }
 
-static void print_object_entry(const void* entryp)
+static void sprint_json_node(dstring* append_str, const json_node* jnodep);
+
+static void sprint_object_entry(dstring* append_str, const void* entryp)
 {
-	print_json_node(((object_entry*)entryp)->key);
-	print_json_node(((object_entry*)entryp)->value);
+	sprint_json_node(append_str, ((object_entry*)entryp)->key);
+	sprint_json_node(append_str, ((object_entry*)entryp)->value);
 }
 
-void print_json_node(json_node* jnodep)
+static void sprint_json_node(dstring* append_str, const json_node* jnodep)
 {
 	if(jnodep == NULL)
 	{
-		printf("NODE IS NULL\n");
+		snprintf_dstring(append_str, "NODE IS NULL\n");
 		return;
 	}
 	else if(jnodep->type == ARRAY)
 	{
-		print_array(((array*)(jnodep->data_p)), ((void (*)(const void* value))(print_json_node)));
+		sprint_array(append_str, ((array*)(jnodep->data_p)), (void(*)(dstring*,const void*))sprint_json_node, 0);
 	}
 	else if(jnodep->type == OBJECT)
 	{
-		print_hashmap(((hashmap*)(jnodep->data_p)), print_object_entry);
+		sprint_hashmap(append_str, ((hashmap*)(jnodep->data_p)), sprint_object_entry, 0);
 	}
 	else
 	{
-		printf("(%d)<", jnodep->type);
-		printf_dstring(((dstring*)(jnodep->data_p)));
-		printf(">");
+		snprintf_dstring(append_str, "(%d)<", jnodep->type);
+		concatenate_dstring(append_str, ((dstring*)(jnodep->data_p)));
+		snprintf_dstring(append_str, ">");
 	}
+}
+
+void print_json_node(const json_node* jnodep)
+{
+	dstring str;
+	init_dstring(&str, NULL, 0);
+	sprint_json_node(&str, jnodep);
+	printf_dstring(&str);
+	deinit_dstring(&str);
 }
