@@ -165,15 +165,15 @@ void delete_json_node(json_node* jnode_p)
 	free(jnode_p);
 }
 
-static void sprint_json_node(dstring* append_str, const json_node* jnodep);
+static void sprint_json_node(dstring* append_str, const json_node* jnodep, unsigned int tabs);
 
-static void sprint_object_entry(dstring* append_str, const void* entryp)
+static void sprint_object_entry(dstring* append_str, const void* entryp, unsigned int tabs)
 {
-	sprint_json_node(append_str, ((object_entry*)entryp)->key);
-	sprint_json_node(append_str, ((object_entry*)entryp)->value);
+	sprint_json_node(append_str, ((object_entry*)entryp)->key, tabs);
+	sprint_json_node(append_str, ((object_entry*)entryp)->value, 0);
 }
 
-static void sprint_json_node(dstring* append_str, const json_node* jnodep)
+static void sprint_json_node(dstring* append_str, const json_node* jnodep, unsigned int tabs)
 {
 	if(jnodep == NULL)
 	{
@@ -182,14 +182,15 @@ static void sprint_json_node(dstring* append_str, const json_node* jnodep)
 	}
 	else if(jnodep->type == ARRAY)
 	{
-		sprint_array(append_str, ((array*)(jnodep->data_p)), (void(*)(dstring*,const void*))sprint_json_node, 0);
+		sprint_array(append_str, ((array*)(jnodep->data_p)), (void(*)(dstring*,const void*, unsigned int))sprint_json_node, tabs);
 	}
 	else if(jnodep->type == OBJECT)
 	{
-		sprint_hashmap(append_str, ((hashmap*)(jnodep->data_p)), sprint_object_entry, 0);
+		sprint_hashmap(append_str, ((hashmap*)(jnodep->data_p)), sprint_object_entry, tabs);
 	}
 	else
 	{
+		sprint_chars(append_str, '\t', tabs);
 		snprintf_dstring(append_str, "(%d)<", jnodep->type);
 		concatenate_dstring(append_str, ((dstring*)(jnodep->data_p)));
 		snprintf_dstring(append_str, ">");
@@ -200,7 +201,7 @@ void print_json_node(const json_node* jnodep)
 {
 	dstring str;
 	init_dstring(&str, NULL, 0);
-	sprint_json_node(&str, jnodep);
+	sprint_json_node(&str, jnodep, 0);
 	printf_dstring(&str);
 	deinit_dstring(&str);
 }
