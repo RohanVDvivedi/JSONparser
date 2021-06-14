@@ -1,0 +1,5 @@
+ * re-write the parser as a top-down recursive descent parser
+   * define grammar in the comments
+   * write simple lexer
+   * write recursive descent parser
+   * json_node struct and the api of parser and serializer remains the same
