@@ -4,7 +4,7 @@
 
 #include<array.h>
 #include<hashmap.h>
-
+/*
 typedef struct state_dstring state_dstring;
 struct state_dstring
 {
@@ -96,4 +96,4 @@ int serialize_json(dstring* result, const json_node* node_p)
 		}
 	}
 	return 0;
-}
+}*/
