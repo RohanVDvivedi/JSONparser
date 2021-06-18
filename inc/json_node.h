@@ -12,8 +12,8 @@ enum json_data_type
 	NUMBER,		// dstring  ([-][0-9]*[.][0-9]*)
 	STRING,		// dstring  (*)
 	
-	ARRAY,		// array   (a dynamic array of json_node*)
-	OBJECT		// hashmap (hashmap of unique dstring vs json_node*)
+	ARRAY,		// array   (a dynamic array of json_node*, a null value represents a null of json)
+	OBJECT		// hashmap of object_attribute (hashmap of unique dstring vs json_node*, a null value represents a null of json)
 };
 
 typedef struct json_node json_node;
