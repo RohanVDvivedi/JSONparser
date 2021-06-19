@@ -1,14 +1,15 @@
 #ifndef JSON_NODE_H
 #define JSON_NODE_H
 
-#include<hashmap.h>
-#include<array.h>
+#include<stdbool.h>
 #include<dstring.h>
+#include<array.h>
+#include<hashmap.h>
 
 typedef enum json_data_type json_data_type;
 enum json_data_type
 {
-	BOOLEAN,	// int  (true = 1, false = 0)
+	BOOLEAN,	// bool as in stdbool.h
 	NUMBER,		// dstring  ([-][0-9]*[.][0-9]*)
 	STRING,		// dstring  (*)
 	
@@ -22,14 +23,14 @@ struct json_node
 	// type of node
 	json_data_type type;
 
-	// BOOLEAN			=> int
+	// BOOLEAN			=> bool
 	// NUMBER, STRING 	=> dstring
 	// ARRAY 			=> array
 	// OBJECT 			=> hashmap
 	
 	union
 	{
-		int boolean;
+		bool boolean;
 		dstring value;
 		array array;
 		hashmap object;
