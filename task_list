@@ -1,7 +1,3 @@
- * reestablish json_node containing a union of data types dstring, hashmap, array
- * hashmap inside json_node being dstring vs json_node*
- * build global dstrings for NULL, TRUE and FALSE
- * rewrite serializer for the new json_node
  * build json_token_type enum
  * re-write the parser as a top-down recursive descent parser
    * define grammar in the comments
