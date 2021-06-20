@@ -2,98 +2,74 @@
 
 #include<stdio.h>
 
-#include<array.h>
-#include<hashmap.h>
-/*
+static void serialize_json_wrapper_array(json_node* node_p, unsigned int index, dstring* result)
+{
+	// not the first entry, hence the comma
+	if(index != 0)
+		snprintf_dstring(result, ",");
+
+	serialize_json(result, node_p);
+}
+
 typedef struct state_dstring state_dstring;
 struct state_dstring
 {
-	unsigned int state;
+	unsigned int iteration;
 	dstring* result;
 };
 
-static void serialize_json_wrapper_array(json_node* node_p, unsigned int index, state_dstring* state_result)
+static void serialize_json_wrapper_hashmap(const object_attribute* attr, state_dstring* state_result)
 {
-	if(state_result->state != -1 && node_p != NULL)
-	{
-		// not the first entry, hence the comma
-		if(index != 0)
-			concatenate_dstring(state_result->result, dstring_DUMMY_CSTRING(","));
+	// not the first entry, hence the comma 
+	if(state_result->iteration != 0)
+		snprintf_dstring(state_result->result, ",");
 
-		state_result->state = serialize_json(state_result->result, node_p);
-	}
+	// serialize the entry
+	snprintf_dstring(state_result->result, "\"%.*s\"", attr->key.bytes_occupied, attr->key.cstring);
+	snprintf_dstring(state_result->result, ":");
+	serialize_json(state_result->result, attr->value);
+
+	state_result->iteration++;
 }
 
-static void serialize_json_wrapper_hashmap(const object_entry* entryp, state_dstring* state_result)
+void serialize_json(dstring* result, const json_node* node_p)
 {
-	const json_node* key_node_p = entryp->key;
-	const json_node* value_node_p = entryp->value;
-	if(state_result->state != -1)
+	if(node_p == NULL)
 	{
-		// not the first entry, hence the comma 
-		if(state_result->state != 0)
-			concatenate_dstring(state_result->result, dstring_DUMMY_CSTRING(","));
-
-		// serialize the entry
-		int res1 = serialize_json(state_result->result, key_node_p);
-		if(res1 != -1)
-		{
-			concatenate_dstring(state_result->result, dstring_DUMMY_CSTRING(":"));
-			res1 = serialize_json(state_result->result, value_node_p);
-		}
-
-		if(res1 != -1)
-			state_result->state++;
+		snprintf_dstring(result, "null");
+		return;
 	}
-}
-
-int serialize_json(dstring* result, const json_node* node_p)
-{
 	switch(node_p->type)
 	{
-		case NULLE :
-		case BOOLE :
-		case NUMBER :
+		case BOOLEAN :
 		{
-			concatenate_dstring(result, ((dstring*)(node_p->data_p)));
+			snprintf_dstring(result, "%s", node_p->boolean ? "true" : "false");
 			break;
 		}
-		case KEY :
+		case NUMBER :
+		{
+			concatenate_dstring(result, &(node_p->value));
+			break;
+		}
 		case STRING :
 		{
-			concatenate_dstring(result, dstring_DUMMY_CSTRING("\""));
-			concatenate_dstring(result, ((dstring*)(node_p->data_p)));
-			concatenate_dstring(result, dstring_DUMMY_CSTRING("\""));
+			snprintf_dstring(result, "\"%.*s\"", node_p->value.bytes_occupied, node_p->value.cstring);
 			break;
 		}
 		case ARRAY :
 		{
-			concatenate_dstring(result, dstring_DUMMY_CSTRING("["));
-			state_dstring state_result = {.state = 0, .result = result};
-			for_each_in_array(((array*)(node_p->data_p)), (void (*)(void*, unsigned int, const void*))serialize_json_wrapper_array, &state_result);
-			concatenate_dstring(result, dstring_DUMMY_CSTRING("]"));
-			if(state_result.state != 0)
-			{
-				return -1;
-			}
+			snprintf_dstring(result, "[");
+			for_each_in_array(&(node_p->array), (void (*)(void*, unsigned int, const void*))serialize_json_wrapper_array, result);
+			snprintf_dstring(result, "]");
 			break;
 		}
 		case OBJECT :
 		{
-			concatenate_dstring(result, dstring_DUMMY_CSTRING("{"));
-			state_dstring state_result = {.state = 0, .result = result};
-			for_each_in_hashmap(((hashmap*)(node_p->data_p)), (void (*)(const void*, const void*))serialize_json_wrapper_hashmap, &state_result);
-			concatenate_dstring(result, dstring_DUMMY_CSTRING("}"));
-			if(state_result.state != 0)
-			{
-				return -1;
-			}
+			snprintf_dstring(result, "{");
+			state_dstring state_result = {.iteration = 0, .result = result};
+			for_each_in_hashmap(&(node_p->object), (void (*)(const void*, const void*))serialize_json_wrapper_hashmap, &state_result);
+			snprintf_dstring(result, "}");
 			break;
 		}
-		default :
-		{
-			return -1;
-		}
 	}
-	return 0;
-}*/
+}
