@@ -41,29 +41,29 @@ void serialize_json(dstring* result, const json_node* node_p)
 	}
 	switch(node_p->type)
 	{
-		case BOOLEAN :
+		case JSON_BOOLEAN :
 		{
 			snprintf_dstring(result, "%s", node_p->boolean ? "true" : "false");
 			break;
 		}
-		case NUMBER :
+		case JSON_NUMBER :
 		{
 			concatenate_dstring(result, &(node_p->value));
 			break;
 		}
-		case STRING :
+		case JSON_STRING :
 		{
 			snprintf_dstring(result, "\"%.*s\"", node_p->value.bytes_occupied, node_p->value.cstring);
 			break;
 		}
-		case ARRAY :
+		case JSON_ARRAY :
 		{
 			snprintf_dstring(result, "[");
 			for_each_in_array(&(node_p->array), (void (*)(void*, unsigned int, const void*))serialize_json_wrapper_array, result);
 			snprintf_dstring(result, "]");
 			break;
 		}
-		case OBJECT :
+		case JSON_OBJECT :
 		{
 			snprintf_dstring(result, "{");
 			state_dstring state_result = {.iteration = 0, .result = result};

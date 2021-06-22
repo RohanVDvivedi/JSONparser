@@ -9,12 +9,12 @@
 typedef enum json_data_type json_data_type;
 enum json_data_type
 {
-	BOOLEAN,	// bool as in stdbool.h
-	NUMBER,		// dstring  ([-][0-9]*[.][0-9]*)
-	STRING,		// dstring  (*)
+	JSON_BOOLEAN,	// bool as in stdbool.h
+	JSON_NUMBER,		// dstring  ([-][0-9]*[.][0-9]*)
+	JSON_STRING,		// dstring  (*)
 	
-	ARRAY,		// array   (a dynamic array of json_node*, a null value represents a null of json)
-	OBJECT		// hashmap of object_attribute (hashmap of unique dstring vs json_node*, a null value represents a null of json)
+	JSON_ARRAY,		// array   (a dynamic array of json_node*, a null value represents a null of json)
+	JSON_OBJECT		// hashmap of object_attribute (hashmap of unique dstring vs json_node*, a null value represents a null of json)
 };
 
 typedef struct json_node json_node;
@@ -23,10 +23,10 @@ struct json_node
 	// type of node
 	json_data_type type;
 
-	// BOOLEAN			=> bool
-	// NUMBER, STRING 	=> dstring
-	// ARRAY 			=> array
-	// OBJECT 			=> hashmap
+	// JSON_BOOLEAN				=> bool
+	// JSON_NUMBER, JSON_STRING => dstring
+	// JSON_ARRAY 				=> array
+	// JSON_OBJECT 				=> hashmap
 	
 	union
 	{
