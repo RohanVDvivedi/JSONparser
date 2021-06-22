@@ -5,17 +5,17 @@ typedef enum json_lexeme_type json_lexeme_type;
 enum json_lexeme_type
 {
 	START_OF_JSON = 0,
-	QUOTED_STRING,
-	NUMBER_STRING,
-	TRUE_STRING,
-	FALSE_STRING,
-	NULL_STRING,
-	OPEN_CURLY_BRACKET,
-	CLOSE_CURLY_BRACKET,
-	OPEN_SQUARE_BRACKET,
-	CLOSE_SQUARE_BRACKET,
-	COLON,
-	COMMA,
+	QUOTED_STRING,			// "string"
+	NUMBER_STRING,			// number
+	TRUE_STRING,			// true
+	FALSE_STRING,			// false
+	NULL_STRING,			// null
+	OPEN_CURLY_BRACKET,		// {
+	CLOSE_CURLY_BRACKET,	// }
+	OPEN_SQUARE_BRACKET,	// [
+	CLOSE_SQUARE_BRACKET,	// ]
+	COLON,					// :
+	COMMA,					// ,
 	END_OF_JSON
 };
 
