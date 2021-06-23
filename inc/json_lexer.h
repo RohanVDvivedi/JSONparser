@@ -1,6 +1,8 @@
 #ifndef JSON_LEXER_H
 #define JSON_LEXER_H
 
+#include<dstring.h>
+
 typedef enum json_lexeme_type json_lexeme_type;
 enum json_lexeme_type
 {
