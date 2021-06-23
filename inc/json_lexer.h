@@ -32,7 +32,7 @@ struct json_lexer
 {
 	char* next_token_start;
 
-	dstring* json_dstring;
+	dstring* json_string;
 };
 
 void init_json_lexer(json_lexer* json_lexer_p, dstring* json_string);
