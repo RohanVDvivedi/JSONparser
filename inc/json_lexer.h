@@ -4,7 +4,6 @@
 typedef enum json_lexeme_type json_lexeme_type;
 enum json_lexeme_type
 {
-	START_OF_JSON = 0,
 	QUOTED_STRING,			// "string"
 	NUMBER_STRING,			// number
 	TRUE_STRING,			// true
@@ -16,7 +15,7 @@ enum json_lexeme_type
 	CLOSE_SQUARE_BRACKET,	// ]
 	COLON,					// :
 	COMMA,					// ,
-	END_OF_JSON
+	END_OF_JSON_STRING
 };
 
 typedef struct json_lexeme json_lexeme;
@@ -28,10 +27,18 @@ struct json_lexeme
 	dstring value;
 };
 
-#define INIT_JSON_LEXEME ((json_lexeme){.type = START_OF_JSON, .value = {}})
+typedef struct json_lexer json_lexer;
+struct json_lexer
+{
+	char* next_token_start;
+
+	dstring* json_dstring;
+};
+
+void init_json_lexer(json_lexer* json_lexer_p, dstring* json_string);
 
 // after this function call the lex points to the next lexeme after its previous value
 // returns 1 for success, a return value of 0 represents lexical error
-int lexer_get_next_lexeme(json_lexeme* lex, const dstring* json_string);
+int get_next_json_lexeme(json_lexer* json_lexer_p, json_lexeme* lexeme_p);
 
 #endif
