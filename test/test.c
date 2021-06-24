@@ -36,7 +36,9 @@ int main()
 	{
 		success = get_next_json_lexeme(&jslx, &jslxm);
 		printf("%d ", jslxm.type);
-		printf_dstring(&(jslxm.value));
+		if(jslxm.type != END_OF_JSON_STRING)
+			printf_dstring(&(jslxm.value));
+		printf("\n");
 	}
 	while(success && jslxm.type != END_OF_JSON_STRING);
 
