@@ -33,7 +33,7 @@ int get_next_json_lexeme(json_lexer* json_lexer_p, json_lexeme* json_lexeme_p)
 		{
 			json_lexeme_p->type = QUOTED_STRING;
 			json_lexeme_p->value.cstring = json_lexer_p->next_token_start++;
-			while((json_lexer_p->next_token_start != end_char_at) && (*(json_lexer_p->next_token_start++)) != '\"')
+			while((json_lexer_p->next_token_start != end_char_at) && (*(json_lexer_p->next_token_start++)) != '\"');
 			if(json_lexer_p->next_token_start == end_char_at)
 				return 0; //error
 			json_lexeme_p->value.bytes_occupied = json_lexer_p->next_token_start - json_lexeme_p->value.cstring;
