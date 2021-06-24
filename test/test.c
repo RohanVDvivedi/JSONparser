@@ -26,7 +26,7 @@ int main()
 	printf_dstring(json_str);
 	printf("\n\n");
 
-	json_node* jnodep = parse_json(json_str);
+	/*json_node* jnodep = parse_json(json_str);
 
 	printf("Parsing done\n\n");
 	
@@ -51,5 +51,5 @@ int main()
 	}
 
 	printf("deletion of dstring\n\n");
-	return 0;
+	return 0;*/
 }
