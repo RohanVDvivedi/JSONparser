@@ -147,5 +147,38 @@ int get_next_json_lexeme(json_lexer* json_lexer_p, json_lexeme* json_lexeme_p)
 			else
 				return 0;
 		}
+		default :
+		{
+			if((*(json_lexer_p->next_token_start)) == '-' || ('0' <= (*(json_lexer_p->next_token_start)) && (*(json_lexer_p->next_token_start)) <= '9'))
+			{
+				json_lexeme_p->type = NUMBER_STRING;
+				json_lexeme_p->value.cstring = json_lexer_p->next_token_start;
+
+				if((*(json_lexer_p->next_token_start)) == '-')
+				{
+					json_lexer_p->next_token_start++;
+					if(json_lexer_p->next_token_start == end_char_at)
+						return 0;
+				}
+
+				while( (json_lexer_p->next_token_start != end_char_at) && ('0' <= (*(json_lexer_p->next_token_start)) && (*(json_lexer_p->next_token_start)) <= '9') )
+					json_lexer_p->next_token_start++;
+
+				if( (json_lexer_p->next_token_start != end_char_at) && (*(json_lexer_p->next_token_start)) == '.')
+				{
+					json_lexer_p->next_token_start++;
+					if(json_lexer_p->next_token_start == end_char_at)
+						return 0;
+
+					while( (json_lexer_p->next_token_start != end_char_at) && ('0' <= (*(json_lexer_p->next_token_start)) && (*(json_lexer_p->next_token_start)) <= '9') )
+						json_lexer_p->next_token_start++;
+				}
+
+				json_lexeme_p->value.bytes_occupied = json_lexer_p->next_token_start - json_lexeme_p->value.cstring;
+				return 1;
+			}
+			else
+				return 0;
+		}
 	}
 }
