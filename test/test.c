@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<string.h>
 
+#include<json_lexer.h>
 #include<json_parser.h>
 #include<json_serializer.h>
 
@@ -25,6 +26,19 @@ int main()
 	printf("String built : ");
 	printf_dstring(json_str);
 	printf("\n\n");
+
+	json_lexer jslx;
+	init_json_lexer(&jslx, (dstring*)json_str);
+
+	json_lexeme jslxm;
+	int success = 1;
+	do
+	{
+		success = get_next_json_lexeme(&jslx, &jslxm);
+		printf("%d ", jslxm.type);
+		printf_dstring(&(jslxm.value));
+	}
+	while(success && jslxm.type != END_OF_JSON_STRING);
 
 	/*json_node* jnodep = parse_json(json_str);
 
