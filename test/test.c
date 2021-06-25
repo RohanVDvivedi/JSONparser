@@ -5,6 +5,22 @@
 #include<json_parser.h>
 #include<json_serializer.h>
 
+char* json_lexemes_string[] = {
+	"<whitespaces>",
+	"<string>",
+	"<number>",
+	"<true>",
+	"<false>",
+	"<null>",
+	"<{>",
+	"<}>",
+	"<[>",
+	"<]>",
+	"<:>",
+	"<,>",
+	"EOF"
+};
+
 int main()
 {
 	printf("json string building start\n\n");
@@ -37,10 +53,10 @@ int main()
 	do
 	{
 		success = get_next_json_lexeme(&jslx, &jslxm);
-		printf("%d ", jslxm.type);
+		printf("<");
 		if(jslxm.type != END_OF_JSON_STRING)
 			printf_dstring(&(jslxm.value));
-		printf("\n");
+		printf("> \n \t\t\t\t %s\n", json_lexemes_string[jslxm.type]);
 	}
 	while(success && jslxm.type != END_OF_JSON_STRING);
 
