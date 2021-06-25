@@ -6,6 +6,7 @@
 typedef enum json_lexeme_type json_lexeme_type;
 enum json_lexeme_type
 {
+	WHITESPACES_STRING,		// \t\r\n_ etc
 	QUOTED_STRING,			// "string"
 	NUMBER_STRING,			// number
 	TRUE_STRING,			// true
