@@ -174,10 +174,8 @@ int get_next_json_lexeme(json_lexer* json_lexer_p, json_lexeme* json_lexeme_p)
 				json_lexeme_p->value.cstring = json_lexer_p->next_token_start++;
 				json_lexeme_p->value.bytes_occupied = 1;
 				while((json_lexer_p->next_token_start != end_char_at) && isspace(*(json_lexer_p->next_token_start)))
-				{
 					json_lexer_p->next_token_start++;
-					json_lexeme_p->value.bytes_occupied++;
-				}
+				json_lexeme_p->value.bytes_occupied = json_lexer_p->next_token_start - json_lexeme_p->value.cstring;
 				return 1;
 			}
 			else
