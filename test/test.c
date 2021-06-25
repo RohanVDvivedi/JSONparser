@@ -19,6 +19,8 @@ int main()
 		\"nick name\" : \"Rohu\", \
 		\"age next year\" : 24, \
 		\"IQ\" : 196, \
+		\"probability_win\" : 0.9999,\
+		\"debt\" : -99.99,\
 		\"coder\" : true, \
 		\"is dependent\" : false \
 	}");
