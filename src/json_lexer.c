@@ -12,7 +12,7 @@ int get_next_json_lexeme(json_lexer* json_lexer_p, json_lexeme* json_lexeme_p)
 {
 	char* end_char_at = json_lexer_p->json_string->cstring + json_lexer_p->json_string->bytes_occupied;
 
-	if(json_lexer_p->next_token_start == end_char_at)
+	if(json_lexer_p->next_token_start == NULL || json_lexer_p->next_token_start == end_char_at)
 	{
 		json_lexeme_p->type = END_OF_JSON_STRING;
 		json_lexeme_p->value = ((dstring){});
