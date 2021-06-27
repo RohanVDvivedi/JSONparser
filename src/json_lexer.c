@@ -1,5 +1,6 @@
 #include<json_lexer.h>
 
+#include<stdio.h>
 #include<ctype.h>
 
 void init_json_lexer(json_lexer* json_lexer_p, dstring* json_string)
