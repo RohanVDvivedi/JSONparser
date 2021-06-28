@@ -32,7 +32,11 @@ struct json_node
 	{
 		bool boolean;
 		dstring value;
-		array array;
+		struct
+		{
+			unsigned int array_length;
+			array array;
+		};
 		hashmap object;
 	};
 };

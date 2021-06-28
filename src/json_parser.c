@@ -1,5 +1,7 @@
 #include<json_parser.h>
 
+#include<json_lexer.h>
+
 #include<stdio.h>
 
 json_node* parse_json(const dstring* json_string)
