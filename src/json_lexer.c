@@ -3,7 +3,7 @@
 #include<stdio.h>
 #include<ctype.h>
 
-void init_json_lexer(json_lexer* json_lexer_p, dstring* json_string)
+void init_json_lexer(json_lexer* json_lexer_p, const dstring* json_string)
 {
 	json_lexer_p->next_token_start = json_string->cstring;
 	json_lexer_p->json_string = json_string;

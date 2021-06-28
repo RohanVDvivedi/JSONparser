@@ -35,10 +35,10 @@ struct json_lexer
 {
 	char* next_token_start;
 
-	dstring* json_string;
+	const dstring* json_string;
 };
 
-void init_json_lexer(json_lexer* json_lexer_p, dstring* json_string);
+void init_json_lexer(json_lexer* json_lexer_p, const dstring* json_string);
 
 // after this function call the lex points to the next lexeme after its previous value
 // returns 1 for success, a return value of 0 represents lexical error
