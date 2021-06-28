@@ -1,3 +1,4 @@
+ * implement json_node methods
  * lexer add escape sequence \ for quoted string
  * re-write the parser as a top-down recursive descent parser
    * define grammar in the comments
