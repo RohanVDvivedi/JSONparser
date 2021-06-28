@@ -49,25 +49,30 @@ struct object_attribute
 };
 
 json_node* get_new_boolean_json_node(bool value);
+int set_boolean_json_node(json_node* node_p, bool value);
+
 json_node* get_new_string_json_node(const dstring* value);
 json_node* get_new_cstring_json_node(const char* value);
-json_node* get_new_integer_json_node(long long int value);
-json_node* get_new_double_json_node(double value);
-
-json_node* get_new_array_json_node();
-json_node* get_new_object_json_node();
-
-int set_boolean_json_node(json_node* node_p, bool value);
 int set_string_json_node(json_node* node_p, const dstring* value);
 int set_cstring_json_node(json_node* node_p, const char* value);
+
+json_node* get_new_integer_json_node(long long int value);
 int set_integer_json_node(json_node* node_p, long long int value);
+
+json_node* get_new_double_json_node(double value);
 int set_double_json_node(json_node* node_p, double value);
 
+json_node* get_new_array_json_node();
 int init_array_json_node(json_node* node_p);
-int init_object_json_node(json_node* node_p);
+int insert_in_json_array(json_node* array_node_p, unsigned int index, json_node* node_p);
+int append_to_json_array(json_node* array_node_p, json_node* node_p);
+json_node* get_from_json_array(json_node* array_node_p, unsigned int index);
 
-int insert_to_json_array(json_node* array_node_p, unsigned int index, json_node* node_p);
-int insert_to_json_object(json_node* object_node_p, const dstring* key, json_node* node_p);
+json_node* get_new_object_json_node();
+int init_object_json_node(json_node* node_p);
+int insert_in_json_object(json_node* object_node_p, const dstring* key, json_node* node_p);
+int exists_in_json_object(json_node* object_node_p, const dstring* key);
+json_node* get_from_json_object(json_node* object_node_p, const dstring* key);
 
 void delete_json_tree(json_node* node_p);
 
