@@ -2,26 +2,34 @@
 
 #include<stdio.h>
 
-static void serialize_json_wrapper_array(json_node* node_p, unsigned int index, dstring* result)
-{
-	// not the first entry, hence the comma
-	if(index != 0)
-		snprintf_dstring(result, ",");
-
-	serialize_json(result, node_p);
-}
-
 typedef struct state_dstring state_dstring;
 struct state_dstring
 {
-	unsigned int iteration;
+	union
+	{
+		unsigned int cur_iteration;
+		unsigned int tot_iteration;
+	};
 	dstring* result;
 };
+
+static void serialize_json_wrapper_array(json_node* node_p, unsigned int index, state_dstring* state_result)
+{
+	// not the first entry, hence the comma 
+	if(index >= state_result->tot_iteration)
+		return;
+
+	// not the first entry, hence the comma
+	if(index != 0)
+		snprintf_dstring(state_result->result, ",");
+
+	serialize_json(state_result->result, node_p);
+}
 
 static void serialize_json_wrapper_hashmap(const object_attribute* attr, state_dstring* state_result)
 {
 	// not the first entry, hence the comma 
-	if(state_result->iteration != 0)
+	if(state_result->cur_iteration != 0)
 		snprintf_dstring(state_result->result, ",");
 
 	// serialize the entry
@@ -29,7 +37,7 @@ static void serialize_json_wrapper_hashmap(const object_attribute* attr, state_d
 	snprintf_dstring(state_result->result, ":");
 	serialize_json(state_result->result, attr->value);
 
-	state_result->iteration++;
+	state_result->cur_iteration++;
 }
 
 void serialize_json(dstring* result, const json_node* node_p)
@@ -59,14 +67,15 @@ void serialize_json(dstring* result, const json_node* node_p)
 		case JSON_ARRAY :
 		{
 			snprintf_dstring(result, "[");
-			for_each_in_array(&(node_p->array), (void (*)(void*, unsigned int, const void*))serialize_json_wrapper_array, result);
+			state_dstring state_result = {.tot_iteration = 0, .result = result};
+			for_each_in_array(&(node_p->array), (void (*)(void*, unsigned int, const void*))serialize_json_wrapper_array, &state_result);
 			snprintf_dstring(result, "]");
 			break;
 		}
 		case JSON_OBJECT :
 		{
 			snprintf_dstring(result, "{");
-			state_dstring state_result = {.iteration = 0, .result = result};
+			state_dstring state_result = {.cur_iteration = 0, .result = result};
 			for_each_in_hashmap(&(node_p->object), (void (*)(const void*, const void*))serialize_json_wrapper_hashmap, &state_result);
 			snprintf_dstring(result, "}");
 			break;
