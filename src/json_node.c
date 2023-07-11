@@ -221,7 +221,13 @@ void delete_json_node(json_node* node_p)
 		}
 		case JSON_ARRAY :
 		{
-			// TODO loop over all elements and remove all of them and delete them
+			while(!is_empty_arraylist(&(node_p->json_array)))
+			{
+				json_node* n = (json_node*) get_front_of_arraylist(&(node_p->json_array));
+				pop_front_from_arraylist(&(node_p->json_array));
+				delete_json_node(n);
+			}
+			deinitialize_arraylist(&(node_p->json_array));
 		}
 	}
 
