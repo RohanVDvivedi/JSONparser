@@ -42,6 +42,9 @@ int serialize_json(stream* ws, const json_node* node_p)
 		}
 		case JSON_OBJECT:
 		{
+			write_to_stream_formatted(ws, &error, "{");
+			if(error)
+				return -1;
 			int is_first = 1;
 			for(const json_object_entry* e = get_first_of_in_hashmap(&(node_p->json_object), ANY_IN_HASHMAP); e != NULL; e = get_next_of_in_hashmap(&(node_p->json_object), e, ANY_IN_HASHMAP))
 			{
@@ -54,10 +57,16 @@ int serialize_json(stream* ws, const json_node* node_p)
 					return -1;
 				is_first = 0;
 			}
+			write_to_stream_formatted(ws, &error, "}");
+			if(error)
+				return -1;
 			break;
 		}
 		case JSON_ARRAY:
 		{
+			write_to_stream_formatted(ws, &error, "[");
+			if(error)
+				return -1;
 			int is_first = 1;
 			for(cy_uint i = 0; i < get_element_count_arraylist(&(node_p->json_array)); i++)
 			{
@@ -67,6 +76,9 @@ int serialize_json(stream* ws, const json_node* node_p)
 					return -1;
 				is_first = 0;
 			}
+			write_to_stream_formatted(ws, &error, "]");
+			if(error)
+				return -1;
 			break;
 		}
 	}
