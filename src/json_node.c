@@ -109,6 +109,9 @@ int insert_in_json_object(json_node* object_node_p, const dstring* key, const js
 	e->value = (json_node*) node_p;
 	initialize_llnode(&(e->embed_node));
 
+	if((((get_element_count_hashmap(&(object_node_p->json_object)) + 1) / 2) + 4) > get_bucket_count_hashmap(&(object_node_p->json_object)))
+		resize_hashmap(&(object_node_p->json_object), (((get_element_count_hashmap(&(object_node_p->json_object)) + 1) / 2) + 4));
+
 	int inserted = insert_in_hashmap(&(object_node_p->json_object), e);
 	if(!inserted)
 		free(e);
