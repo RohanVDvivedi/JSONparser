@@ -184,5 +184,32 @@ int delete_from_json_object(json_node* object_node_p, json_object_entry* entry_p
 
 void delete_json_node(json_node* node_p)
 {
-	// TODO
+	switch(node_p->type)
+	{
+		case JSON_BOOL :
+		{
+			break;
+		}
+		case JSON_NUM :
+		{
+			deinit_dstring(&(n->json_number.fraction));
+			deinit_dstring(&(n->json_number.exponent));
+			break;
+		}
+		case JSON_STRING :
+		{
+			deinit_dstring(&(n->json_string));
+			break;
+		}
+		case JSON_OBJECT :
+		{
+			// TODO loop over all elements and remove all of them and delete them
+		}
+		case JSON_ARRAY :
+		{
+			// TODO loop over all elements and remove all of them and delete them
+		}
+	}
+
+	free(node_p);
 }
