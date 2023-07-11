@@ -46,6 +46,17 @@ json_node* new_json_float_node(long double num_value)
 	return n;
 }
 
+json_node* new_json_scientific_notation_node(long double fraction, int64_t exponent)
+{
+	json_node* n = malloc(sizeof(json_node));
+	n->type = JSON_NUM;
+	init_empty_dstring(&(n->json_number.fraction), 0);
+	init_empty_dstring(&(n->json_number.exponent), 0);
+	snprintf_dstring(&(n->json_number.fraction), "%Lf", fraction);
+	snprintf_dstring(&(n->json_number.exponent), "%" PRId64, exponent);
+	return n;
+}
+
 json_node* new_json_string_node(const dstring* string_value)
 {
 	json_node* n = malloc(sizeof(json_node));
