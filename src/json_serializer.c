@@ -35,7 +35,7 @@ int serialize_json(stream* ws, const json_node* node_p)
 		}
 		case JSON_STRING:
 		{
-			write_to_stream_formatted(ws, &error, printf_dstring_format, printf_dstring_params(&(node_p->json_string)));
+			write_to_stream_formatted(ws, &error, "\""printf_dstring_format"\"", printf_dstring_params(&(node_p->json_string)));
 			if(error)
 				return -1;
 			break;
