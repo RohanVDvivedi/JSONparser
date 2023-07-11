@@ -82,10 +82,22 @@ json_node* new_json_array_node(cy_uint element_count, const json_node* elements[
 
 int append_to_json_array(json_node* array_node_p, const json_node* node_p)
 {
+	if(array_node_p->type != JSON_ARRAY)
+		return 0;
 
+	if(is_full_arraylist(&(array_node_p->json_array)))
+		expand_arraylist(&(array_node_p->json_array));
+
+	return push_back_to_arraylist(&(array_node_p->json_array), node_p);
 }
 
-int delete_from_jsom_array(json_node* array_node_p, cy_uint index);
+int delete_from_json_array(json_node* array_node_p, cy_uint index)
+{
+	if(array_node_p->type != JSON_ARRAY)
+		return 0;
+
+	// TODO
+}
 
 int insert_in_json_object(json_node* object_node_p, const dstring* key, const json_node* node_p);
 
