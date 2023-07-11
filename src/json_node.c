@@ -5,7 +5,26 @@
 
 json_node* clone_json_node(const json_node* node_p)
 {
-	// TODO
+	switch(node_p->type)
+	{
+		case JSON_BOOL :
+			return new_json_bool_node(node_p->json_bool);
+		case JSON_NUM :
+		{
+			// TODO
+		}
+		case JSON_STRING :
+			return new_json_string_node(node_p->json_string);
+		case JSON_OBJECT :
+		{
+			// TODO loop over all elements and insert it into json object
+		}
+		case JSON_ARRAY :
+		{
+			// TODO loop over all elements and insert it into json array
+		}
+	}
+	return NULL;
 }
 
 json_node* new_json_bool_node(int bool_value)
