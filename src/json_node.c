@@ -74,14 +74,16 @@ json_node* new_json_array_node(cy_uint element_count, const json_node* elements[
 {
 	json_node* n = malloc(sizeof(json_node));
 	n->type = JSON_ARRAY;
-	n->json_array_size = 0;
-	initialize_array(&(n->json_array), element_count);
+	initialize_arraylist(&(n->json_array), element_count);
 	for(cy_uint i = 0; i < element_count; i++)
 		append_to_json_array(n, elements[i]);
 	return n;
 }
 
-int append_to_json_array(json_node* array_node_p, const json_node* node_p);
+int append_to_json_array(json_node* array_node_p, const json_node* node_p)
+{
+
+}
 
 int delete_from_jsom_array(json_node* array_node_p, cy_uint index);
 

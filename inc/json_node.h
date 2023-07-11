@@ -2,7 +2,7 @@
 #define JSON_NODE_H
 
 #include<linkedlist.h>
-#include<array.h>
+#include<arraylist.h>
 #include<hashmap.h>
 
 #include<stdint.h>
@@ -35,11 +35,7 @@ struct json_node
 		json_num json_number;
 		dstring json_string;
 		hashmap json_object;
-		struct
-		{
-			cy_uint json_array_size;
-			array json_array;
-		};
+		arraylist json_array;
 	};
 };
 
