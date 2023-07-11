@@ -59,5 +59,8 @@ int main()
 	delete_json_node(js);
 	delete_json_node(js_clone);
 
+	deinitialize_stream(&std_read);
+	deinitialize_stream(&std_write);
+
 	return 0;
 }
