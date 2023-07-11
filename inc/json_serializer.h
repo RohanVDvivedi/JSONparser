@@ -5,7 +5,7 @@
 
 #include<json_node.h>
 
-// returns -1 if an ERROR is encountered in the json node, else 0 is returned
-int serialize_json(dstring* result, const json_node* node_p);
+// returns -1 if an error is encountered in serializing the json node, else 0 is returned
+int serialize_json(stream* ws, const json_node* node_p);
 
 #endif
