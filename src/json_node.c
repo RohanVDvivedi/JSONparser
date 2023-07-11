@@ -41,7 +41,14 @@ json_node* new_json_float_node(long double num_value)
 	return n;
 }
 
-json_node* new_json_string_node(const dstring* string_value);
+json_node* new_json_string_node(const dstring* string_value)
+{
+	json_node* n = malloc(sizeof(json_node));
+	n->type = JSON_STRING;
+	init_copy_dstring(&(n->json_number.exponent), string_value);
+	return n;
+}
+
 json_node* new_json_object_node(cy_uint element_count, const json_object_entry entries[]);
 json_node* new_json_array_node(cy_uint element_count, const json_node* elements[]);
 
