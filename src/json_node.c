@@ -123,6 +123,17 @@ int delete_from_json_object(json_node* object_node_p, json_object_entry* entry_p
 {
 	if(object_node_p->type != JSON_OBJECT)
 		return 0;
+
+	int removed = remove_from_hashmap(&(object_node_p->json_object), entry_p);
+
+	if(removed)
+	{
+		deinit_dstring(&(entry_p->key));
+		delete_json_node(entry_p->value);
+		free(entry_p);
+	}
+
+	return removed;
 }
 
 void delete_json_node(json_node* node_p);
