@@ -49,6 +49,9 @@ struct json_object_entry
 	llnode embed_node;
 };
 
+// recursively clones a json node
+json_node* clone_json_node(const json_node* node_p);
+
 json_node* new_json_bool_node(int bool_value);
 json_node* new_json_unsigned_integer_node(uint64_t num_value);
 json_node* new_json_integer_node(int64_t num_value);
