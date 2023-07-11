@@ -11,7 +11,11 @@ json_node* clone_json_node(const json_node* node_p)
 			return new_json_bool_node(node_p->json_bool);
 		case JSON_NUM :
 		{
-			// TODO
+			json_node* n = malloc(sizeof(json_node));
+			n->type = JSON_NUM;
+			init_copy_dstring(&(n->fraction), &(node_p->fraction));
+			init_copy_dstring(&(n->exponent), &(node_p->exponent));
+			return n;
 		}
 		case JSON_STRING :
 			return new_json_string_node(node_p->json_string);
