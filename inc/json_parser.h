@@ -2,6 +2,7 @@
 #define JSON_PARSER_H
 
 #include<stream.h>
+
 #include<json_node.h>
 
 // returns NULL on error

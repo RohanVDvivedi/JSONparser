@@ -5,6 +5,8 @@
 #include<array.h>
 #include<hashmap.h>
 
+#include<stdint.h>
+
 typedef enum json_node_type json_node_type;
 enum json_node_type
 {
@@ -51,11 +53,11 @@ struct json_object_entry
 	llnode embed_node;
 };
 
-json_node* new_json_bool_node(int bool);
-json_node* new_json_unsigned_integer_node(uint64_t num);
-json_node* new_json_integer_node(int64_t num);
-json_node* new_json_float_node(long double num);
-json_node* new_json_string_node(const dstring* json_string);
+json_node* new_json_bool_node(int bool_value);
+json_node* new_json_unsigned_integer_node(uint64_t num_value);
+json_node* new_json_integer_node(int64_t num_value);
+json_node* new_json_float_node(long double num_value);
+json_node* new_json_string_node(const dstring* string_value);
 json_node* new_json_object_node(cy_uint element_count, const json_object_entry entries[]);
 json_node* new_json_array_node(cy_uint element_count, const json_node* elements[]);
 

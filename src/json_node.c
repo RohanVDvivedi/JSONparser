@@ -1,10 +1,47 @@
 #include<json_node.h>
 
-json_node* new_json_bool_node(int bool);
-json_node* new_json_unsigned_integer_node(uint64_t num);
-json_node* new_json_integer_node(int64_t num);
-json_node* new_json_float_node(long double num);
-json_node* new_json_string_node(const dstring* json_string);
+#include<stdlib.h>
+#include<inttypes.h>
+
+json_node* new_json_bool_node(int bool_value)
+{
+	json_node* n = malloc(sizeof(json_node));
+	n->type = JSON_BOOL;
+	n->json_bool = bool_value;
+	return n;
+}
+
+json_node* new_json_unsigned_integer_node(uint64_t num_value)
+{
+	json_node* n = malloc(sizeof(json_node));
+	n->type = JSON_NUM;
+	init_empty_dstring(&(n->json_number.fraction), 0);
+	init_empty_dstring(&(n->json_number.exponent), 0);
+	snprintf_dstring(&(n->json_number.fraction), "%" PRIu64, num_value);
+	return n;
+}
+
+json_node* new_json_integer_node(int64_t num_value)
+{
+	json_node* n = malloc(sizeof(json_node));
+	n->type = JSON_NUM;
+	init_empty_dstring(&(n->json_number.fraction), 0);
+	init_empty_dstring(&(n->json_number.exponent), 0);
+	snprintf_dstring(&(n->json_number.fraction), "%" PRId64, num_value);
+	return n;
+}
+
+json_node* new_json_float_node(long double num_value)
+{
+	json_node* n = malloc(sizeof(json_node));
+	n->type = JSON_NUM;
+	init_empty_dstring(&(n->json_number.fraction), 0);
+	init_empty_dstring(&(n->json_number.exponent), 0);
+	snprintf_dstring(&(n->json_number.fraction), "%Lf", num_value);
+	return n;
+}
+
+json_node* new_json_string_node(const dstring* string_value);
 json_node* new_json_object_node(cy_uint element_count, const json_object_entry entries[]);
 json_node* new_json_array_node(cy_uint element_count, const json_node* elements[]);
 

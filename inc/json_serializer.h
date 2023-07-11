@@ -1,7 +1,7 @@
 #ifndef JSON_SERIALIZER
 #define JSON_SERIALIZER
 
-#include<dstring.h>
+#include<stream.h>
 
 #include<json_node.h>
 
