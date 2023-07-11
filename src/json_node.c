@@ -3,6 +3,11 @@
 #include<stdlib.h>
 #include<inttypes.h>
 
+json_node* clone_json_node(const json_node* node_p)
+{
+	// TODO
+}
+
 json_node* new_json_bool_node(int bool_value)
 {
 	json_node* n = malloc(sizeof(json_node));
