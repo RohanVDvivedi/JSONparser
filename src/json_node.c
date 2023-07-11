@@ -97,6 +97,13 @@ int delete_from_json_array(json_node* array_node_p, cy_uint index)
 		return 0;
 
 	// TODO
+	int removed = 0;
+	json_node* n = NULL;
+
+	if(removed)
+		delete_json_node(n);
+
+	return removed;
 }
 
 int insert_in_json_object(json_node* object_node_p, const dstring* key, const json_node* node_p)
@@ -136,4 +143,7 @@ int delete_from_json_object(json_node* object_node_p, json_object_entry* entry_p
 	return removed;
 }
 
-void delete_json_node(json_node* node_p);
+void delete_json_node(json_node* node_p)
+{
+	// TODO
+}
