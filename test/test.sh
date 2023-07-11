@@ -1,1 +1,1 @@
-gcc ./test.c -ljsonparser -lcutlery
+gcc ./test.c -ljsonparser -lconnman -lcutlery
