@@ -71,6 +71,7 @@ int insert_in_json_object(json_node* object_node_p, const dstring* key, const js
 // removes a json_object_entry from object_node_p and deletes it
 int delete_from_json_object(json_node* object_node_p, json_object_entry* entry_p);
 
+// recursively deletes all of the json_nodes starting at node_p
 void delete_json_node(json_node* node_p);
 
 #endif
