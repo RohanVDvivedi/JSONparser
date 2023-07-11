@@ -3,8 +3,21 @@
 #include<stdlib.h>
 #include<inttypes.h>
 
+static cy_uint hash_json_object_entry(const void* ent_p)
+{
+	const json_object_entry* e = ent_p;
+	cy_uint hash = 0;
+	const char* key_data = get_byte_array_dstring(&(e->key));
+	cy_uint key_size = get_char_count_dstring(&(e->key));
+	for(cy_uint i = 0; i < key_size; i++)
+		hash = hash ^ (CY_UINT_C(13) * (i + 1) * ((cy_uint)key_data[i]));
+	return hash;
+}
+
 json_node* clone_json_node(const json_node* node_p)
 {
+	if(node_p == NULL)
+		return NULL;
 	switch(node_p->type)
 	{
 		case JSON_BOOL :
@@ -13,24 +26,29 @@ json_node* clone_json_node(const json_node* node_p)
 		{
 			json_node* n = malloc(sizeof(json_node));
 			n->type = JSON_NUM;
-			init_copy_dstring(&(n->fraction), &(node_p->fraction));
-			init_copy_dstring(&(n->exponent), &(node_p->exponent));
+			init_copy_dstring(&(n->json_number.fraction), &(node_p->json_number.fraction));
+			init_copy_dstring(&(n->json_number.exponent), &(node_p->json_number.exponent));
 			return n;
 		}
 		case JSON_STRING :
-			return new_json_string_node(node_p->json_string);
+			return new_json_string_node(&(node_p->json_string));
 		case JSON_OBJECT :
 		{
 			json_node* n = malloc(sizeof(json_node));
 			n->type = JSON_OBJECT;
 			initialize_hashmap(&(n->json_object), ELEMENTS_AS_LINKEDLIST_INSERT_AT_TAIL, ((get_element_count_hashmap(&(node_p->json_object)) / 2) + 4), hash_json_object_entry, (int (*)(const void*, const void*))compare_dstring, offsetof(json_object_entry, embed_node));
 			for(const json_object_entry* e = get_first_of_in_hashmap(&(node_p->json_object), ANY_IN_HASHMAP); e != NULL; e = get_next_of_in_hashmap(&(node_p->json_object), e, ANY_IN_HASHMAP))
-				insert_in_json_object(&(n->json_object), &(e->key), clone_json_node(e->value));
+				insert_in_json_object(n, &(e->key), clone_json_node(e->value));
 			return n;
 		}
 		case JSON_ARRAY :
 		{
-			// TODO loop over all elements and insert it into json array
+			json_node* n = malloc(sizeof(json_node));
+			n->type = JSON_ARRAY;
+			initialize_arraylist(&(n->json_array), get_element_count_arraylist(&(node_p->json_array)));
+			for(cy_uint i = 0; i < get_element_count_arraylist(&(node_p->json_array)); i++)
+				push_back_to_arraylist(&(n->json_array), clone_json_node(get_nth_from_front_of_arraylist(&(node_p->json_array), i)));
+			return n;
 		}
 	}
 	return NULL;
@@ -91,17 +109,6 @@ json_node* new_json_string_node(const dstring* string_value)
 	n->type = JSON_STRING;
 	init_copy_dstring(&(n->json_number.exponent), string_value);
 	return n;
-}
-
-static cy_uint hash_json_object_entry(const void* ent_p)
-{
-	const json_object_entry* e = ent_p;
-	cy_uint hash = 0;
-	const char* key_data = get_byte_array_dstring(&(e->key));
-	cy_uint key_size = get_char_count_dstring(&(e->key));
-	for(cy_uint i = 0; i < key_size; i++)
-		hash = hash ^ (CY_UINT_C(13) * (i + 1) * ((cy_uint)key_data[i]));
-	return hash;
 }
 
 json_node* new_json_object_node(cy_uint element_count, const json_object_entry entries[])
@@ -189,6 +196,8 @@ int delete_from_json_object(json_node* object_node_p, json_object_entry* entry_p
 
 void delete_json_node(json_node* node_p)
 {
+	if(node_p == NULL)
+		return;
 	switch(node_p->type)
 	{
 		case JSON_BOOL :
@@ -197,13 +206,13 @@ void delete_json_node(json_node* node_p)
 		}
 		case JSON_NUM :
 		{
-			deinit_dstring(&(n->json_number.fraction));
-			deinit_dstring(&(n->json_number.exponent));
+			deinit_dstring(&(node_p->json_number.fraction));
+			deinit_dstring(&(node_p->json_number.exponent));
 			break;
 		}
 		case JSON_STRING :
 		{
-			deinit_dstring(&(n->json_string));
+			deinit_dstring(&(node_p->json_string));
 			break;
 		}
 		case JSON_OBJECT :
