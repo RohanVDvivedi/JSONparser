@@ -21,7 +21,12 @@ json_node* clone_json_node(const json_node* node_p)
 			return new_json_string_node(node_p->json_string);
 		case JSON_OBJECT :
 		{
-			// TODO loop over all elements and insert it into json object
+			json_node* n = malloc(sizeof(json_node));
+			n->type = JSON_OBJECT;
+			initialize_hashmap(&(n->json_object), ELEMENTS_AS_LINKEDLIST_INSERT_AT_TAIL, ((get_element_count_hashmap(&(node_p->json_object)) / 2) + 4), hash_json_object_entry, (int (*)(const void*, const void*))compare_dstring, offsetof(json_object_entry, embed_node));
+			for(const json_object_entry* e = get_first_of_in_hashmap(&(node_p->json_object), ANY_IN_HASHMAP); e != NULL; e = get_next_of_in_hashmap(&(node_p->json_object), e, ANY_IN_HASHMAP))
+				insert_in_json_object(&(n->json_object), &(e->key), clone_json_node(e->value));
+			return n;
 		}
 		case JSON_ARRAY :
 		{
