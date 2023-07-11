@@ -224,9 +224,11 @@ void delete_json_node(json_node* node_p)
 			deinitialize_hashmap(&(node_p->json_object));
 			while(!is_empty_arraylist(&temp_holder))
 			{
-				json_node* n = (json_node*) get_front_of_arraylist(&temp_holder);
+				json_object_entry* n = (json_object_entry*) get_front_of_arraylist(&temp_holder);
 				pop_front_from_arraylist(&temp_holder);
-				delete_json_node(n);
+				deinit_dstring(&(n->key));
+				delete_json_node(n->value);
+				free(n);
 			}
 			deinitialize_arraylist(&temp_holder);
 		}
@@ -234,11 +236,9 @@ void delete_json_node(json_node* node_p)
 		{
 			while(!is_empty_arraylist(&(node_p->json_array)))
 			{
-				json_object_entry* n = (json_object_entry*) get_front_of_arraylist(&(node_p->json_array));
+				json_node* n = (json_node*) get_front_of_arraylist(&(node_p->json_array));
 				pop_front_from_arraylist(&(node_p->json_array));
-				deinit_dstring(&(n->key));
-				delete_json_node(n->value);
-				free(n);
+				delete_json_node(n);
 			}
 			deinitialize_arraylist(&(node_p->json_array));
 		}
