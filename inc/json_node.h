@@ -18,7 +18,6 @@ enum json_node_type
 typedef struct json_num json_num;
 struct json_num
 {
-	dstring integer;
 	dstring fraction;
 	dstring exponent;
 };
