@@ -1,4 +1,3 @@
- * test json_serializer and cloen functionality, delete all and check for memory leaks
  * implement delete_from_json_array after the corresponding feature in Cutlery's arraylist
  * implement lexer
  * implement a top-down recursive descent parser
