@@ -1,3 +1,4 @@
+ * remove escape characters before serializing json strings and keys (of json objects)
  * implement delete_from_json_array after the corresponding feature in Cutlery's arraylist
  * implement lexer
  * implement a top-down recursive descent parser
