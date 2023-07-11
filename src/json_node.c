@@ -99,8 +99,27 @@ int delete_from_json_array(json_node* array_node_p, cy_uint index)
 	// TODO
 }
 
-int insert_in_json_object(json_node* object_node_p, const dstring* key, const json_node* node_p);
+int insert_in_json_object(json_node* object_node_p, const dstring* key, const json_node* node_p)
+{
+	if(object_node_p->type != JSON_OBJECT)
+		return 0;
 
-int delete_from_json_object(json_node* object_node_p, json_object_entry* entry_p);
+	json_object_entry* e = malloc(sizeof(json_object_entry));
+	init_copy_dstring(&(e->key), key);
+	e->value = (json_node*) node_p;
+	initialize_llnode(&(e->embed_node));
+
+	int inserted = insert_in_hashmap(&(object_node_p->json_object), e);
+	if(!inserted)
+		free(e);
+
+	return inserted;
+}
+
+int delete_from_json_object(json_node* object_node_p, json_object_entry* entry_p)
+{
+	if(object_node_p->type != JSON_OBJECT)
+		return 0;
+}
 
 void delete_json_node(json_node* node_p);
