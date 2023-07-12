@@ -147,9 +147,13 @@ int delete_from_json_array(json_node* array_node_p, cy_uint index)
 	if(array_node_p->type != JSON_ARRAY)
 		return 0;
 
-	// TODO
 	int removed = 0;
 	json_node* n = NULL;
+	if(index < get_element_count_arraylist(&(array_node_p->json_array)))
+	{
+		n = (json_node*) get_nth_from_front_of_arraylist(&(array_node_p->json_array), index);
+		removed = remove_elements_from_front_of_arraylist_at(&(array_node_p->json_array), index, 1);
+	}
 
 	if(removed)
 		delete_json_node(n);
