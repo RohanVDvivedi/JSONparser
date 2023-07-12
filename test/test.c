@@ -62,6 +62,11 @@ int main()
 	{
 		json_object_entry* age_next_year = (json_object_entry*) find_equals_in_hashmap(&(js->json_object), &((const json_object_entry){.key = dst("age next year")}));
 		delete_from_json_object(js, age_next_year);
+
+		json_object_entry* family_members = (json_object_entry*) find_equals_in_hashmap(&(js->json_object), &((const json_object_entry){.key = dst("family members")}));
+		json_node* family_members_array = family_members->value;
+		json_node* family_members_array_1 = (json_node*) get_nth_from_front_of_arraylist(&(family_members_array->json_array), 1);
+		delete_from_json_array(family_members_array_1, 2);
 	}
 
 	serialize_json(&std_write, js);
