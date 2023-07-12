@@ -21,7 +21,7 @@ int main()
 		{dst("age"), new_json_unsigned_integer_node(26)},
 		{dst("smart"), new_json_bool_node(0)},
 		{dst("dependents"), NULL},
-		{dst("family membe"), 
+		{dst("family members"),
 			new_json_array_node(2, (const json_node* []){
 				new_json_array_node(4, (const json_node* []){
 					new_json_integer_node(1),
