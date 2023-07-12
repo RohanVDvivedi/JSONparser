@@ -56,6 +56,23 @@ int main()
 	serialize_json(&std_write, js_clone);
 	flush_all_from_stream(&std_write, &error);
 
+	printf("\n\n");
+
+	// remove an element from an array in js
+	{
+
+	}
+
+	serialize_json(&std_write, js);
+	flush_all_from_stream(&std_write, &error);
+
+	printf("\n\n");
+
+	serialize_json(&std_write, js_clone);
+	flush_all_from_stream(&std_write, &error);
+
+	printf("\n\n");
+
 	delete_json_node(js);
 	delete_json_node(js_clone);
 
