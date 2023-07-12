@@ -58,9 +58,10 @@ int main()
 
 	printf("\n\n");
 
-	// remove an element from an array in js
+	// remove an element from an array and object in js
 	{
-
+		json_object_entry* age_next_year = (json_object_entry*) find_equals_in_hashmap(&(js->json_object), &((const json_object_entry){.key = dst("age next year")}));
+		delete_from_json_object(js, age_next_year);
 	}
 
 	serialize_json(&std_write, js);
