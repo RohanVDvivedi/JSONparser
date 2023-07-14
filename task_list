@@ -1,3 +1,2 @@
- * remove escape characters before serializing json strings and keys (of json objects)
  * implement lexer
  * implement a top-down recursive descent parser
