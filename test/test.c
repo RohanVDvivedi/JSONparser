@@ -37,9 +37,9 @@ int main()
 				})
 			})
 		},
-		{dst("nick name"), new_json_string_node(&dst("Rohu"))},
-		{dst("age next year"), new_json_integer_node(27)},
-		{dst("IQ"), new_json_float_node(196.05)},
+		{dst("nick \t name"), new_json_string_node(&dst("Rohu"))},
+		{dst("age \t next \n year"), new_json_integer_node(27)},
+		{dst("\"IQ\""), new_json_float_node(196.05)},
 		{dst("coder"), new_json_bool_node(1)},
 		{dst("is dependent"), new_json_bool_node(1)},
 	});
