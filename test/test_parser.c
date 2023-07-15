@@ -3,6 +3,8 @@
 
 #include<json_parser.h>
 
+#include<file_descriptor_stream.h>
+
 int main()
 {
 	stream std_read;
