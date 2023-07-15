@@ -143,6 +143,112 @@ static int get_next_string_lexeme(lexer* lxr, lexeme* lxm)
 	return 0;
 }
 
+static int get_next_number_lexeme(lexer* lxr, lexeme* lxm)
+{
+	int error = 0;
+	char c;
+	size_t byte_read;
+	make_dstring_empty(&(lxm->lexeme_str));
+
+	// read a byte
+	byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &error);
+	if(error || byte_read == 0)
+		goto FAILURE;
+
+	// if digit, unread it
+	if(is_digit_char(c))
+		unread_from_stream(lxr->byte_read_stream, &c, 1);
+	else if(c == '+' || c == '-') // its sign of the fraction
+		concatenate_char(&(lxm->lexeme_str), c);
+	else // fail if none of the above
+		goto FAILURE;
+
+	// only one decimal point can be read, and we track that
+	unsigned int bytes_numeric_count = 0;
+
+	while(1)
+	{
+		// read a byte
+		byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &error);
+		if(error || (byte_read == 0 && bytes_numeric_count == 0))
+			goto FAILURE;
+		else if(byte_read == 0)
+			goto SUCCESS;
+
+		if(is_digit_char(c))
+		{
+			concatenate_char(&(lxm->lexeme_str), c);
+			bytes_numeric_count++;
+		}
+		else if(c == '.' || c == 'e' || c == 'E')
+		{
+			concatenate_char(&(lxm->lexeme_str), c);
+			bytes_numeric_count = 0;
+			if(c == 'e' || c == 'E')
+				break;
+		}
+		else
+		{
+			if(bytes_numeric_count == 0)
+			{
+				unread_from_stream(lxr->byte_read_stream, &c, 1);
+				goto FAILURE;
+			}
+			else
+				goto SUCCESS;
+		}
+	}
+
+	// read a byte
+	byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &error);
+	if(error || byte_read == 0)
+		goto FAILURE;
+
+	// if digit, unread it
+	if(is_digit_char(c))
+		unread_from_stream(lxr->byte_read_stream, &c, 1);
+	else if(c == '+' || c == '-') // its sign of the fraction
+		concatenate_char(&(lxm->lexeme_str), c);
+	else // fail if none of the above
+		goto FAILURE;
+
+	bytes_numeric_count = 0;
+
+	while(1)
+	{
+		// read a byte
+		byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &error);
+		if(error || (byte_read == 0 && bytes_numeric_count == 0))
+			goto FAILURE;
+		else if(byte_read == 0)
+			goto SUCCESS;
+
+		if(is_digit_char(c))
+		{
+			concatenate_char(&(lxm->lexeme_str), c);
+			bytes_numeric_count++;
+		}
+		else
+		{
+			if(bytes_numeric_count == 0)
+			{
+				unread_from_stream(lxr->byte_read_stream, &c, 1);
+				goto FAILURE;
+			}
+			else
+				goto SUCCESS;
+		}
+	}
+
+	SUCCESS :
+	return 1;
+
+	FAILURE :
+	unread_dstring_from_stream(lxr->byte_read_stream, &(lxm->lexeme_str));
+	deinit_dstring(&(lxm->lexeme_str));
+	return 0;
+}
+
 int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 {
 	int error = 0;
