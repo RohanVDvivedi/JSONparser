@@ -218,7 +218,7 @@ static int get_next_number_lexeme(lexer* lxr, lexeme* lxm)
 		else if(c == 'e' || c == 'E')
 		{
 			// can not read a character, if we will cross the maximum limit
-			if(get_char_count_dstring(&(lxm->lexeme_str)) >= lxr->max_json_number_length)
+			if(get_char_count_dstring(&(lxm->lexeme_str)) >= lxr->max_json_number_length || bytes_numeric_count == 0)
 			{
 				unread_from_stream(lxr->byte_read_stream, &c, 1);
 				goto FAILURE;
