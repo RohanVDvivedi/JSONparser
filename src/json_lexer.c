@@ -36,7 +36,70 @@ void deinitialize_lexer(lexer* lxr)
 	lxr->byte_read_stream = NULL;
 }
 
+#define MAX_WHITESAPCES 2048
+
 int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 {
+	int error = 0;
+
+	// skip white spaces
+	skip_whitespaces_from_stream(&(lxr->byte_read_stream), MAX_WHITESAPCES, &error);
+	if(error)
+		return 0;
+
+	// read a byte
+	char c;
+	size_t byte_read = read_from_stream(&(lxr->byte_read_stream), &c, 1, &error);
+	if(error)
+		return 0;
+
+	// end of stream token
+	if(byte_read == 0)
+	{
+		lxm->lexeme_type = END_OF_STREAM;
+		return 1;
+	}
+
+	// decode all single byte lexemes
+	switch(c)
+	{
+		case '{' :
+		{
+			lxm->lexeme_type = CURLY_OPEN_BRACE;
+			return 1;
+		}
+		case '{' :
+		{
+			lxm->lexeme_type = CLURLY_CLOSE_BRACE;
+			return 1;
+		}
+		case '[' :
+		{
+			lxm->lexeme_type = SQUARE_OPEN_BRACE;
+			return 1;
+		}
+		case ']' :
+		{
+			lxm->lexeme_type = SQUARE_CLOSE_BRACE;
+			return 1;
+		}
+		case ',' :
+		{
+			lxm->lexeme_type = COMMA;
+			return 1;
+		}
+		case ':' :
+		{
+			lxm->lexeme_type = COLON;
+			return 1;
+		}
+	}
+
+	// now you can decode fixed strings: true, false and null
 	// TODO
+
+	// decode STRING_LEXEME or NUMBER_LEXEME
+	// TODO
+
+	// if none return 0
 }
