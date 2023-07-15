@@ -43,6 +43,9 @@ void deinitialize_lexer(lexer* lxr)
 
 static int get_next_string_lexeme(lexer* lxr, lexeme* lxm)
 {
+	// make dstring_empty before proceeding
+	make_dstring_empty(&(lxm->lexeme_str));
+
 	int error = 0;
 	char c;
 
@@ -64,6 +67,19 @@ static int get_next_string_lexeme(lexer* lxr, lexeme* lxm)
 		if(error || byte_read == 0)
 			goto FAILURE;
 		concatenate_char(&bytes_read, c);
+
+		// if last, then exit
+		if(c == '"')
+		{
+			lxm->type = STRING_LEXEME;
+			deinit_dstring(&bytes_read);
+			return 1;
+		}
+
+		// if the json_string lexeme size is as big as the max_json_string_length permitted, 
+		// then we are not supposed to append any further and we quit with a failure
+		if(get_char_count_dstring(&(lxm->lexeme_str)) >= lxr->max_json_string_length)
+			goto FAILURE;
 
 		if(c == '\\')
 		{
@@ -115,12 +131,6 @@ static int get_next_string_lexeme(lexer* lxr, lexeme* lxm)
 					break;
 				}
 			}
-		}
-		else if(c == '"')
-		{
-			lxm->type = STRING_LEXEME;
-			deinit_dstring(&bytes_read);
-			return 1;
 		}
 		else
 			concatenate_char(&(lxm->lexeme_str), c);
