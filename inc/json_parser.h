@@ -6,6 +6,6 @@
 #include<json_node.h>
 
 // returns NULL on error
-json_node* parse_json(stream* rs);
+json_node* parse_json(stream* rs, size_t max_json_string_length, size_t max_json_number_length);
 
 #endif
