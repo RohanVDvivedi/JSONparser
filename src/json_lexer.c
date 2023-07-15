@@ -40,6 +40,96 @@ void deinitialize_lexer(lexer* lxr)
 
 #define MAX_WHITESAPCES 2048
 
+static int get_next_string_lexeme(stream* byte_read_stream, lexeme* lxm)
+{
+	int error = 0;
+	char c;
+
+	dstring bytes_read;
+	init_empty_dstring(&bytes_read, 0);
+
+	// read first quotation
+	size_t byte_read = read_from_stream(byte_read_stream, &c, 1, &error);
+	if(error || byte_read == 0)
+		goto FAILURE;
+	concatenate_char(&bytes_read, c);
+
+	if(c != '"')
+		goto FAILURE;
+
+	while(1)
+	{
+		byte_read = read_from_stream(byte_read_stream, &c, 1, &error);
+		if(error || byte_read == 0)
+			goto FAILURE;
+		concatenate_char(&bytes_read, c);
+
+		if(c == '\\')
+		{
+			byte_read = read_from_stream(byte_read_stream, &c, 1, &error);
+			if(error || byte_read == 0)
+				goto FAILURE;
+			concatenate_char(&bytes_read, c);
+
+			switch(c)
+			{
+				case 'n' :
+				{
+					concatenate_char(&(lxm->lexeme_str), '\n');
+					break;
+				}
+				case 'r' :
+				{
+					concatenate_char(&(lxm->lexeme_str), '\r');
+					break;
+				}
+				case 'v' :
+				{
+					concatenate_char(&(lxm->lexeme_str), '\v');
+					break;
+				}
+				case 'f' :
+				{
+					concatenate_char(&(lxm->lexeme_str), '\f');
+					break;
+				}
+				case 't' :
+				{
+					concatenate_char(&(lxm->lexeme_str), '\t');
+					break;
+				}
+				case 'b' :
+				{
+					concatenate_char(&(lxm->lexeme_str), '\b');
+					break;
+				}
+				case '"' :
+				{
+					concatenate_char(&(lxm->lexeme_str), '"');
+					break;
+				}
+				case '\\' :
+				{
+					concatenate_char(&(lxm->lexeme_str), '\\');
+					break;
+				}
+			}
+		}
+		else if(c == '"')
+		{
+			deinit_dstring(&bytes_read);
+			return 1;
+		}
+		else
+			concatenate_char(&(lxm->lexeme_str), c);
+	}
+
+	FAILURE :
+	unread_dstring_from_stream(byte_read_stream, &bytes_read);
+	deinit_dstring(&bytes_read);
+	return 0;
+}
+
 int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 {
 	int error = 0;
@@ -144,7 +234,9 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 	// read next first byte and decide if it is a string
 	if(c == '"')
 	{
-
+		// return true if lexeme was read successfully
+		if(get_next_string_lexeme(lxr->byte_read_stream, lxm))
+			return 1;
 	}
 	else // if the first character is not a '"' then this could be a NUMBER_LEXEME
 	{
