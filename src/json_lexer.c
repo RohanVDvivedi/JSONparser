@@ -117,6 +117,7 @@ static int get_next_string_lexeme(stream* byte_read_stream, lexeme* lxm)
 		}
 		else if(c == '"')
 		{
+			lxm->type = STRING_LEXEME;
 			deinit_dstring(&bytes_read);
 			return 1;
 		}
