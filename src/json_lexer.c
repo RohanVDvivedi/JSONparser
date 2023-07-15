@@ -104,39 +104,53 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 	// unread the single byte that was read
 	unread_from_stream(lxr->byte_read_stream, &c, 1);
 
-	// now you can decode fixed strings: true, false and null
-	dstring string_to_skip = get_dstring_pointing_to_literal_cstring("true");
-	size_t bytes_skipped = skip_dstring_from_stream(lxr->byte_read_stream, &string_to_skip, &error);
-	if(error)
-		return 0;
-	if(bytes_skipped > 0)
+	// it can be true false or null, but none of then have '"' character as their first character
+	if(c != '"')
 	{
-		lxm->type = TRUE;
-		return 1;
-	}
+		// now you can decode fixed strings: true, false and null
+		dstring string_to_skip = get_dstring_pointing_to_literal_cstring("true");
+		size_t bytes_skipped = skip_dstring_from_stream(lxr->byte_read_stream, &string_to_skip, &error);
+		if(error)
+			return 0;
+		if(bytes_skipped > 0)
+		{
+			lxm->type = TRUE;
+			return 1;
+		}
 
-	string_to_skip = get_dstring_pointing_to_literal_cstring("false");
-	bytes_skipped = skip_dstring_from_stream(lxr->byte_read_stream, &string_to_skip, &error);
-	if(error)
-		return 0;
-	if(bytes_skipped > 0)
-	{
-		lxm->type = FALSE;
-		return 1;
-	}
+		string_to_skip = get_dstring_pointing_to_literal_cstring("false");
+		bytes_skipped = skip_dstring_from_stream(lxr->byte_read_stream, &string_to_skip, &error);
+		if(error)
+			return 0;
+		if(bytes_skipped > 0)
+		{
+			lxm->type = FALSE;
+			return 1;
+		}
 
-	string_to_skip = get_dstring_pointing_to_literal_cstring("null");
-	bytes_skipped = skip_dstring_from_stream(lxr->byte_read_stream, &string_to_skip, &error);
-	if(error)
-		return 0;
-	if(bytes_skipped > 0)
-	{
-		lxm->type = NULL_LEXEME;
-		return 1;
+		string_to_skip = get_dstring_pointing_to_literal_cstring("null");
+		bytes_skipped = skip_dstring_from_stream(lxr->byte_read_stream, &string_to_skip, &error);
+		if(error)
+			return 0;
+		if(bytes_skipped > 0)
+		{
+			lxm->type = NULL_LEXEME;
+			return 1;
+		}
 	}
 
 	// decode STRING_LEXEME or NUMBER_LEXEME
-	// TODO
 
-	// if none return 0
+	// read next first byte and decide if it is a string
+	if(c == '"')
+	{
+
+	}
+	else // if the first character is not a '"' then this could be a NUMBER_LEXEME
+	{
+		// check if it is a NUMBER_LEXEME
+	}
+
+	// if none
+	return 0;
 }
