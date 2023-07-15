@@ -57,6 +57,7 @@ json_node* new_json_unsigned_integer_node(uint64_t num_value);
 json_node* new_json_integer_node(int64_t num_value);
 json_node* new_json_float_node(long double num_value);
 json_node* new_json_scientific_notation_node(long double fraction, int64_t exponent);
+json_node* new_json_decimal_string_scientific_notation_node(const dstring* fraction, const dstring* exponent);
 json_node* new_json_string_node(const dstring* string_value);
 json_node* new_json_object_node(cy_uint element_count, const json_object_entry entries[]);
 json_node* new_json_array_node(cy_uint element_count, const json_node* elements[]);

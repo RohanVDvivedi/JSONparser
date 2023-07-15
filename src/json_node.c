@@ -103,6 +103,15 @@ json_node* new_json_scientific_notation_node(long double fraction, int64_t expon
 	return n;
 }
 
+json_node* new_json_decimal_string_scientific_notation_node(const dstring* fraction, const dstring* exponent)
+{
+	json_node* n = malloc(sizeof(json_node));
+	n->type = JSON_NUM;
+	init_copy_dstring(&(n->json_number.fraction), fraction);
+	init_copy_dstring(&(n->json_number.exponent), exponent);
+	return n;
+}
+
 json_node* new_json_string_node(const dstring* string_value)
 {
 	json_node* n = malloc(sizeof(json_node));
