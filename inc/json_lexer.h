@@ -11,9 +11,6 @@ enum lexeme_type
 	// generated when there are no characters to be read from stream
 	END_OF_STREAM = 0,
 
-	// all of \n, \t, \v or ' ' charcters
-	WHITESPACE,
-
 	CURLY_OPEN_BRACE,
 	CLURLY_CLOSE_BRACE,
 
