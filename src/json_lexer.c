@@ -339,7 +339,7 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 		}
 		case '}' :
 		{
-			lxm->type = CLURLY_CLOSE_BRACE;
+			lxm->type = CURLY_CLOSE_BRACE;
 			return 1;
 		}
 		case '[' :
