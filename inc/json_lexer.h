@@ -58,7 +58,7 @@ struct lexer
 	size_t max_json_string_length;
 
 	// maximum json number lexeme_str length to be read
-	size_t max_json_number_lexeme;
+	size_t max_json_number_length;
 
 	// stream to produce lexemes from
 	stream* byte_read_stream;
@@ -66,7 +66,7 @@ struct lexer
 
 // all the below functions return 1 for success and 0 for error
 
-int initialize_lexer(lexer* lxr, stream* byte_read_stream, size_t max_json_string_length, size_t max_json_number_lexeme);
+int initialize_lexer(lexer* lxr, stream* byte_read_stream, size_t max_json_string_length, size_t max_json_number_length);
 
 int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm);
 
