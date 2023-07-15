@@ -164,6 +164,7 @@ static int get_next_number_lexeme(lexer* lxr, lexeme* lxm)
 		goto FAILURE;
 
 	// only one decimal point can be read, and we track that
+	int is_decimal_point_read = 0;
 	unsigned int bytes_numeric_count = 0;
 
 	while(1)
@@ -180,12 +181,25 @@ static int get_next_number_lexeme(lexer* lxr, lexeme* lxm)
 			concatenate_char(&(lxm->lexeme_str), c);
 			bytes_numeric_count++;
 		}
-		else if(c == '.' || c == 'e' || c == 'E')
+		else if(c == '.')
+		{
+			if(is_decimal_point_read)
+			{
+				unread_from_stream(lxr->byte_read_stream, &c, 1);
+				goto FAILURE;
+			}
+			else
+			{
+				is_decimal_point_read = 1;
+				concatenate_char(&(lxm->lexeme_str), c);
+				bytes_numeric_count = 0;
+			}
+		}
+		else if(c == 'e' || c == 'E')
 		{
 			concatenate_char(&(lxm->lexeme_str), c);
 			bytes_numeric_count = 0;
-			if(c == 'e' || c == 'E')
-				break;
+			break;
 		}
 		else
 		{
