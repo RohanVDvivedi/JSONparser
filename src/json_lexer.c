@@ -295,6 +295,7 @@ static int get_next_number_lexeme(lexer* lxr, lexeme* lxm)
 	}
 
 	SUCCESS :
+	lxm->type = NUMBER_LEXEME;
 	return 1;
 
 	FAILURE :
@@ -306,6 +307,9 @@ static int get_next_number_lexeme(lexer* lxr, lexeme* lxm)
 int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 {
 	int error = 0;
+
+	// reinitialize lexeme_str
+	init_empty_dstring(&(lxm->lexeme_str), 0);
 
 	// skip white spaces
 	skip_whitespaces_from_stream(lxr->byte_read_stream, MAX_WHITESAPCES, &error);
