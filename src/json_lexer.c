@@ -360,6 +360,8 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 	else // if the first character is not a '"' then this could be a NUMBER_LEXEME
 	{
 		// check if it is a NUMBER_LEXEME
+		if(get_next_number_lexeme(lxr, lxm))
+			return 1;
 	}
 
 	// if none
