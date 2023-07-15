@@ -41,7 +41,7 @@ void deinitialize_lexer(lexer* lxr)
 
 #define MAX_WHITESAPCES 2048
 
-static int get_next_string_lexeme(stream* byte_read_stream, lexeme* lxm)
+static int get_next_string_lexeme(lexer* lxr, lexeme* lxm)
 {
 	int error = 0;
 	char c;
@@ -50,7 +50,7 @@ static int get_next_string_lexeme(stream* byte_read_stream, lexeme* lxm)
 	init_empty_dstring(&bytes_read, 0);
 
 	// read first quotation
-	size_t byte_read = read_from_stream(byte_read_stream, &c, 1, &error);
+	size_t byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &error);
 	if(error || byte_read == 0)
 		goto FAILURE;
 	concatenate_char(&bytes_read, c);
@@ -60,14 +60,14 @@ static int get_next_string_lexeme(stream* byte_read_stream, lexeme* lxm)
 
 	while(1)
 	{
-		byte_read = read_from_stream(byte_read_stream, &c, 1, &error);
+		byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &error);
 		if(error || byte_read == 0)
 			goto FAILURE;
 		concatenate_char(&bytes_read, c);
 
 		if(c == '\\')
 		{
-			byte_read = read_from_stream(byte_read_stream, &c, 1, &error);
+			byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &error);
 			if(error || byte_read == 0)
 				goto FAILURE;
 			concatenate_char(&bytes_read, c);
@@ -127,7 +127,7 @@ static int get_next_string_lexeme(stream* byte_read_stream, lexeme* lxm)
 	}
 
 	FAILURE :
-	unread_dstring_from_stream(byte_read_stream, &bytes_read);
+	unread_dstring_from_stream(lxr->byte_read_stream, &bytes_read);
 	deinit_dstring(&bytes_read);
 	return 0;
 }
@@ -237,7 +237,7 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 	if(c == '"')
 	{
 		// return true if lexeme was read successfully
-		if(get_next_string_lexeme(lxr->byte_read_stream, lxm))
+		if(get_next_string_lexeme(lxr, lxm))
 			return 1;
 	}
 	else // if the first character is not a '"' then this could be a NUMBER_LEXEME
