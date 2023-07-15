@@ -1,5 +1,7 @@
 #include<json_lexer.h>
 
+#include<stream_util.h>
+
 int initialize_lexer(lexer* lxr, stream* byte_read_stream)
 {
 	// can not initialize lexeme, if the byte_read_stream is not readable
@@ -43,60 +45,95 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 	int error = 0;
 
 	// skip white spaces
-	skip_whitespaces_from_stream(&(lxr->byte_read_stream), MAX_WHITESAPCES, &error);
+	skip_whitespaces_from_stream(lxr->byte_read_stream, MAX_WHITESAPCES, &error);
 	if(error)
 		return 0;
 
 	// read a byte
 	char c;
-	size_t byte_read = read_from_stream(&(lxr->byte_read_stream), &c, 1, &error);
+	size_t byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &error);
 	if(error)
 		return 0;
 
 	// end of stream token
 	if(byte_read == 0)
 	{
-		lxm->lexeme_type = END_OF_STREAM;
+		lxm->type = END_OF_STREAM;
 		return 1;
 	}
+
+	// all white spaces must have been skipped, on excess white spaces we quit
+	if(is_whitespace_char(c))
+		return 0;
 
 	// decode all single byte lexemes
 	switch(c)
 	{
 		case '{' :
 		{
-			lxm->lexeme_type = CURLY_OPEN_BRACE;
+			lxm->type = CURLY_OPEN_BRACE;
 			return 1;
 		}
-		case '{' :
+		case '}' :
 		{
-			lxm->lexeme_type = CLURLY_CLOSE_BRACE;
+			lxm->type = CLURLY_CLOSE_BRACE;
 			return 1;
 		}
 		case '[' :
 		{
-			lxm->lexeme_type = SQUARE_OPEN_BRACE;
+			lxm->type = SQUARE_OPEN_BRACE;
 			return 1;
 		}
 		case ']' :
 		{
-			lxm->lexeme_type = SQUARE_CLOSE_BRACE;
+			lxm->type = SQUARE_CLOSE_BRACE;
 			return 1;
 		}
 		case ',' :
 		{
-			lxm->lexeme_type = COMMA;
+			lxm->type = COMMA;
 			return 1;
 		}
 		case ':' :
 		{
-			lxm->lexeme_type = COLON;
+			lxm->type = COLON;
 			return 1;
 		}
 	}
 
+	// unread the single byte that was read
+	unread_from_stream(lxr->byte_read_stream, &c, 1);
+
 	// now you can decode fixed strings: true, false and null
-	// TODO
+	dstring string_to_skip = get_dstring_pointing_to_literal_cstring("true");
+	size_t bytes_skipped = skip_dstring_from_stream(lxr->byte_read_stream, &string_to_skip, &error);
+	if(error)
+		return 0;
+	if(bytes_skipped > 0)
+	{
+		lxm->type = TRUE;
+		return 1;
+	}
+
+	string_to_skip = get_dstring_pointing_to_literal_cstring("false");
+	bytes_skipped = skip_dstring_from_stream(lxr->byte_read_stream, &string_to_skip, &error);
+	if(error)
+		return 0;
+	if(bytes_skipped > 0)
+	{
+		lxm->type = FALSE;
+		return 1;
+	}
+
+	string_to_skip = get_dstring_pointing_to_literal_cstring("null");
+	bytes_skipped = skip_dstring_from_stream(lxr->byte_read_stream, &string_to_skip, &error);
+	if(error)
+		return 0;
+	if(bytes_skipped > 0)
+	{
+		lxm->type = NULL_LEXEME;
+		return 1;
+	}
 
 	// decode STRING_LEXEME or NUMBER_LEXEME
 	// TODO
