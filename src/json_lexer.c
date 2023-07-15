@@ -2,12 +2,13 @@
 
 #include<stream_util.h>
 
-int initialize_lexer(lexer* lxr, stream* byte_read_stream)
+int initialize_lexer(lexer* lxr, stream* byte_read_stream, size_t max_json_string_length)
 {
-	// can not initialize lexeme, if the byte_read_stream is not readable
-	if(!is_readable_stream(byte_read_stream))
+	// can not initialize lexeme, if the byte_read_stream is not readable OR if the maximum json_string length os 0
+	if((!is_readable_stream(byte_read_stream)) || (max_json_string_length == 0))
 		return 0;
 
+	lxr->max_json_string_length = max_json_string_length;
 	lxr->byte_read_stream = byte_read_stream;
 	lxr->has_undone_lexeme = 0;
 	return 1;
