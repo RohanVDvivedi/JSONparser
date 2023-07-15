@@ -9,7 +9,7 @@ int initialize_lexer(lexer* lxr, stream* byte_read_stream, size_t max_json_strin
 		return 0;
 
 	lxr->max_json_string_length = max_json_string_length;
-	lxr->max_json_number_length = max_json_number_length;
+	lxr->max_json_number_length = max_json_number_length + 4; // extra 4 for +/- sign for fracton and exponent, decimal point and last one for 'e' and 'E'
 	lxr->byte_read_stream = byte_read_stream;
 	lxr->has_undone_lexeme = 0;
 	return 1;
