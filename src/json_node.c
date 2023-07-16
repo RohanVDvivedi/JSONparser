@@ -285,7 +285,11 @@ int insert_in_json_object(json_node* object_node_p, const dstring* key, const js
 		return 0;
 
 	// initialize the object entry
-	init_copy_dstring(&(e->key), key);
+	if(!init_copy_dstring(&(e->key), key))
+	{
+		free(e);
+		return NULL;
+	}
 	e->value = (json_node*) node_p;
 	initialize_llnode(&(e->embed_node));
 
@@ -299,6 +303,7 @@ int insert_in_json_object(json_node* object_node_p, const dstring* key, const js
 	{
 		deinit_dstring(&(e->key));
 		free(e);
+		return NULL;
 	}
 
 	return inserted;
