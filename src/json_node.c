@@ -46,8 +46,9 @@ json_node* clone_json_node(const json_node* node_p)
 					delete_json_node(n);
 					return NULL;
 				}
-				if(!insert_in_json_object(n, &(e->key), clone_json_node(e->value)))
+				if(!insert_in_json_object(n, &(e->key), n_child))
 				{
+					delete_json_node(n_child);
 					delete_json_node(n);
 					return NULL;
 				}
@@ -76,6 +77,7 @@ json_node* clone_json_node(const json_node* node_p)
 				}
 				if(!push_back_to_arraylist(&(n->json_array), n_child))
 				{
+					delete_json_node(n_child);
 					delete_json_node(n);
 					return NULL;
 				}
