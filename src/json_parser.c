@@ -4,6 +4,9 @@
 
 #include<stdio.h>
 
+static json_node* parse_json_array_node(lexer* lxr);
+static json_node* parse_json_object_node(lexer* lxr);
+
 static json_node* parse_json_node(lexer* lxr)
 {
 	json_node* js = NULL;
@@ -16,7 +19,51 @@ static json_node* parse_json_node(lexer* lxr)
 
 	switch(lxm.type)
 	{
-		// TODO
+		case NULL_LEXEME :
+		{
+			destroy_lexeme(&lxm);
+			goto EXIT;
+		}
+		case TRUE :
+		{
+			js = new_json_bool_node(1);
+			destroy_lexeme(&lxm);
+			goto EXIT;
+		}
+		case FALSE :
+		{
+			js = new_json_bool_node(0);
+			destroy_lexeme(&lxm);
+			goto EXIT;
+		}
+		case STRING_LEXEME :
+		{
+			js = new_json_string_node(&(lxm.lexeme_str));
+			destroy_lexeme(&lxm);
+			goto EXIT;
+		}
+		case NUMBER_LEXEME :
+		{
+			// TODO : split by 'e' or 'E'
+			goto EXIT;
+		}
+		case CURLY_OPEN_BRACE :
+		{
+			undo_lexer(lxr, &lxm);
+			js = parse_json_object_node(lxr);
+			goto EXIT;
+		}
+		case SQUARE_OPEN_BRACE :
+		{
+			undo_lexer(lxr, &lxm);
+			js = parse_json_array_node(lxr);
+			goto EXIT;
+		}
+		default :
+		{
+			destroy_lexeme(&lxm);
+			goto FAIL;
+		}
 	}
 
 	FAIL:;
