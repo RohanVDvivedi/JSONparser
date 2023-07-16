@@ -57,6 +57,8 @@ json_node* clone_json_node(const json_node* node_p)
 json_node* new_json_bool_node(int bool_value)
 {
 	json_node* n = malloc(sizeof(json_node));
+	if(n == NULL)
+		return NULL;
 	n->type = JSON_BOOL;
 	n->json_bool = bool_value;
 	return n;
@@ -68,7 +70,13 @@ json_node* new_json_unsigned_integer_node(uint64_t num_value)
 	n->type = JSON_NUM;
 	init_empty_dstring(&(n->json_number.fraction), 0);
 	init_empty_dstring(&(n->json_number.exponent), 0);
-	snprintf_dstring(&(n->json_number.fraction), "%" PRIu64, num_value);
+	if(!snprintf_dstring(&(n->json_number.fraction), "%" PRIu64, num_value))
+	{
+		deinit_dstring(&(n->json_number.fraction));
+		deinit_dstring(&(n->json_number.exponent));
+		free(n);
+		return NULL;
+	}
 	return n;
 }
 
@@ -78,7 +86,13 @@ json_node* new_json_integer_node(int64_t num_value)
 	n->type = JSON_NUM;
 	init_empty_dstring(&(n->json_number.fraction), 0);
 	init_empty_dstring(&(n->json_number.exponent), 0);
-	snprintf_dstring(&(n->json_number.fraction), "%" PRId64, num_value);
+	if(!snprintf_dstring(&(n->json_number.fraction), "%" PRId64, num_value))
+	{
+		deinit_dstring(&(n->json_number.fraction));
+		deinit_dstring(&(n->json_number.exponent));
+		free(n);
+		return NULL;
+	}
 	return n;
 }
 
@@ -88,7 +102,13 @@ json_node* new_json_float_node(long double num_value)
 	n->type = JSON_NUM;
 	init_empty_dstring(&(n->json_number.fraction), 0);
 	init_empty_dstring(&(n->json_number.exponent), 0);
-	snprintf_dstring(&(n->json_number.fraction), "%Lf", num_value);
+	if(!snprintf_dstring(&(n->json_number.fraction), "%Lf", num_value))
+	{
+		deinit_dstring(&(n->json_number.fraction));
+		deinit_dstring(&(n->json_number.exponent));
+		free(n);
+		return NULL;
+	}
 	return n;
 }
 
@@ -98,8 +118,20 @@ json_node* new_json_scientific_notation_node(long double fraction, int64_t expon
 	n->type = JSON_NUM;
 	init_empty_dstring(&(n->json_number.fraction), 0);
 	init_empty_dstring(&(n->json_number.exponent), 0);
-	snprintf_dstring(&(n->json_number.fraction), "%Lf", fraction);
-	snprintf_dstring(&(n->json_number.exponent), "%" PRId64, exponent);
+	if(!snprintf_dstring(&(n->json_number.fraction), "%Lf", fraction))
+	{
+		deinit_dstring(&(n->json_number.fraction));
+		deinit_dstring(&(n->json_number.exponent));
+		free(n);
+		return NULL;
+	}
+	if(!snprintf_dstring(&(n->json_number.exponent), "%" PRId64, exponent))
+	{
+		deinit_dstring(&(n->json_number.fraction));
+		deinit_dstring(&(n->json_number.exponent));
+		free(n);
+		return NULL;
+	}
 	return n;
 }
 
