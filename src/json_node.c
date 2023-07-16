@@ -23,13 +23,7 @@ json_node* clone_json_node(const json_node* node_p)
 		case JSON_BOOL :
 			return new_json_bool_node(node_p->json_bool);
 		case JSON_NUM :
-		{
-			json_node* n = malloc(sizeof(json_node));
-			n->type = JSON_NUM;
-			init_copy_dstring(&(n->json_number.fraction), &(node_p->json_number.fraction));
-			init_copy_dstring(&(n->json_number.exponent), &(node_p->json_number.exponent));
-			return n;
-		}
+			return new_json_decimal_string_scientific_notation_node(&(node_p->json_number.fraction), &(node_p->json_number.exponent));
 		case JSON_STRING :
 			return new_json_string_node(&(node_p->json_string));
 		case JSON_OBJECT :
