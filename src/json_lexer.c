@@ -131,6 +131,8 @@ static int get_next_string_lexeme(lexer* lxr, lexeme* lxm)
 					concatenate_char(&(lxm->lexeme_str), '\\');
 					break;
 				}
+				default :
+					goto FAILURE;
 			}
 		}
 		else
@@ -140,6 +142,7 @@ static int get_next_string_lexeme(lexer* lxr, lexeme* lxm)
 	FAILURE :
 	unread_dstring_from_stream(lxr->byte_read_stream, &bytes_read);
 	deinit_dstring(&bytes_read);
+	deinit_dstring(&(lxm->lexeme_str));
 	return 0;
 }
 
