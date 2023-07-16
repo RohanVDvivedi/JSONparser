@@ -44,8 +44,8 @@ static json_node* parse_json_node(lexer* lxr)
 		}
 		case NUMBER_LEXEME :
 		{
-			const dstring* e = get_dstring_pointing_to_literal_cstring("e");
-			const dstring* E = get_dstring_pointing_to_literal_cstring("E");
+			const dstring* e = &get_dstring_pointing_to_literal_cstring("e");
+			const dstring* E = &get_dstring_pointing_to_literal_cstring("E");
 
 			const dstring* split_by = NULL;
 
