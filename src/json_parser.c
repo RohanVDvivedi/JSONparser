@@ -44,7 +44,31 @@ static json_node* parse_json_node(lexer* lxr)
 		}
 		case NUMBER_LEXEME :
 		{
-			// TODO : split by 'e' or 'E'
+			const dstring* e = get_dstring_pointing_to_literal_cstring("e");
+			const dstring* E = get_dstring_pointing_to_literal_cstring("E");
+
+			const dstring* split_by = NULL;
+
+			if(contains_dstring_RK(&(lxm.lexeme_str), e) != INVALID_INDEX)
+				split_by = e;
+			else if(contains_dstring_RK(&(lxm.lexeme_str), E) != INVALID_INDEX)
+				split_by = E;
+
+			// both the below dstrings are suppossed to be point_dstr
+			dstring fraction;
+			dstring exponent;
+
+			if(split_by == NULL)
+			{
+				fraction = get_dstring_pointing_to_dstring(&(lxm.lexeme_str));
+				exponent = get_dstring_pointing_to_literal_cstring("");
+			}
+			else
+				exponent = split_dstring(&(lxm.lexeme_str), split_by, &fraction);
+
+			js = new_json_decimal_string_scientific_notation_node(&fraction, &exponent);
+
+			destroy_lexeme(&lxm);
 			goto EXIT;
 		}
 		case CURLY_OPEN_BRACE :
