@@ -22,7 +22,7 @@ int undo_lexer(lexer* lxr, lexeme* lxm)
 		return 0;
 
 	lxr->undone_lexeme = (*lxm);
-	init_empty_dstring(lxm, 0);// reinitialize the lxm, this is effectively a transfer of ownership
+	init_empty_dstring(&(lxm->lexeme_str), 0);// reinitialize the lxm, this is effectively a transfer of ownership
 	lxr->has_undone_lexeme = 1;
 	return 1;
 }
