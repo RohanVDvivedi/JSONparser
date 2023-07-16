@@ -6,12 +6,29 @@
 
 static json_node* parse_json_node(lexer* lxr)
 {
-	// TODO
+	json_node* js = NULL;
+
+	lexeme lxm;
+
+	// read the next lexeme to ch
+	if(!get_next_lexeme_from_lexer(lxr, &lxm))
+		goto FAIL;
+
+	switch(lxm.type)
+	{
+		// TODO
+	}
+
+	FAIL:;
+	delete_json_node(js);
+	js = NULL;
+	EXIT:;
+	return js;
 }
 
 static json_node* parse_json_array_node(lexer* lxr)
 {
-		json_node* js = NULL;
+	json_node* js = NULL;
 
 	lexeme lxm;
 
