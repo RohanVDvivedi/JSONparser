@@ -15,13 +15,14 @@ int initialize_lexer(lexer* lxr, stream* byte_read_stream, size_t max_json_strin
 	return 1;
 }
 
-int undo_lexer(lexer* lxr, const lexeme* lxm)
+int undo_lexer(lexer* lxr, lexeme* lxm)
 {
 	// this lexer can only hold, 1 undone lexeme
 	if(lxr->has_undone_lexeme)
 		return 0;
 
 	lxr->undone_lexeme = (*lxm);
+	init_empty_dstring(lxm, 0);// reinitialize the lxm, this is effectively a transfer of ownership
 	lxr->has_undone_lexeme = 1;
 	return 1;
 }
@@ -309,6 +310,14 @@ static int get_next_number_lexeme(lexer* lxr, lexeme* lxm)
 
 int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 {
+	// if the lexer has an undone lexeme then return that instead
+	if(lxr->has_undone_lexeme)
+	{
+		(*lxm) = lxr->undone_lexeme;
+		lxr->has_undone_lexeme = 0;
+		return 1;
+	}
+
 	int error = 0;
 
 	// reinitialize lexeme_str

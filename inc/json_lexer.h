@@ -70,7 +70,7 @@ int initialize_lexer(lexer* lxr, stream* byte_read_stream, size_t max_json_strin
 
 int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm);
 
-int undo_lexer(lexer* lxr, const lexeme* lxm);
+int undo_lexer(lexer* lxr, lexeme* lxm);
 
 void destroy_lexeme(lexeme* lxm);
 
