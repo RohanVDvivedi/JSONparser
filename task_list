@@ -1,4 +1,5 @@
  * fix undo functionality for json lexer
+ * reset a lexeme lxm after an undo
  * implement a top-down recursive descent parser
  * constant static true, false (and even NULL) nodes
  * handle cases when a malloc could fail, or even concatenation or initialization of a dstring
