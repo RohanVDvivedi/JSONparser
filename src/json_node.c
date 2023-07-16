@@ -29,19 +29,57 @@ json_node* clone_json_node(const json_node* node_p)
 		case JSON_OBJECT :
 		{
 			json_node* n = malloc(sizeof(json_node));
+			if(n == NULL)
+				return NULL;
 			n->type = JSON_OBJECT;
-			initialize_hashmap(&(n->json_object), ELEMENTS_AS_LINKEDLIST_INSERT_AT_TAIL, ((get_element_count_hashmap(&(node_p->json_object)) / 2) + 4), hash_json_object_entry, (int (*)(const void*, const void*))compare_dstring, offsetof(json_object_entry, embed_node));
+			if(!initialize_hashmap(&(n->json_object), ELEMENTS_AS_LINKEDLIST_INSERT_AT_TAIL, ((get_element_count_hashmap(&(node_p->json_object)) / 2) + 4), hash_json_object_entry, (int (*)(const void*, const void*))compare_dstring, offsetof(json_object_entry, embed_node)))
+			{
+				free(n);
+				return NULL;
+			}
 			for(const json_object_entry* e = get_first_of_in_hashmap(&(node_p->json_object), ANY_IN_HASHMAP); e != NULL; e = get_next_of_in_hashmap(&(node_p->json_object), e, ANY_IN_HASHMAP))
-				insert_in_json_object(n, &(e->key), clone_json_node(e->value));
+			{
+				json_node* node_p_child = e->value;
+				json_node* n_child = clone_json_node(node_p_child);
+				if(node_p_child != NULL && n_child == NULL)
+				{
+					delete_json_node(n);
+					return NULL;
+				}
+				if(!insert_in_json_object(n, &(e->key), clone_json_node(e->value)))
+				{
+					delete_json_node(n);
+					return NULL;
+				}
+			}
 			return n;
 		}
 		case JSON_ARRAY :
 		{
 			json_node* n = malloc(sizeof(json_node));
+			if(n == NULL)
+				return NULL;
 			n->type = JSON_ARRAY;
-			initialize_arraylist(&(n->json_array), get_element_count_arraylist(&(node_p->json_array)));
+			if(!initialize_arraylist(&(n->json_array), get_element_count_arraylist(&(node_p->json_array))))
+			{
+				free(n);
+				return NULL;
+			}
 			for(cy_uint i = 0; i < get_element_count_arraylist(&(node_p->json_array)); i++)
-				push_back_to_arraylist(&(n->json_array), clone_json_node(get_nth_from_front_of_arraylist(&(node_p->json_array), i)));
+			{
+				json_node* node_p_child = (json_node*) get_nth_from_front_of_arraylist(&(node_p->json_array), i);
+				json_node* n_child = clone_json_node(node_p_child);
+				if(node_p_child != NULL && n_child == NULL)
+				{
+					delete_json_node(n);
+					return NULL;
+				}
+				if(!push_back_to_arraylist(&(n->json_array), n_child))
+				{
+					delete_json_node(n);
+					return NULL;
+				}
+			}
 			return n;
 		}
 	}
