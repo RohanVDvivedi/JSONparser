@@ -171,8 +171,17 @@ json_node* new_json_decimal_string_scientific_notation_node(const dstring* fract
 {
 	json_node* n = malloc(sizeof(json_node));
 	n->type = JSON_NUM;
-	init_copy_dstring(&(n->json_number.fraction), fraction);
-	init_copy_dstring(&(n->json_number.exponent), exponent);
+	if(!init_copy_dstring(&(n->json_number.fraction), fraction))
+	{
+		free(n);
+		return NULL;
+	}
+	if(!init_copy_dstring(&(n->json_number.exponent), exponent))
+	{
+		deinit_dstring(&(n->json_number.fraction));
+		free(n);
+		return NULL;
+	}
 	return n;
 }
 
@@ -180,7 +189,11 @@ json_node* new_json_string_node(const dstring* string_value)
 {
 	json_node* n = malloc(sizeof(json_node));
 	n->type = JSON_STRING;
-	init_copy_dstring(&(n->json_string), string_value);
+	if(!init_copy_dstring(&(n->json_string), string_value))
+	{
+		free(n);
+		return NULL;
+	}
 	return n;
 }
 
