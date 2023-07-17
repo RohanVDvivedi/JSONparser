@@ -461,7 +461,7 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 		if(bytes_skipped > 0)
 		{
 			lxm->type = NULL_LEXEME;
-			return 1;
+			return NO_ERROR;
 		}
 	}
 
