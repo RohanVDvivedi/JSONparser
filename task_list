@@ -1,1 +1,1 @@
- * handle cases when a malloc, concatenation or initialization of a dstring fails in lexer or parser
+ * handle cases when concatenation (JSON_ALLOCATION_ERROR) or unred_to_stream (JSON_ERROR_IN_STREAM) fails
