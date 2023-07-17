@@ -217,7 +217,8 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 		// can not read a character, if we will cross the maximum limit
 		if(get_char_count_dstring(&(lxm->lexeme_str)) >= lxr->max_json_number_length)
 			return JSON_LEXER_ERROR;
-		concatenate_char(&(lxm->lexeme_str), c);
+		if(!concatenate_char(&(lxm->lexeme_str), c))
+			return JSON_ALLOCATION_ERROR;
 	}
 	else // fail if none of the above
 		return JSON_LEXER_ERROR;
@@ -257,7 +258,11 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 				deinit_dstring(&(lxm->lexeme_str));
 				return JSON_LEXER_ERROR;
 			}
-			concatenate_char(&(lxm->lexeme_str), c);
+			if(!concatenate_char(&(lxm->lexeme_str), c))
+			{
+				deinit_dstring(&(lxm->lexeme_str));
+				return JSON_ALLOCATION_ERROR;
+			}
 			bytes_numeric_count++;
 		}
 		else if(c == '.')
@@ -276,7 +281,11 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 					deinit_dstring(&(lxm->lexeme_str));
 					return JSON_LEXER_ERROR;
 				}
-				concatenate_char(&(lxm->lexeme_str), c);
+				if(!concatenate_char(&(lxm->lexeme_str), c))
+				{
+					deinit_dstring(&(lxm->lexeme_str));
+					return JSON_ALLOCATION_ERROR;
+				}
 				bytes_numeric_count = 0;
 			}
 		}
@@ -288,7 +297,11 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 				deinit_dstring(&(lxm->lexeme_str));
 				return JSON_LEXER_ERROR;
 			}
-			concatenate_char(&(lxm->lexeme_str), c);
+			if(!concatenate_char(&(lxm->lexeme_str), c))
+			{
+				deinit_dstring(&(lxm->lexeme_str));
+				return JSON_ALLOCATION_ERROR;
+			}
 			bytes_numeric_count = 0;
 			break;
 		}
@@ -332,7 +345,11 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 			deinit_dstring(&(lxm->lexeme_str));
 			return JSON_LEXER_ERROR;
 		}
-		concatenate_char(&(lxm->lexeme_str), c);
+		if(!concatenate_char(&(lxm->lexeme_str), c))
+		{
+			deinit_dstring(&(lxm->lexeme_str));
+			return JSON_ALLOCATION_ERROR;
+		}
 	}
 	else // fail if none of the above
 	{
@@ -373,7 +390,11 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 				deinit_dstring(&(lxm->lexeme_str));
 				return JSON_LEXER_ERROR;
 			}
-			concatenate_char(&(lxm->lexeme_str), c);
+			if(!concatenate_char(&(lxm->lexeme_str), c))
+			{
+				deinit_dstring(&(lxm->lexeme_str));
+				return JSON_ALLOCATION_ERROR;
+			}
 			bytes_numeric_count++;
 		}
 		else
