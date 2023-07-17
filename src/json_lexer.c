@@ -43,7 +43,8 @@ void deinitialize_lexer(lexer* lxr)
 
 #define MAX_WHITESAPCES 2048
 
-static int get_next_string_lexeme(lexer* lxr, lexeme* lxm)
+// this function must be called at the end, only and only when you are confirm that this is either a json_string or nothing
+static int get_next_string_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 {
 	// make dstring_empty before proceeding
 	make_dstring_empty(&(lxm->lexeme_str));
@@ -147,7 +148,8 @@ static int get_next_string_lexeme(lexer* lxr, lexeme* lxm)
 	return 0;
 }
 
-static int get_next_number_lexeme(lexer* lxr, lexeme* lxm)
+// this function must be called at the end, only
+static int get_next_number_lexeme_END(lexer* lxr, lexeme* lxm)
 {
 	int error = 0;
 	char c;
@@ -420,13 +422,14 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 	if(c == '"')
 	{
 		// return true if lexeme was read successfully
-		if(get_next_string_lexeme(lxr, lxm))
+		// here we knoe that the first character of the next lexeme is a quotation, hence it is either a json_string or an error
+		if(get_next_string_lexeme_CONFIRM_END(lxr, lxm))
 			return 1;
 	}
 	else // if the first character is not a '"' then this could be a NUMBER_LEXEME
 	{
 		// check if it is a NUMBER_LEXEME
-		if(get_next_number_lexeme(lxr, lxm))
+		if(get_next_number_lexeme_END(lxr, lxm))
 			return 1;
 	}
 
