@@ -2,17 +2,17 @@
 
 #include<json_lexer.h>
 
-static json_node* parse_json_array_node(lexer* lxr);
-static json_node* parse_json_object_node(lexer* lxr);
+static json_node* parse_json_array_node(lexer* lxr, int* error);
+static json_node* parse_json_object_node(lexer* lxr, int* error);
 
-static json_node* parse_json_node(lexer* lxr)
+static json_node* parse_json_node(lexer* lxr, int* error)
 {
 	json_node* js = NULL;
 
 	lexeme lxm;
 
 	// read the next lexeme to ch
-	if(!get_next_lexeme_from_lexer(lxr, &lxm))
+	if((*error) = get_next_lexeme_from_lexer(lxr, &lxm))
 		goto FAIL;
 
 	switch(lxm.type)
@@ -25,18 +25,24 @@ static json_node* parse_json_node(lexer* lxr)
 		case TRUE :
 		{
 			js = new_json_bool_node(1);
+			if(js == NULL)
+				(*error) = JSON_NODE_ALLOCATION_ERROR;
 			destroy_lexeme(&lxm);
 			goto EXIT;
 		}
 		case FALSE :
 		{
 			js = new_json_bool_node(0);
+			if(js == NULL)
+				(*error) = JSON_NODE_ALLOCATION_ERROR;
 			destroy_lexeme(&lxm);
 			goto EXIT;
 		}
 		case STRING_LEXEME :
 		{
 			js = new_json_string_node(&(lxm.lexeme_str));
+			if(js == NULL)
+				(*error) = JSON_NODE_ALLOCATION_ERROR;
 			destroy_lexeme(&lxm);
 			goto EXIT;
 		}
@@ -66,24 +72,28 @@ static json_node* parse_json_node(lexer* lxr)
 
 			js = new_json_decimal_string_scientific_notation_node(&fraction, &exponent);
 
+			if(js == NULL)
+				(*error) = JSON_NODE_ALLOCATION_ERROR;
+
 			destroy_lexeme(&lxm);
 			goto EXIT;
 		}
 		case CURLY_OPEN_BRACE :
 		{
 			undo_lexer(lxr, &lxm);
-			js = parse_json_object_node(lxr);
+			js = parse_json_object_node(lxr, error);
 			goto EXIT;
 		}
 		case SQUARE_OPEN_BRACE :
 		{
 			undo_lexer(lxr, &lxm);
-			js = parse_json_array_node(lxr);
+			js = parse_json_array_node(lxr, error);
 			goto EXIT;
 		}
 		default :
 		{
 			destroy_lexeme(&lxm);
+			(*error) = JSON_PARSER_ERROR;
 			goto FAIL;
 		}
 	}
@@ -233,6 +243,7 @@ json_node* parse_json(stream* rs, size_t max_json_string_length, size_t max_json
 		return NULL;
 	}
 
+	(*error) = NO_ERROR;
 	lexeme lxm;
 
 	json_node* js = NULL;
