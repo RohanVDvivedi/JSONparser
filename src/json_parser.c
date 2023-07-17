@@ -26,7 +26,7 @@ static json_node* parse_json_node(lexer* lxr, int* error)
 		{
 			js = new_json_bool_node(1);
 			if(js == NULL)
-				(*error) = JSON_NODE_ALLOCATION_ERROR;
+				(*error) = JSON_ALLOCATION_ERROR;
 			destroy_lexeme(&lxm);
 			goto EXIT;
 		}
@@ -34,7 +34,7 @@ static json_node* parse_json_node(lexer* lxr, int* error)
 		{
 			js = new_json_bool_node(0);
 			if(js == NULL)
-				(*error) = JSON_NODE_ALLOCATION_ERROR;
+				(*error) = JSON_ALLOCATION_ERROR;
 			destroy_lexeme(&lxm);
 			goto EXIT;
 		}
@@ -42,7 +42,7 @@ static json_node* parse_json_node(lexer* lxr, int* error)
 		{
 			js = new_json_string_node(&(lxm.lexeme_str));
 			if(js == NULL)
-				(*error) = JSON_NODE_ALLOCATION_ERROR;
+				(*error) = JSON_ALLOCATION_ERROR;
 			destroy_lexeme(&lxm);
 			goto EXIT;
 		}
@@ -73,7 +73,7 @@ static json_node* parse_json_node(lexer* lxr, int* error)
 			js = new_json_decimal_string_scientific_notation_node(&fraction, &exponent);
 
 			if(js == NULL)
-				(*error) = JSON_NODE_ALLOCATION_ERROR;
+				(*error) = JSON_ALLOCATION_ERROR;
 
 			destroy_lexeme(&lxm);
 			goto EXIT;
@@ -125,7 +125,7 @@ static json_node* parse_json_array_node(lexer* lxr, int* error)
 	js = new_json_array_node(0, NULL);
 	if(js == NULL)
 	{
-		(*error) = JSON_NODE_ALLOCATION_ERROR;
+		(*error) = JSON_ALLOCATION_ERROR;
 		goto FAIL;
 	}
 
@@ -151,7 +151,7 @@ static json_node* parse_json_array_node(lexer* lxr, int* error)
 		if(!append_to_json_array(js, value))
 		{
 			delete_json_node(value);
-			(*error) = JSON_NODE_ALLOCATION_ERROR;
+			(*error) = JSON_ALLOCATION_ERROR;
 			goto FAIL;
 		}
 
@@ -198,7 +198,7 @@ static json_node* parse_json_object_node(lexer* lxr, int* error)
 	js = new_json_object_node(0, NULL);
 	if(js == NULL)
 	{
-		(*error) = JSON_NODE_ALLOCATION_ERROR;
+		(*error) = JSON_ALLOCATION_ERROR;
 		goto FAIL;
 	}
 
@@ -228,7 +228,7 @@ static json_node* parse_json_object_node(lexer* lxr, int* error)
 		if(!init_copy_dstring(&key, &(lxm.lexeme_str)))
 		{
 			destroy_lexeme(&lxm);
-			(*error) = JSON_NODE_ALLOCATION_ERROR;
+			(*error) = JSON_ALLOCATION_ERROR;
 			goto FAIL;
 		}
 		destroy_lexeme(&lxm);
