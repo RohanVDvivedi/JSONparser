@@ -13,7 +13,7 @@ int main()
 	initialize_stream_for_fd(&std_read, STDIN_FILENO);
 	initialize_stream_for_fd(&std_write, STDOUT_FILENO);
 
-	json_node* js = parse_json(&std_read, 10, 10);
+	json_node* js = parse_json(&std_read, 1024, 128);
 
 	if(js != NULL)
 	{
