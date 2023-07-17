@@ -12,7 +12,7 @@ static json_node* parse_json_node(lexer* lxr, int* error)
 	lexeme lxm;
 
 	// read the next lexeme to ch
-	if((*error) = get_next_lexeme_from_lexer(lxr, &lxm))
+	if(((*error) = get_next_lexeme_from_lexer(lxr, &lxm)))
 		goto FAIL;
 
 	switch(lxm.type)
@@ -112,7 +112,7 @@ static json_node* parse_json_array_node(lexer* lxr, int* error)
 	lexeme lxm;
 
 	// read the starting of the json array, a '['
-	if((*error) = get_next_lexeme_from_lexer(lxr, &lxm))
+	if(((*error) = get_next_lexeme_from_lexer(lxr, &lxm)))
 		goto FAIL;
 	destroy_lexeme(&lxm);
 	if(lxm.type != SQUARE_OPEN_BRACE)
@@ -130,7 +130,7 @@ static json_node* parse_json_array_node(lexer* lxr, int* error)
 	}
 
 	// empty object case if next lexeme is a ']'
-	if((*error) = get_next_lexeme_from_lexer(lxr, &lxm))
+	if(((*error) = get_next_lexeme_from_lexer(lxr, &lxm)))
 		goto FAIL;
 	if(lxm.type == SQUARE_CLOSE_BRACE)
 	{
@@ -156,7 +156,7 @@ static json_node* parse_json_array_node(lexer* lxr, int* error)
 		}
 
 		// after key comes a ',' or a ']'
-		if((*error) = get_next_lexeme_from_lexer(lxr, &lxm))
+		if(((*error) = get_next_lexeme_from_lexer(lxr, &lxm)))
 			goto FAIL;
 		destroy_lexeme(&lxm);
 		if(lxm.type == COMMA)
@@ -185,7 +185,7 @@ static json_node* parse_json_object_node(lexer* lxr, int* error)
 	lexeme lxm;
 
 	// read the starting of the json object, a '{'
-	if((*error) = get_next_lexeme_from_lexer(lxr, &lxm))
+	if(((*error) = get_next_lexeme_from_lexer(lxr, &lxm)))
 		goto FAIL;
 	destroy_lexeme(&lxm);
 	if(lxm.type != CURLY_OPEN_BRACE)
@@ -203,7 +203,7 @@ static json_node* parse_json_object_node(lexer* lxr, int* error)
 	}
 
 	// empty object case if next lexeme is a '}'
-	if((*error) = get_next_lexeme_from_lexer(lxr, &lxm))
+	if(((*error) = get_next_lexeme_from_lexer(lxr, &lxm)))
 		goto FAIL;
 	if(lxm.type == CURLY_CLOSE_BRACE)
 	{
@@ -216,7 +216,7 @@ static json_node* parse_json_object_node(lexer* lxr, int* error)
 	while(1)
 	{
 		// read a string key
-		if((*error) = get_next_lexeme_from_lexer(lxr, &lxm))
+		if(((*error) = get_next_lexeme_from_lexer(lxr, &lxm)))
 			goto FAIL;
 		if(lxm.type != STRING_LEXEME)
 		{
@@ -234,7 +234,7 @@ static json_node* parse_json_object_node(lexer* lxr, int* error)
 		destroy_lexeme(&lxm);
 
 		// after key comes a ':'
-		if((*error) = get_next_lexeme_from_lexer(lxr, &lxm))
+		if(((*error) = get_next_lexeme_from_lexer(lxr, &lxm)))
 			goto FAIL;
 		destroy_lexeme(&lxm);
 		if(lxm.type != COLON)
@@ -262,7 +262,7 @@ static json_node* parse_json_object_node(lexer* lxr, int* error)
 		deinit_dstring(&key);
 
 		// after key comes a ',' or a '}'
-		if((*error) = get_next_lexeme_from_lexer(lxr, &lxm))
+		if(((*error) = get_next_lexeme_from_lexer(lxr, &lxm)))
 			goto FAIL;
 		destroy_lexeme(&lxm);
 		if(lxm.type == COMMA)
@@ -298,7 +298,7 @@ json_node* parse_json(stream* rs, size_t max_json_string_length, size_t max_json
 
 	json_node* js = NULL;
 
-	if((*error) = get_next_lexeme_from_lexer(&lxr, &lxm))
+	if(((*error) = get_next_lexeme_from_lexer(&lxr, &lxm)))
 		goto EXIT;
 
 	if(lxm.type == CURLY_OPEN_BRACE)
