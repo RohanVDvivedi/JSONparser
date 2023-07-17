@@ -148,8 +148,8 @@ static int get_next_string_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 	return 0;
 }
 
-// this function must be called at the end, only
-static int get_next_number_lexeme_END(lexer* lxr, lexeme* lxm)
+// this function must be called at the end, after you are sure that it is no other type of lexeme
+static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 {
 	int error = 0;
 	char c;
@@ -422,14 +422,17 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 	if(c == '"')
 	{
 		// return true if lexeme was read successfully
-		// here we knoe that the first character of the next lexeme is a quotation, hence it is either a json_string or an error
+		// here we know that the first character of the next lexeme is a quotation, hence it is either a json_string or an error
+		// this allows us to skip unreading on an error
 		if(get_next_string_lexeme_CONFIRM_END(lxr, lxm))
 			return 1;
 	}
 	else // if the first character is not a '"' then this could be a NUMBER_LEXEME
 	{
 		// check if it is a NUMBER_LEXEME
-		if(get_next_number_lexeme_END(lxr, lxm))
+		// here we know that none of the lexeme types passed the case, hence it is either a json number or an error
+		// this allows us to skip unreading on an error
+		if(get_next_number_lexeme_CONFIRM_END(lxr, lxm))
 			return 1;
 	}
 
