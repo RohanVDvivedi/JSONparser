@@ -49,40 +49,58 @@ static int get_next_string_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 	// make dstring_empty before proceeding
 	make_dstring_empty(&(lxm->lexeme_str));
 
-	int error = 0;
+	int stream_error = 0;
 	char c;
 
 	// read first quotation
-	size_t byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &error);
-	if(error || byte_read == 0)
-		goto FAILURE;
-
-	if(c != '"')
-		goto FAILURE;
+	size_t byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &stream_error);
+	if(stream_error)
+		return JSON_ERROR_IN_STREAM;
+	else if(byte_read == 0 || c != '"')
+		return JSON_LEXER_ERROR;
 
 	while(1)
 	{
-		byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &error);
-		if(error || byte_read == 0)
-			goto FAILURE;
+		byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &stream_error);
+		if(stream_error)
+		{
+			deinit_dstring(&(lxm->lexeme_str));
+			return JSON_ERROR_IN_STREAM;
+		}
+		else if(byte_read == 0)
+		{
+			deinit_dstring(&(lxm->lexeme_str));
+			return JSON_LEXER_ERROR;
+		}
 
 		// if last, then exit
 		if(c == '"')
 		{
 			lxm->type = STRING_LEXEME;
-			return 1;
+			return NO_ERROR;
 		}
 
 		// if the json_string lexeme size is as big as the max_json_string_length permitted, 
 		// then we are not supposed to append any further and we quit with a failure
 		if(get_char_count_dstring(&(lxm->lexeme_str)) >= lxr->max_json_string_length)
-			goto FAILURE;
+		{
+			deinit_dstring(&(lxm->lexeme_str));
+			return JSON_LEXER_ERROR;
+		}
 
 		if(c == '\\')
 		{
-			byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &error);
-			if(error || byte_read == 0)
-				goto FAILURE;
+			byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &stream_error);
+			if(stream_error)
+			{
+				deinit_dstring(&(lxm->lexeme_str));
+				return JSON_ERROR_IN_STREAM;
+			}
+			else if(byte_read == 0)
+			{
+				deinit_dstring(&(lxm->lexeme_str));
+				return JSON_LEXER_ERROR;
+			}
 
 			switch(c)
 			{
@@ -127,16 +145,15 @@ static int get_next_string_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 					break;
 				}
 				default :
-					goto FAILURE;
+				{
+					deinit_dstring(&(lxm->lexeme_str));
+					return LEXER_ERROR;
+				}
 			}
 		}
 		else
 			concatenate_char(&(lxm->lexeme_str), c);
 	}
-
-	FAILURE :
-	deinit_dstring(&(lxm->lexeme_str));
-	return 0;
 }
 
 // this function must be called at the end, after you are sure that it is no other type of lexeme
