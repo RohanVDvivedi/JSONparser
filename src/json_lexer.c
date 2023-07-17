@@ -159,10 +159,7 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 	{
 		// can not read a character, if we will cross the maximum limit
 		if(get_char_count_dstring(&(lxm->lexeme_str)) >= lxr->max_json_number_length)
-		{
-			unread_from_stream(lxr->byte_read_stream, &c, 1);
 			goto FAILURE;
-		}
 		concatenate_char(&(lxm->lexeme_str), c);
 	}
 	else // fail if none of the above
@@ -185,29 +182,20 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 		{
 			// can not read a character, if we will cross the maximum limit
 			if(get_char_count_dstring(&(lxm->lexeme_str)) >= lxr->max_json_number_length)
-			{
-				unread_from_stream(lxr->byte_read_stream, &c, 1);
 				goto FAILURE;
-			}
 			concatenate_char(&(lxm->lexeme_str), c);
 			bytes_numeric_count++;
 		}
 		else if(c == '.')
 		{
 			if(is_decimal_point_read)
-			{
-				unread_from_stream(lxr->byte_read_stream, &c, 1);
 				goto FAILURE;
-			}
 			else
 			{
 				is_decimal_point_read = 1;
 				// can not read a character, if we will cross the maximum limit
 				if(get_char_count_dstring(&(lxm->lexeme_str)) >= lxr->max_json_number_length)
-				{
-					unread_from_stream(lxr->byte_read_stream, &c, 1);
 					goto FAILURE;
-				}
 				concatenate_char(&(lxm->lexeme_str), c);
 				bytes_numeric_count = 0;
 			}
@@ -216,21 +204,20 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 		{
 			// can not read a character, if we will cross the maximum limit
 			if(get_char_count_dstring(&(lxm->lexeme_str)) >= lxr->max_json_number_length || bytes_numeric_count == 0)
-			{
-				unread_from_stream(lxr->byte_read_stream, &c, 1);
 				goto FAILURE;
-			}
 			concatenate_char(&(lxm->lexeme_str), c);
 			bytes_numeric_count = 0;
 			break;
 		}
 		else
 		{
-			unread_from_stream(lxr->byte_read_stream, &c, 1);
 			if(bytes_numeric_count == 0)
 				goto FAILURE;
 			else
+			{
+				unread_from_stream(lxr->byte_read_stream, &c, 1);
 				goto SUCCESS;
+			}
 		}
 	}
 
@@ -246,10 +233,7 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 	{
 		// can not read a character, if we will cross the maximum limit
 		if(get_char_count_dstring(&(lxm->lexeme_str)) >= lxr->max_json_number_length)
-		{
-			unread_from_stream(lxr->byte_read_stream, &c, 1);
 			goto FAILURE;
-		}
 		concatenate_char(&(lxm->lexeme_str), c);
 	}
 	else // fail if none of the above
@@ -270,20 +254,19 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 		{
 			// can not read a character, if we will cross the maximum limit
 			if(get_char_count_dstring(&(lxm->lexeme_str)) >= lxr->max_json_number_length)
-			{
-				unread_from_stream(lxr->byte_read_stream, &c, 1);
 				goto FAILURE;
-			}
 			concatenate_char(&(lxm->lexeme_str), c);
 			bytes_numeric_count++;
 		}
 		else
 		{
-			unread_from_stream(lxr->byte_read_stream, &c, 1);
 			if(bytes_numeric_count == 0)
 				goto FAILURE;
 			else
+			{
+				unread_from_stream(lxr->byte_read_stream, &c, 1);
 				goto SUCCESS;
+			}
 		}
 	}
 
@@ -292,7 +275,6 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 	return 1;
 
 	FAILURE :
-	unread_dstring_from_stream(lxr->byte_read_stream, &(lxm->lexeme_str));
 	deinit_dstring(&(lxm->lexeme_str));
 	return 0;
 }
