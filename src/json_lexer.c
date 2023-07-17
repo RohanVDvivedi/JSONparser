@@ -106,42 +106,74 @@ static int get_next_string_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 			{
 				case 'n' :
 				{
-					concatenate_char(&(lxm->lexeme_str), '\n');
+					if(!concatenate_char(&(lxm->lexeme_str), '\n'))
+					{
+						deinit_dstring(&(lxm->lexeme_str));
+						return JSON_ALLOCATION_ERROR;
+					}
 					break;
 				}
 				case 'r' :
 				{
-					concatenate_char(&(lxm->lexeme_str), '\r');
+					if(!concatenate_char(&(lxm->lexeme_str), '\r'))
+					{
+						deinit_dstring(&(lxm->lexeme_str));
+						return JSON_ALLOCATION_ERROR;
+					}
 					break;
 				}
 				case 'v' :
 				{
-					concatenate_char(&(lxm->lexeme_str), '\v');
+					if(!concatenate_char(&(lxm->lexeme_str), '\v'))
+					{
+						deinit_dstring(&(lxm->lexeme_str));
+						return JSON_ALLOCATION_ERROR;
+					}
 					break;
 				}
 				case 'f' :
 				{
-					concatenate_char(&(lxm->lexeme_str), '\f');
+					if(!concatenate_char(&(lxm->lexeme_str), '\f'))
+					{
+						deinit_dstring(&(lxm->lexeme_str));
+						return JSON_ALLOCATION_ERROR;
+					}
 					break;
 				}
 				case 't' :
 				{
-					concatenate_char(&(lxm->lexeme_str), '\t');
+					if(!concatenate_char(&(lxm->lexeme_str), '\t'))
+					{
+						deinit_dstring(&(lxm->lexeme_str));
+						return JSON_ALLOCATION_ERROR;
+					}
 					break;
 				}
 				case 'b' :
 				{
-					concatenate_char(&(lxm->lexeme_str), '\b');
+					if(!concatenate_char(&(lxm->lexeme_str), '\b'))
+					{
+						deinit_dstring(&(lxm->lexeme_str));
+						return JSON_ALLOCATION_ERROR;
+					}
 					break;
 				}
 				case '"' :
 				{
-					concatenate_char(&(lxm->lexeme_str), '"');
+					if(!concatenate_char(&(lxm->lexeme_str), '"'))
+					{
+						deinit_dstring(&(lxm->lexeme_str));
+						return JSON_ALLOCATION_ERROR;
+					}
 					break;
 				}
 				case '\\' :
 				{
-					concatenate_char(&(lxm->lexeme_str), '\\');
+					if(!concatenate_char(&(lxm->lexeme_str), '\\'))
+					{
+						deinit_dstring(&(lxm->lexeme_str));
+						return JSON_ALLOCATION_ERROR;
+					}
 					break;
 				}
 				default :
@@ -152,7 +184,13 @@ static int get_next_string_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 			}
 		}
 		else
-			concatenate_char(&(lxm->lexeme_str), c);
+		{
+			if(!concatenate_char(&(lxm->lexeme_str), c))
+			{
+				deinit_dstring(&(lxm->lexeme_str));
+				return JSON_ALLOCATION_ERROR;
+			}
+		}
 	}
 }
 
