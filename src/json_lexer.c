@@ -279,8 +279,11 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 	return 0;
 }
 
-int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
+int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm, int* error)
 {
+	// initialize error to NO_ERROR
+	(*error) = NO_ERROR;
+
 	// if the lexer has an undone lexeme then return that instead
 	if(lxr->has_undone_lexeme)
 	{
@@ -289,21 +292,27 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 		return 1;
 	}
 
-	int error = 0;
+	int stream_error = 0;
 
 	// reinitialize lexeme_str
 	init_empty_dstring(&(lxm->lexeme_str), 0);
 
 	// skip white spaces
-	skip_whitespaces_from_stream(lxr->byte_read_stream, MAX_WHITESAPCES, &error);
-	if(error)
+	skip_whitespaces_from_stream(lxr->byte_read_stream, MAX_WHITESAPCES, &stream_error);
+	if(stream_error)
+	{
+		(*error) = STREAM_ERROR;
 		return 0;
+	}
 
 	// read a byte
 	char c;
-	size_t byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &error);
-	if(error)
+	size_t byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &stream_error);
+	if(stream_error)
+	{
+		(*error) = STREAM_ERROR;
 		return 0;
+	}
 
 	// end of stream token
 	if(byte_read == 0)
@@ -314,7 +323,10 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 
 	// all white spaces must have been skipped, on excess white spaces we quit
 	if(is_whitespace_char(c))
+	{
+		(*error) = LEXER_ERROR;
 		return 0;
+	}
 
 	// decode all single byte lexemes
 	switch(c)
@@ -359,9 +371,12 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 	{
 		// now you can decode fixed strings: true, false and null
 		dstring string_to_skip = get_dstring_pointing_to_literal_cstring("true");
-		size_t bytes_skipped = skip_dstring_from_stream(lxr->byte_read_stream, &string_to_skip, &error);
-		if(error)
+		size_t bytes_skipped = skip_dstring_from_stream(lxr->byte_read_stream, &string_to_skip, &stream_error);
+		if(stream_error)
+		{
+			(*error) = STREAM_ERROR;
 			return 0;
+		}
 		if(bytes_skipped > 0)
 		{
 			lxm->type = TRUE;
@@ -369,9 +384,12 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 		}
 
 		string_to_skip = get_dstring_pointing_to_literal_cstring("false");
-		bytes_skipped = skip_dstring_from_stream(lxr->byte_read_stream, &string_to_skip, &error);
-		if(error)
+		bytes_skipped = skip_dstring_from_stream(lxr->byte_read_stream, &string_to_skip, &stream_error);
+		if(stream_error)
+		{
+			(*error) = STREAM_ERROR;
 			return 0;
+		}
 		if(bytes_skipped > 0)
 		{
 			lxm->type = FALSE;
@@ -379,9 +397,12 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 		}
 
 		string_to_skip = get_dstring_pointing_to_literal_cstring("null");
-		bytes_skipped = skip_dstring_from_stream(lxr->byte_read_stream, &string_to_skip, &error);
-		if(error)
+		bytes_skipped = skip_dstring_from_stream(lxr->byte_read_stream, &string_to_skip, &stream_error);
+		if(stream_error)
+		{
+			(*error) = STREAM_ERROR;
 			return 0;
+		}
 		if(bytes_skipped > 0)
 		{
 			lxm->type = NULL_LEXEME;
@@ -389,26 +410,15 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 		}
 	}
 
-	// decode STRING_LEXEME or NUMBER_LEXEME
-
-	// read next first byte and decide if it is a string
+	// decode STRING_LEXEME or NUMBER_LEXEME, only these 2 cases left
 	if(c == '"')
-	{
 		// return true if lexeme was read successfully
 		// here we know that the first character of the next lexeme is a quotation, hence it is either a json_string or an error
 		// this allows us to skip unreading on an error
-		if(get_next_string_lexeme_CONFIRM_END(lxr, lxm))
-			return 1;
-	}
+		return get_next_string_lexeme_CONFIRM_END(lxr, lxm, error);
 	else // if the first character is not a '"' then this could be a NUMBER_LEXEME
-	{
 		// check if it is a NUMBER_LEXEME
 		// here we know that none of the lexeme types passed the case, hence it is either a json number or an error
 		// this allows us to skip unreading on an error
-		if(get_next_number_lexeme_CONFIRM_END(lxr, lxm))
-			return 1;
-	}
-
-	// if none
-	return 0;
+		return get_next_number_lexeme_CONFIRM_END(lxr, lxm, error);
 }

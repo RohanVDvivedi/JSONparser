@@ -68,7 +68,9 @@ struct lexer
 
 int initialize_lexer(lexer* lxr, stream* byte_read_stream, size_t max_json_string_length, size_t max_json_number_length);
 
-int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm);
+// same error codes as json_parser.h
+#include<json_parser.h>
+int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm, int* error);
 
 int undo_lexer(lexer* lxr, lexeme* lxm);
 
