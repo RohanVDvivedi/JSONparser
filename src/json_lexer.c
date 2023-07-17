@@ -147,7 +147,7 @@ static int get_next_string_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 				default :
 				{
 					deinit_dstring(&(lxm->lexeme_str));
-					return LEXER_ERROR;
+					return JSON_LEXER_ERROR;
 				}
 			}
 		}
@@ -322,7 +322,7 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 			}
 			else
 			{
-				lxm->type == NUMBER_LEXEME;
+				lxm->type = NUMBER_LEXEME;
 				return NO_ERROR;
 			}
 		}
@@ -348,7 +348,7 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 			else
 			{
 				unread_from_stream(lxr->byte_read_stream, &c, 1);
-				lxm->type == NUMBER_LEXEME;
+				lxm->type = NUMBER_LEXEME;
 				return NO_ERROR;
 			}
 		}
@@ -390,7 +390,7 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 
 	// all white spaces must have been skipped, on excess white spaces we quit
 	if(is_whitespace_char(c))
-		return LEXER_ERROR;
+		return JSON_LEXER_ERROR;
 
 	// decode all single byte lexemes
 	switch(c)
