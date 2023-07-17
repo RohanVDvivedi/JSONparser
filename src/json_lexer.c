@@ -301,7 +301,7 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm, int* error)
 	skip_whitespaces_from_stream(lxr->byte_read_stream, MAX_WHITESAPCES, &stream_error);
 	if(stream_error)
 	{
-		(*error) = STREAM_ERROR;
+		(*error) = JSON_ERROR_IN_STREAM;
 		return 0;
 	}
 
@@ -310,7 +310,7 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm, int* error)
 	size_t byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &stream_error);
 	if(stream_error)
 	{
-		(*error) = STREAM_ERROR;
+		(*error) = JSON_ERROR_IN_STREAM;
 		return 0;
 	}
 
@@ -374,7 +374,7 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm, int* error)
 		size_t bytes_skipped = skip_dstring_from_stream(lxr->byte_read_stream, &string_to_skip, &stream_error);
 		if(stream_error)
 		{
-			(*error) = STREAM_ERROR;
+			(*error) = JSON_ERROR_IN_STREAM;
 			return 0;
 		}
 		if(bytes_skipped > 0)
@@ -387,7 +387,7 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm, int* error)
 		bytes_skipped = skip_dstring_from_stream(lxr->byte_read_stream, &string_to_skip, &stream_error);
 		if(stream_error)
 		{
-			(*error) = STREAM_ERROR;
+			(*error) = JSON_ERROR_IN_STREAM;
 			return 0;
 		}
 		if(bytes_skipped > 0)
@@ -400,7 +400,7 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm, int* error)
 		bytes_skipped = skip_dstring_from_stream(lxr->byte_read_stream, &string_to_skip, &stream_error);
 		if(stream_error)
 		{
-			(*error) = STREAM_ERROR;
+			(*error) = JSON_ERROR_IN_STREAM;
 			return 0;
 		}
 		if(bytes_skipped > 0)
