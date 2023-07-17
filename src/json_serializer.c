@@ -86,7 +86,7 @@ int serialize_json(stream* ws, const json_node* node_p)
 			if(error)
 				return -1;
 			int is_first = 1;
-			for(const json_object_entry* e = get_first_of_in_hashmap(&(node_p->json_object), ANY_IN_HASHMAP); e != NULL; e = get_next_of_in_hashmap(&(node_p->json_object), e, ANY_IN_HASHMAP))
+			for(const json_object_entry* e = get_first_of_in_hashmap(&(node_p->json_object), FIRST_OF_HASHMAP); e != NULL; e = get_next_of_in_hashmap(&(node_p->json_object), e, ANY_IN_HASHMAP))
 			{
 				if(!is_first)
 				{

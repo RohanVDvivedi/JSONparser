@@ -353,7 +353,7 @@ void delete_json_node(json_node* node_p)
 		{
 			arraylist temp_holder;
 			initialize_arraylist(&temp_holder, get_element_count_hashmap(&(node_p->json_object)));
-			for(const json_object_entry* e = get_first_of_in_hashmap(&(node_p->json_object), ANY_IN_HASHMAP); e != NULL; e = get_next_of_in_hashmap(&(node_p->json_object), e, ANY_IN_HASHMAP))
+			for(const json_object_entry* e = get_first_of_in_hashmap(&(node_p->json_object), FIRST_OF_HASHMAP); e != NULL; e = get_next_of_in_hashmap(&(node_p->json_object), e, ANY_IN_HASHMAP))
 				push_back_to_arraylist(&temp_holder, e);
 			deinitialize_hashmap(&(node_p->json_object));
 			while(!is_empty_arraylist(&temp_holder))
