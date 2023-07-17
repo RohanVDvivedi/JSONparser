@@ -224,32 +224,36 @@ static json_node* parse_json_object_node(lexer* lxr)
 	return js;
 }
 
-json_node* parse_json(stream* rs, size_t max_json_string_length, size_t max_json_number_length)
+json_node* parse_json(stream* rs, size_t max_json_string_length, size_t max_json_number_length, int* error)
 {
 	lexer lxr;
-	initialize_lexer(&lxr, rs, max_json_string_length, max_json_number_length);
+	if(!initialize_lexer(&lxr, rs, max_json_string_length, max_json_number_length))
+	{
+		(*error) = JSON_LEXER_ERROR;
+		return NULL;
+	}
 
 	lexeme lxm;
 
 	json_node* js = NULL;
 
-	if(!get_next_lexeme_from_lexer(&lxr, &lxm))
+	if((*error) = get_next_lexeme_from_lexer(&lxr, &lxm))
 		goto EXIT;
 
 	if(lxm.type == CURLY_OPEN_BRACE)
 	{
 		undo_lexer(&lxr, &lxm);
-		js = parse_json_object_node(&lxr);
+		js = parse_json_object_node(&lxr, error);
 	}
 	else if(lxm.type == SQUARE_OPEN_BRACE)
 	{
 		undo_lexer(&lxr, &lxm);
-		js = parse_json_array_node(&lxr);
+		js = parse_json_array_node(&lxr, error);
 	}
 	else
 	{
+		(*error) = JSON_PARSER_ERROR;
 		destroy_lexeme(&lxm);
-		goto EXIT;
 	}
 
 
