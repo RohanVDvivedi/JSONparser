@@ -20,6 +20,8 @@ int main()
 		serialize_json(&std_write, js);
 		delete_json_node(js);
 	}
+	else
+		printf("parsing error\n");
 
 	deinitialize_stream(&std_read);
 	deinitialize_stream(&std_write);
