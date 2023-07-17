@@ -2,8 +2,6 @@
 
 #include<json_lexer.h>
 
-#include<stdio.h>
-
 static json_node* parse_json_array_node(lexer* lxr);
 static json_node* parse_json_object_node(lexer* lxr);
 

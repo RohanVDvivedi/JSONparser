@@ -18,6 +18,8 @@ int main()
 	if(js != NULL)
 	{
 		serialize_json(&std_write, js);
+		int error = 0;
+		flush_all_from_stream(&std_write, &error);
 		delete_json_node(js);
 	}
 	else

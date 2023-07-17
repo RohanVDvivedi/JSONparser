@@ -233,11 +233,9 @@ static int get_next_number_lexeme(lexer* lxr, lexeme* lxm)
 		}
 		else
 		{
+			unread_from_stream(lxr->byte_read_stream, &c, 1);
 			if(bytes_numeric_count == 0)
-			{
-				unread_from_stream(lxr->byte_read_stream, &c, 1);
 				goto FAILURE;
-			}
 			else
 				goto SUCCESS;
 		}
@@ -288,11 +286,9 @@ static int get_next_number_lexeme(lexer* lxr, lexeme* lxm)
 		}
 		else
 		{
+			unread_from_stream(lxr->byte_read_stream, &c, 1);
 			if(bytes_numeric_count == 0)
-			{
-				unread_from_stream(lxr->byte_read_stream, &c, 1);
 				goto FAILURE;
-			}
 			else
 				goto SUCCESS;
 		}
