@@ -1,2 +1,3 @@
  * add error return api for parser, taking int* error as input
+ * refactor parser to use new lexer's error api
  * handle cases when a malloc, concatenation or initialization of a dstring fails in lexer or parser
