@@ -2,6 +2,7 @@
 #include<unistd.h>
 
 #include<json_parser.h>
+#include<json_serializer.h>
 
 #include<file_descriptor_stream.h>
 
@@ -15,7 +16,10 @@ int main()
 	json_node* js = parse_json(&std_read, 10, 10);
 
 	if(js != NULL)
+	{
+		serialize_json(&std_write, js);
 		delete_json_node(js);
+	}
 
 	deinitialize_stream(&std_read);
 	deinitialize_stream(&std_write);
