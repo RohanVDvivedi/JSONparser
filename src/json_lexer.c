@@ -52,14 +52,10 @@ static int get_next_string_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 	int error = 0;
 	char c;
 
-	dstring bytes_read;
-	init_empty_dstring(&bytes_read, 0);
-
 	// read first quotation
 	size_t byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &error);
 	if(error || byte_read == 0)
 		goto FAILURE;
-	concatenate_char(&bytes_read, c);
 
 	if(c != '"')
 		goto FAILURE;
@@ -69,13 +65,11 @@ static int get_next_string_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 		byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &error);
 		if(error || byte_read == 0)
 			goto FAILURE;
-		concatenate_char(&bytes_read, c);
 
 		// if last, then exit
 		if(c == '"')
 		{
 			lxm->type = STRING_LEXEME;
-			deinit_dstring(&bytes_read);
 			return 1;
 		}
 
@@ -89,7 +83,6 @@ static int get_next_string_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 			byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &error);
 			if(error || byte_read == 0)
 				goto FAILURE;
-			concatenate_char(&bytes_read, c);
 
 			switch(c)
 			{
@@ -142,8 +135,6 @@ static int get_next_string_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 	}
 
 	FAILURE :
-	unread_dstring_from_stream(lxr->byte_read_stream, &bytes_read);
-	deinit_dstring(&bytes_read);
 	deinit_dstring(&(lxm->lexeme_str));
 	return 0;
 }
