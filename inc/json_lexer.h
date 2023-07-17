@@ -20,8 +20,8 @@ enum lexeme_type
 	COMMA,
 	COLON,
 
-	TRUE,
-	FALSE,
+	TRUE_LEXEME,
+	FALSE_LEXEME,
 
 	NULL_LEXEME,
 

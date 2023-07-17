@@ -22,7 +22,7 @@ static json_node* parse_json_node(lexer* lxr, int* error)
 			destroy_lexeme(&lxm);
 			goto EXIT;
 		}
-		case TRUE :
+		case TRUE_LEXEME :
 		{
 			js = new_json_bool_node(1);
 			if(js == NULL)
@@ -30,7 +30,7 @@ static json_node* parse_json_node(lexer* lxr, int* error)
 			destroy_lexeme(&lxm);
 			goto EXIT;
 		}
-		case FALSE :
+		case FALSE_LEXEME :
 		{
 			js = new_json_bool_node(0);
 			if(js == NULL)

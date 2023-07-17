@@ -440,7 +440,7 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 			return JSON_ERROR_IN_STREAM;
 		if(bytes_skipped > 0)
 		{
-			lxm->type = TRUE;
+			lxm->type = TRUE_LEXEME;
 			return NO_ERROR;
 		}
 
@@ -450,7 +450,7 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 			return JSON_ERROR_IN_STREAM;
 		if(bytes_skipped > 0)
 		{
-			lxm->type = FALSE;
+			lxm->type = FALSE_LEXEME;
 			return NO_ERROR;
 		}
 
