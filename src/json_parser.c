@@ -105,24 +105,32 @@ static json_node* parse_json_node(lexer* lxr, int* error)
 	return js;
 }
 
-static json_node* parse_json_array_node(lexer* lxr)
+static json_node* parse_json_array_node(lexer* lxr, int* error)
 {
 	json_node* js = NULL;
 
 	lexeme lxm;
 
 	// read the starting of the json array, a '['
-	if(!get_next_lexeme_from_lexer(lxr, &lxm))
+	if((*error) = get_next_lexeme_from_lexer(lxr, &lxm))
 		goto FAIL;
 	destroy_lexeme(&lxm);
 	if(lxm.type != SQUARE_OPEN_BRACE)
+	{
+		(*error) = JSON_PARSER_ERROR;
 		goto FAIL;
+	}
 
 	// initialize a new json_object node
 	js = new_json_array_node(0, NULL);
+	if(js == NULL)
+	{
+		(*error) = JSON_NODE_ALLOCATION_ERROR;
+		goto FAIL;
+	}
 
 	// empty object case if next lexeme is a ']'
-	if(!get_next_lexeme_from_lexer(lxr, &lxm))
+	if((*error) = get_next_lexeme_from_lexer(lxr, &lxm))
 		goto FAIL;
 	if(lxm.type == SQUARE_CLOSE_BRACE)
 	{
@@ -135,13 +143,19 @@ static json_node* parse_json_array_node(lexer* lxr)
 	while(1)
 	{
 		// parse value
-		json_node* value = parse_json_node(lxr);
+		json_node* value = parse_json_node(lxr, error);
+		if((*error))
+			goto FAIL;
 
 		// insert parsed json key value into the json object
-		append_to_json_array(js, value);
+		if(!append_to_json_array(js, value))
+		{
+			(*error) = JSON_NODE_ALLOCATION_ERROR;
+			goto FAIL;
+		}
 
 		// after key comes a ',' or a ']'
-		if(!get_next_lexeme_from_lexer(lxr, &lxm))
+		if((*error) = get_next_lexeme_from_lexer(lxr, &lxm))
 			goto FAIL;
 		destroy_lexeme(&lxm);
 		if(lxm.type == COMMA)
@@ -149,7 +163,10 @@ static json_node* parse_json_array_node(lexer* lxr)
 		else if(lxm.type == SQUARE_CLOSE_BRACE)
 			goto EXIT;
 		else
+		{
+			(*error) = JSON_PARSER_ERROR;
 			goto FAIL;
+		}
 	}
 
 	FAIL:;
