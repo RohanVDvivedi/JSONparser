@@ -64,18 +64,20 @@ struct lexer
 	stream* byte_read_stream;
 };
 
-// all the below functions return 1 for success and 0 for error
+// all the below 4 functions return 1 for success and 0 for error
 
 int initialize_lexer(lexer* lxr, stream* byte_read_stream, size_t max_json_string_length, size_t max_json_number_length);
-
-// same error codes as json_parser.h
-#include<json_parser.h>
-int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm, int* error);
 
 int undo_lexer(lexer* lxr, lexeme* lxm);
 
 void destroy_lexeme(lexeme* lxm);
 
 void deinitialize_lexer(lexer* lxr);
+
+#include<json_parser.h>
+
+// return, same error codes as json_parser.h, 0 (NO_ERROR) implies success
+// the only error codes this function returns are JSON_LEXER_ERROR and JSON_ERROR_IN_STREAM
+int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm);
 
 #endif
