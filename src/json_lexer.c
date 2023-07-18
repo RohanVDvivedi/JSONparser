@@ -211,7 +211,11 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 
 	// if digit, unread it
 	if(is_digit_char(c))
-		unread_from_stream(lxr->byte_read_stream, &c, 1);
+	{
+		unread_from_stream(lxr->byte_read_stream, &c, 1, &stream_error);
+		if(stream_error)
+			return JSON_ERROR_IN_STREAM;
+	}
 	else if(c == '+' || c == '-') // its sign of the fraction
 	{
 		// can not read a character, if we will cross the maximum limit
@@ -314,7 +318,12 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 			}
 			else
 			{
-				unread_from_stream(lxr->byte_read_stream, &c, 1);
+				unread_from_stream(lxr->byte_read_stream, &c, 1, &stream_error);
+				if(stream_error)
+				{
+					deinit_dstring(&(lxm->lexeme_str));
+					return JSON_ERROR_IN_STREAM;
+				}
 				lxm->type = NUMBER_LEXEME;
 				return NO_ERROR;
 			}
@@ -336,7 +345,14 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 
 	// if digit, unread it
 	if(is_digit_char(c))
-		unread_from_stream(lxr->byte_read_stream, &c, 1);
+	{
+		unread_from_stream(lxr->byte_read_stream, &c, 1, &stream_error);
+		if(stream_error)
+		{
+			deinit_dstring(&(lxm->lexeme_str));
+			return JSON_ERROR_IN_STREAM;
+		}
+	}
 	else if(c == '+' || c == '-') // its sign of the fraction
 	{
 		// can not read a character, if we will cross the maximum limit
@@ -406,7 +422,12 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 			}
 			else
 			{
-				unread_from_stream(lxr->byte_read_stream, &c, 1);
+				unread_from_stream(lxr->byte_read_stream, &c, 1, &stream_error);
+				if(stream_error)
+				{
+					deinit_dstring(&(lxm->lexeme_str));
+					return JSON_ERROR_IN_STREAM;
+				}
 				lxm->type = NUMBER_LEXEME;
 				return NO_ERROR;
 			}
@@ -487,7 +508,9 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 	}
 
 	// unread the single byte that was read
-	unread_from_stream(lxr->byte_read_stream, &c, 1);
+	unread_from_stream(lxr->byte_read_stream, &c, 1, &stream_error);
+	if(stream_error)
+		return JSON_ERROR_IN_STREAM;
 
 	// it can be true false or null, but none of then have '"' character as their first character
 	if(c != '"')
