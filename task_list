@@ -1,1 +1,3 @@
+ * change NO_ERROR to JSON_NO_ERROR, to avoid error name collisions
+
  * test parser with error-ed json
