@@ -77,7 +77,7 @@ static int get_next_string_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 		if(c == '"')
 		{
 			lxm->type = STRING_LEXEME;
-			return NO_ERROR;
+			return JSON_NO_ERROR;
 		}
 
 		// if the json_string lexeme size is as big as the max_json_string_length permitted, 
@@ -250,7 +250,7 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 			else
 			{
 				lxm->type = NUMBER_LEXEME;
-				return NO_ERROR;
+				return JSON_NO_ERROR;
 			}
 		}
 
@@ -325,7 +325,7 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 					return JSON_ERROR_IN_STREAM;
 				}
 				lxm->type = NUMBER_LEXEME;
-				return NO_ERROR;
+				return JSON_NO_ERROR;
 			}
 		}
 	}
@@ -394,7 +394,7 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 			else
 			{
 				lxm->type = NUMBER_LEXEME;
-				return NO_ERROR;
+				return JSON_NO_ERROR;
 			}
 		}
 
@@ -429,7 +429,7 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 					return JSON_ERROR_IN_STREAM;
 				}
 				lxm->type = NUMBER_LEXEME;
-				return NO_ERROR;
+				return JSON_NO_ERROR;
 			}
 		}
 	}
@@ -442,7 +442,7 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 	{
 		(*lxm) = lxr->undone_lexeme;
 		lxr->has_undone_lexeme = 0;
-		return NO_ERROR;
+		return JSON_NO_ERROR;
 	}
 
 	int stream_error = 0;
@@ -465,7 +465,7 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 	if(byte_read == 0)
 	{
 		lxm->type = END_OF_STREAM;
-		return NO_ERROR;
+		return JSON_NO_ERROR;
 	}
 
 	// all white spaces must have been skipped, on excess white spaces we quit
@@ -478,32 +478,32 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 		case '{' :
 		{
 			lxm->type = CURLY_OPEN_BRACE;
-			return NO_ERROR;
+			return JSON_NO_ERROR;
 		}
 		case '}' :
 		{
 			lxm->type = CURLY_CLOSE_BRACE;
-			return NO_ERROR;
+			return JSON_NO_ERROR;
 		}
 		case '[' :
 		{
 			lxm->type = SQUARE_OPEN_BRACE;
-			return NO_ERROR;
+			return JSON_NO_ERROR;
 		}
 		case ']' :
 		{
 			lxm->type = SQUARE_CLOSE_BRACE;
-			return NO_ERROR;
+			return JSON_NO_ERROR;
 		}
 		case ',' :
 		{
 			lxm->type = COMMA;
-			return NO_ERROR;
+			return JSON_NO_ERROR;
 		}
 		case ':' :
 		{
 			lxm->type = COLON;
-			return NO_ERROR;
+			return JSON_NO_ERROR;
 		}
 	}
 
@@ -523,7 +523,7 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 		if(bytes_skipped > 0)
 		{
 			lxm->type = TRUE_LEXEME;
-			return NO_ERROR;
+			return JSON_NO_ERROR;
 		}
 
 		string_to_skip = get_dstring_pointing_to_literal_cstring("false");
@@ -533,7 +533,7 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 		if(bytes_skipped > 0)
 		{
 			lxm->type = FALSE_LEXEME;
-			return NO_ERROR;
+			return JSON_NO_ERROR;
 		}
 
 		string_to_skip = get_dstring_pointing_to_literal_cstring("null");
@@ -543,7 +543,7 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 		if(bytes_skipped > 0)
 		{
 			lxm->type = NULL_LEXEME;
-			return NO_ERROR;
+			return JSON_NO_ERROR;
 		}
 	}
 

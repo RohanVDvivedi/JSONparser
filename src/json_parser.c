@@ -9,6 +9,7 @@ static json_node* parse_json_node(lexer* lxr, int* error)
 {
 	json_node* js = NULL;
 
+	(*error) = JSON_NO_ERROR;
 	lexeme lxm;
 
 	// read the next lexeme to ch
@@ -109,6 +110,7 @@ static json_node* parse_json_array_node(lexer* lxr, int* error)
 {
 	json_node* js = NULL;
 
+	(*error) = JSON_NO_ERROR;
 	lexeme lxm;
 
 	// read the starting of the json array, a '['
@@ -182,6 +184,7 @@ static json_node* parse_json_object_node(lexer* lxr, int* error)
 {
 	json_node* js = NULL;
 
+	(*error) = JSON_NO_ERROR;
 	lexeme lxm;
 
 	// read the starting of the json object, a '{'
@@ -293,7 +296,7 @@ json_node* parse_json(stream* rs, size_t max_json_string_length, size_t max_json
 		return NULL;
 	}
 
-	(*error) = NO_ERROR;
+	(*error) = JSON_NO_ERROR;
 	lexeme lxm;
 
 	json_node* js = NULL;
