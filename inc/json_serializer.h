@@ -5,7 +5,10 @@
 
 #include<json_node.h>
 
-// returns -1 if an error is encountered in serializing the json node, else 0 is returned
+#include<json_parser_error_codes.h>
+
+// returns int value, suggesting error, from error codes given in json_parser_error_codes.h
+// return value of JSON_NO_ERROR is a success
 int serialize_json(stream* ws, const json_node* node_p);
 
 #endif
