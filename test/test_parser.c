@@ -18,9 +18,14 @@ int main()
 
 	if(!error)
 	{
-		serialize_json(&std_write, js);
-		int error = 0;
-		flush_all_from_stream(&std_write, &error);
+		error = serialize_json(&std_write, js);
+		if(!error)
+		{
+			int stream_error = 0;
+			flush_all_from_stream(&std_write, &stream_error);
+		}
+		else
+			printf("serialization error %d\n", error);
 		delete_json_node(js);
 	}
 	else

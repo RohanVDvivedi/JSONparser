@@ -44,17 +44,38 @@ int main()
 		{dst("is dependent"), new_json_bool_node(1)},
 	});
 
-	int error = 0;
+	int serialization_error;
+	int stream_error = 0;
 
-	serialize_json(&std_write, js);
-	flush_all_from_stream(&std_write, &error);
+	serialization_error = serialize_json(&std_write, js);
+	if(serialization_error)
+	{
+		printf("failed to serialize json\n");
+		return 0;
+	}
+	flush_all_from_stream(&std_write, &stream_error);
+	if(stream_error)
+	{
+		printf("failed to flush\n");
+		return 0;
+	}
 
 	printf("\n\n");
 
 	json_node* js_clone = clone_json_node(js);
 
-	serialize_json(&std_write, js_clone);
-	flush_all_from_stream(&std_write, &error);
+	serialization_error = serialize_json(&std_write, js_clone);
+	if(serialization_error)
+	{
+		printf("failed to serialize json\n");
+		return 0;
+	}
+	flush_all_from_stream(&std_write, &stream_error);
+	if(stream_error)
+	{
+		printf("failed to flush\n");
+		return 0;
+	}
 
 	printf("\n\n");
 
@@ -69,13 +90,33 @@ int main()
 		delete_from_json_array(family_members_array_1, 2);
 	}
 
-	serialize_json(&std_write, js);
-	flush_all_from_stream(&std_write, &error);
+	serialization_error = serialize_json(&std_write, js);
+	if(serialization_error)
+	{
+		printf("failed to serialize json\n");
+		return 0;
+	}
+	flush_all_from_stream(&std_write, &stream_error);
+	if(stream_error)
+	{
+		printf("failed to flush\n");
+		return 0;
+	}
 
 	printf("\n\n");
 
-	serialize_json(&std_write, js_clone);
-	flush_all_from_stream(&std_write, &error);
+	serialization_error = serialize_json(&std_write, js_clone);
+	if(serialization_error)
+	{
+		printf("failed to serialize json\n");
+		return 0;
+	}
+	flush_all_from_stream(&std_write, &stream_error);
+	if(stream_error)
+	{
+		printf("failed to flush\n");
+		return 0;
+	}
 
 	printf("\n\n");
 
