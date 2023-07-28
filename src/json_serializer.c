@@ -2,35 +2,35 @@
 
 #include<stream_util.h>
 
-static size_t write_json_string_to_stream(stream* ws, const dstring* str, int* error)
+static int serialize_escaping_json_string(stream* ws, const dstring* str)
 {
+	int stream_error = 0;
 	const char* data = get_byte_array_dstring(str);
 	cy_uint data_size = get_char_count_dstring(str);
-	size_t bytes_written = 0;
 	for(cy_uint i = 0; i < data_size; i++)
 	{
 		if(data[i] == '\n')
-			bytes_written += write_dstring_to_stream(ws, &get_dstring_pointing_to_literal_cstring("\\n"), error);
+			write_dstring_to_stream(ws, &get_dstring_pointing_to_literal_cstring("\\n"), &stream_error);
 		else if(data[i] == '\t')
-			bytes_written += write_dstring_to_stream(ws, &get_dstring_pointing_to_literal_cstring("\\t"), error);
+			write_dstring_to_stream(ws, &get_dstring_pointing_to_literal_cstring("\\t"), &stream_error);
 		else if(data[i] == '\v')
-			bytes_written += write_dstring_to_stream(ws, &get_dstring_pointing_to_literal_cstring("\\v"), error);
+			write_dstring_to_stream(ws, &get_dstring_pointing_to_literal_cstring("\\v"), &stream_error);
 		else if(data[i] == '\r')
-			bytes_written += write_dstring_to_stream(ws, &get_dstring_pointing_to_literal_cstring("\\r"), error);
+			write_dstring_to_stream(ws, &get_dstring_pointing_to_literal_cstring("\\r"), &stream_error);
 		else if(data[i] == '\f')
-			bytes_written += write_dstring_to_stream(ws, &get_dstring_pointing_to_literal_cstring("\\f"), error);
+			write_dstring_to_stream(ws, &get_dstring_pointing_to_literal_cstring("\\f"), &stream_error);
 		else if(data[i] == '\b')
-			bytes_written += write_dstring_to_stream(ws, &get_dstring_pointing_to_literal_cstring("\\b"), error);
+			write_dstring_to_stream(ws, &get_dstring_pointing_to_literal_cstring("\\b"), &stream_error);
 		else if(data[i] == '"')
-			bytes_written += write_dstring_to_stream(ws, &get_dstring_pointing_to_literal_cstring("\\\""), error);
+			write_dstring_to_stream(ws, &get_dstring_pointing_to_literal_cstring("\\\""), &stream_error);
 		else if(data[i] == '\\')
-			bytes_written += write_dstring_to_stream(ws, &get_dstring_pointing_to_literal_cstring("\\\\"), error);
+			write_dstring_to_stream(ws, &get_dstring_pointing_to_literal_cstring("\\\\"), &stream_error);
 		else
-			bytes_written += write_to_stream(ws, data + i, 1, error);
-		if(*error)
-			break;
+			write_to_stream(ws, data + i, 1, &stream_error);
+		if(stream_error)
+			return JSON_ERROR_IN_STREAM;
 	}
-	return bytes_written;
+	return JSON_NO_ERROR;
 }
 
 int serialize_json(stream* ws, const json_node* node_p)
@@ -72,9 +72,9 @@ int serialize_json(stream* ws, const json_node* node_p)
 			write_dstring_to_stream(ws, &get_dstring_pointing_to_literal_cstring("\""), &stream_error);
 			if(stream_error)
 				return JSON_ERROR_IN_STREAM;
-			write_json_string_to_stream(ws, &(node_p->json_string), &error);
+			int error = serialize_escaping_json_string(ws, &(node_p->json_string));
 			if(error)
-				return JSON_ERROR_IN_STREAM;
+				return error;
 			write_dstring_to_stream(ws, &get_dstring_pointing_to_literal_cstring("\""), &stream_error);
 			if(stream_error)
 				return JSON_ERROR_IN_STREAM;
@@ -97,13 +97,13 @@ int serialize_json(stream* ws, const json_node* node_p)
 				write_dstring_to_stream(ws, &get_dstring_pointing_to_literal_cstring("\""), &stream_error);
 				if(stream_error)
 					return -1;
-				write_json_string_to_stream(ws, &(e->key), &error);
+				int error = serialize_escaping_json_string(ws, &(e->key));
 				if(error)
-					return JSON_ERROR_IN_STREAM;
+					return error;
 				write_dstring_to_stream(ws, &get_dstring_pointing_to_literal_cstring("\":"), &stream_error);
 				if(stream_error)
 					return JSON_ERROR_IN_STREAM;
-				int error = serialize_json(ws, e->value);
+				error = serialize_json(ws, e->value);
 				if(error)
 					return error;
 				is_first = 0;
@@ -133,7 +133,7 @@ int serialize_json(stream* ws, const json_node* node_p)
 				is_first = 0;
 			}
 			write_dstring_to_stream(ws, &get_dstring_pointing_to_literal_cstring("]"), &stream_error);
-			if(sream_error)
+			if(stream_error)
 				return JSON_ERROR_IN_STREAM;
 			break;
 		}
