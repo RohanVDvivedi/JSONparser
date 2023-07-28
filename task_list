@@ -1,1 +1,3 @@
+ * global error codes for parser and serializer of json
+
  * test parser with error-ed json
