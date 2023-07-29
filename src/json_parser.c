@@ -318,8 +318,23 @@ json_node* parse_json(stream* rs, size_t max_json_string_length, size_t max_json
 	{
 		(*error) = JSON_PARSER_ERROR;
 		destroy_lexeme(&lxm);
+		goto EXIT;
 	}
 
+	if(((*error) = get_next_lexeme_from_lexer(&lxr, &lxm)))
+	{
+		delete_json_node(js);
+		goto EXIT;
+	}
+
+	destroy_lexeme(&lxm);
+
+	if(lxm.type != END_OF_STREAM)
+	{
+		delete_json_node(js);
+		(*error) = JSON_PARSER_ERROR;
+		goto EXIT;
+	}
 
 	EXIT:;
 	deinitialize_lexer(&lxr);
