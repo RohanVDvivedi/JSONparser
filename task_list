@@ -1,4 +1,3 @@
- * implement fetch_json_node_from_json_array and fetch_json_node_from_json_object
  * and a polymorphic macro to do fetch_json_node_from
 
  * test parser with error-ed json
