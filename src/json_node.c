@@ -256,6 +256,13 @@ int append_to_json_array(json_node* array_node_p, const json_node* node_p)
 	return push_back_to_arraylist(&(array_node_p->json_array), node_p);
 }
 
+json_node* fetch_json_node_from_json_array(json_node* array_node_p, cy_uint index)
+{
+	if(array_node_p == NULL || array_node_p->type != JSON_ARRAY || index >= get_element_count_arraylist(&(array_node_p->json_array)))
+		return NULL;
+	return (json_node*) get_nth_from_front_of_arraylist(&(array_node_p->json_array), index);
+}
+
 int delete_from_json_array(json_node* array_node_p, cy_uint index)
 {
 	if(array_node_p->type != JSON_ARRAY)

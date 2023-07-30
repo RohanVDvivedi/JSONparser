@@ -65,6 +65,10 @@ json_node* new_json_array_node(cy_uint element_count, const json_node* elements[
 // append a node_p to array_node_p
 int append_to_json_array(json_node* array_node_p, const json_node* node_p);
 
+// fetch a sub json_node from json array
+// returns NULL if array_node_p = NULL OR array_node_p.type != JSON_ARRAY OR index is out of range OR json_node at the index is NULL
+json_node* fetch_json_node_from_json_array(json_node* array_node_p, cy_uint index);
+
 // remove an element at index from array_node_p and deletes it
 int delete_from_json_array(json_node* array_node_p, cy_uint index);
 
