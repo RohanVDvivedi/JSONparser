@@ -85,4 +85,15 @@ int delete_from_json_object(json_node* object_node_p, json_object_entry* entry_p
 // recursively deletes all of the json_nodes starting at node_p
 void delete_json_node(json_node* node_p);
 
+#define fetch_json_node_from(js, X) _Generic((X),\
+											const char*: fetch_json_node_from_json_object(js, &get_dstring_pointing_to_literal_cstring(((const char*)X))),\
+											const dstring*: fetch_json_node_from_json_object(js, ((const dstring *)(X))), \
+											dstring*: fetch_json_node_from_json_object(js, ((const dstring *)(X))), \
+											unsigned int: fetch_json_node_from_json_array(js, ((cy_uint)(X))),\
+											int: fetch_json_node_from_json_array(js, ((cy_uint)(X))),\
+											const unsigned int: fetch_json_node_from_json_array(js, ((cy_uint)(X))),\
+											const int: fetch_json_node_from_json_array(js, ((cy_uint)(X))),\
+											const cy_uint: fetch_json_node_from_json_array(js, ((cy_uint)(X))),\
+											cy_uint: fetch_json_node_from_json_array(js, ((cy_uint)(X))))
+
 #endif
