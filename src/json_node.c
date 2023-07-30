@@ -318,6 +318,16 @@ int insert_in_json_object(json_node* object_node_p, const dstring* key, const js
 	return inserted;
 }
 
+json_node* fetch_json_node_from_json_object(json_node* object_node_p, const dstring* key)
+{
+	if(object_node_p == NULL || object_node_p->type != JSON_OBJECT)
+		return NULL;
+	json_object_entry* e = (json_object_entry*) find_equals_in_hashmap(&(object_node_p->json_object), key);
+	if(e == NULL)
+		return NULL;
+	return e->value;
+}
+
 int delete_from_json_object(json_node* object_node_p, json_object_entry* entry_p)
 {
 	if(object_node_p->type != JSON_OBJECT)

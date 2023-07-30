@@ -66,7 +66,7 @@ json_node* new_json_array_node(cy_uint element_count, const json_node* elements[
 int append_to_json_array(json_node* array_node_p, const json_node* node_p);
 
 // fetch a sub json_node from json array
-// returns NULL if array_node_p = NULL OR array_node_p.type != JSON_ARRAY OR index is out of range OR json_node at the index is NULL
+// returns NULL if array_node_p == NULL OR array_node_p.type != JSON_ARRAY OR index is out of range OR json_node at the index is NULL
 json_node* fetch_json_node_from_json_array(json_node* array_node_p, cy_uint index);
 
 // remove an element at index from array_node_p and deletes it
@@ -74,6 +74,10 @@ int delete_from_json_array(json_node* array_node_p, cy_uint index);
 
 // creates a new json_object_entry and inserts it into the json_object
 int insert_in_json_object(json_node* object_node_p, const dstring* key, const json_node* node_p);
+
+// fetch a sub json_node from json object
+// returns NULL if object_node_p == NULL OR object_node_p->type != JSON_OBJECT OR json object entry with given key does not exist in object_node_p OR json_node at the given key is NULL
+json_node* fetch_json_node_from_json_object(json_node* object_node_p, const dstring* key);
 
 // removes a json_object_entry from object_node_p and deletes it
 int delete_from_json_object(json_node* object_node_p, json_object_entry* entry_p);
