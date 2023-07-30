@@ -256,7 +256,7 @@ int append_to_json_array(json_node* array_node_p, const json_node* node_p)
 	return push_back_to_arraylist(&(array_node_p->json_array), node_p);
 }
 
-json_node* fetch_json_node_from_json_array(json_node* array_node_p, cy_uint index)
+json_node* fetch_json_node_from_json_array(const json_node* array_node_p, cy_uint index)
 {
 	if(array_node_p == NULL || array_node_p->type != JSON_ARRAY || index >= get_element_count_arraylist(&(array_node_p->json_array)))
 		return NULL;
@@ -318,7 +318,7 @@ int insert_in_json_object(json_node* object_node_p, const dstring* key, const js
 	return inserted;
 }
 
-json_node* fetch_json_node_from_json_object(json_node* object_node_p, const dstring* key)
+json_node* fetch_json_node_from_json_object(const json_node* object_node_p, const dstring* key)
 {
 	if(object_node_p == NULL || object_node_p->type != JSON_OBJECT)
 		return NULL;
