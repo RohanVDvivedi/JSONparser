@@ -45,8 +45,8 @@ struct json_object_entry
 	dstring key;
 	json_node* value;
 
-	// to be used for linking in the json_object
-	llnode embed_node;
+	// embedded node for the json_object
+	rbhnode embed_node;
 };
 
 // recursively clones a json node

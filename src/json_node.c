@@ -32,7 +32,7 @@ json_node* clone_json_node(const json_node* node_p)
 			if(n == NULL)
 				return NULL;
 			n->type = JSON_OBJECT;
-			if(!initialize_hashmap(&(n->json_object), ELEMENTS_AS_LINKEDLIST_INSERT_AT_TAIL, ((get_element_count_hashmap(&(node_p->json_object)) / 2) + 4), hash_json_object_entry, (int (*)(const void*, const void*))compare_dstring, offsetof(json_object_entry, embed_node)))
+			if(!initialize_hashmap(&(n->json_object), ROBINHOOD_HASHING, get_element_count_hashmap(&(node_p->json_object)) + 4, hash_json_object_entry, (int (*)(const void*, const void*))compare_dstring, offsetof(json_object_entry, embed_node)))
 			{
 				free(n);
 				return NULL;
@@ -203,7 +203,7 @@ json_node* new_json_object_node(cy_uint element_count, const json_object_entry e
 {
 	json_node* n = malloc(sizeof(json_node));
 	n->type = JSON_OBJECT;
-	if(!initialize_hashmap(&(n->json_object), ELEMENTS_AS_LINKEDLIST_INSERT_AT_TAIL, ((element_count / 2) + 4), hash_json_object_entry, (int (*)(const void*, const void*))compare_dstring, offsetof(json_object_entry, embed_node)))
+	if(!initialize_hashmap(&(n->json_object), ROBINHOOD_HASHING, element_count + 4, hash_json_object_entry, (int (*)(const void*, const void*))compare_dstring, offsetof(json_object_entry, embed_node)))
 	{
 		// if a hashmap for the object init fails, we free the node and quit
 		free(n);
@@ -300,11 +300,11 @@ int insert_in_json_object(json_node* object_node_p, const dstring* key, const js
 		return 0;
 	}
 	e->value = (json_node*) node_p;
-	initialize_llnode(&(e->embed_node));
+	initialize_rbhnode(&(e->embed_node));
 
-	// resize if required
-	if((((get_element_count_hashmap(&(object_node_p->json_object)) + 1) / 2) + 4) > get_bucket_count_hashmap(&(object_node_p->json_object)))
-		resize_hashmap(&(object_node_p->json_object), (((get_element_count_hashmap(&(object_node_p->json_object)) + 1) / 2) + 4));
+	// expand if full
+	if(get_element_count_hashmap(&(object_node_p->json_object)) == get_bucket_count_hashmap(&(object_node_p->json_object)))
+		expand_hashmap(&(object_node_p->json_object), 2);
 
 	// insert, and if it fails, we only need to, deinitialize the key and free the json_object_entry e
 	int inserted = insert_in_hashmap(&(object_node_p->json_object), e);
