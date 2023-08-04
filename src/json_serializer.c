@@ -127,7 +127,7 @@ int serialize_json(stream* ws, const json_node* node_p)
 					if(stream_error)
 						return JSON_ERROR_IN_STREAM;
 				}
-				int error = serialize_json(ws, get_nth_from_front_of_arraylist(&(node_p->json_array), i));
+				int error = serialize_json(ws, get_from_front_of_arraylist(&(node_p->json_array), i));
 				if(error)
 					return error;
 				is_first = 0;

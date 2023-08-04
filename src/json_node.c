@@ -68,7 +68,7 @@ json_node* clone_json_node(const json_node* node_p)
 			}
 			for(cy_uint i = 0; i < get_element_count_arraylist(&(node_p->json_array)); i++)
 			{
-				json_node* node_p_child = (json_node*) get_nth_from_front_of_arraylist(&(node_p->json_array), i);
+				json_node* node_p_child = (json_node*) get_from_front_of_arraylist(&(node_p->json_array), i);
 				json_node* n_child = clone_json_node(node_p_child);
 				if(node_p_child != NULL && n_child == NULL)
 				{
@@ -260,7 +260,7 @@ json_node* fetch_json_node_from_json_array(const json_node* array_node_p, cy_uin
 {
 	if(array_node_p == NULL || array_node_p->type != JSON_ARRAY || index >= get_element_count_arraylist(&(array_node_p->json_array)))
 		return NULL;
-	return (json_node*) get_nth_from_front_of_arraylist(&(array_node_p->json_array), index);
+	return (json_node*) get_from_front_of_arraylist(&(array_node_p->json_array), index);
 }
 
 int delete_from_json_array(json_node* array_node_p, cy_uint index)
@@ -272,8 +272,8 @@ int delete_from_json_array(json_node* array_node_p, cy_uint index)
 	json_node* n = NULL;
 	if(index < get_element_count_arraylist(&(array_node_p->json_array)))
 	{
-		n = (json_node*) get_nth_from_front_of_arraylist(&(array_node_p->json_array), index);
-		removed = remove_elements_from_front_of_arraylist_at(&(array_node_p->json_array), index, 1);
+		n = (json_node*) get_from_front_of_arraylist(&(array_node_p->json_array), index);
+		removed = remove_elements_from_front_of_arraylist(&(array_node_p->json_array), index, 1);
 	}
 
 	if(removed)
