@@ -345,6 +345,14 @@ int delete_from_json_object(json_node* object_node_p, json_object_entry* entry_p
 	return removed;
 }
 
+static void notifier_on_remove_all_from_json_object_node(void* resource, const void* _joe)
+{
+	json_object_entry* entry_p = (json_object_entry*) _joe;
+	deinit_dstring(&(entry_p->key));
+	delete_json_node(entry_p->value);
+	free(entry_p);
+}
+
 void delete_json_node(json_node* node_p)
 {
 	if(node_p == NULL)
@@ -368,20 +376,8 @@ void delete_json_node(json_node* node_p)
 		}
 		case JSON_OBJECT :
 		{
-			arraylist temp_holder;
-			initialize_arraylist(&temp_holder, get_element_count_hashmap(&(node_p->json_object)));
-			for(const json_object_entry* e = get_first_of_in_hashmap(&(node_p->json_object), FIRST_OF_HASHMAP); e != NULL; e = get_next_of_in_hashmap(&(node_p->json_object), e, ANY_IN_HASHMAP))
-				push_back_to_arraylist(&temp_holder, e);
+			remove_all_from_hashmap(&(node_p->json_object), &((notifier_interface){NULL, notifier_on_remove_all_from_json_object_node}));
 			deinitialize_hashmap(&(node_p->json_object));
-			while(!is_empty_arraylist(&temp_holder))
-			{
-				json_object_entry* n = (json_object_entry*) get_front_of_arraylist(&temp_holder);
-				pop_front_from_arraylist(&temp_holder);
-				deinit_dstring(&(n->key));
-				delete_json_node(n->value);
-				free(n);
-			}
-			deinitialize_arraylist(&temp_holder);
 		}
 		case JSON_ARRAY :
 		{
