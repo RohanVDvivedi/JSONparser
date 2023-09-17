@@ -32,7 +32,7 @@ json_node* clone_json_node(const json_node* node_p)
 			if(n == NULL)
 				return NULL;
 			n->type = JSON_OBJECT;
-			if(!initialize_hashmap(&(n->json_object), ROBINHOOD_HASHING, get_element_count_hashmap(&(node_p->json_object)) + 4, hash_json_object_entry, (int (*)(const void*, const void*))compare_dstring, offsetof(json_object_entry, embed_node)))
+			if(!initialize_hashmap(&(n->json_object), ROBINHOOD_HASHING, get_element_count_hashmap(&(node_p->json_object)) + 4, &simple_hasher(hash_json_object_entry), &simple_comparator(((int (*)(const void*, const void*))compare_dstring)), offsetof(json_object_entry, embed_node)))
 			{
 				free(n);
 				return NULL;
@@ -203,7 +203,7 @@ json_node* new_json_object_node(cy_uint element_count, const json_object_entry e
 {
 	json_node* n = malloc(sizeof(json_node));
 	n->type = JSON_OBJECT;
-	if(!initialize_hashmap(&(n->json_object), ROBINHOOD_HASHING, element_count + 4, hash_json_object_entry, (int (*)(const void*, const void*))compare_dstring, offsetof(json_object_entry, embed_node)))
+	if(!initialize_hashmap(&(n->json_object), ROBINHOOD_HASHING, element_count + 4, &simple_hasher(hash_json_object_entry), &simple_comparator(((int (*)(const void*, const void*))compare_dstring)), offsetof(json_object_entry, embed_node)))
 	{
 		// if a hashmap for the object init fails, we free the node and quit
 		free(n);
