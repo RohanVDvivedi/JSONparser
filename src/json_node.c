@@ -101,6 +101,8 @@ json_node* new_json_bool_node(int bool_value)
 json_node* new_json_unsigned_integer_node(uint64_t num_value)
 {
 	json_node* n = malloc(sizeof(json_node));
+	if(n == NULL)
+		return NULL;
 	n->type = JSON_NUM;
 	init_empty_dstring(&(n->json_number.fraction), 0);
 	init_empty_dstring(&(n->json_number.exponent), 0);
@@ -117,6 +119,8 @@ json_node* new_json_unsigned_integer_node(uint64_t num_value)
 json_node* new_json_integer_node(int64_t num_value)
 {
 	json_node* n = malloc(sizeof(json_node));
+	if(n == NULL)
+		return NULL;
 	n->type = JSON_NUM;
 	init_empty_dstring(&(n->json_number.fraction), 0);
 	init_empty_dstring(&(n->json_number.exponent), 0);
@@ -133,6 +137,8 @@ json_node* new_json_integer_node(int64_t num_value)
 json_node* new_json_float_node(long double num_value)
 {
 	json_node* n = malloc(sizeof(json_node));
+	if(n == NULL)
+		return NULL;
 	n->type = JSON_NUM;
 	init_empty_dstring(&(n->json_number.fraction), 0);
 	init_empty_dstring(&(n->json_number.exponent), 0);
@@ -149,6 +155,8 @@ json_node* new_json_float_node(long double num_value)
 json_node* new_json_scientific_notation_node(long double fraction, int64_t exponent)
 {
 	json_node* n = malloc(sizeof(json_node));
+	if(n == NULL)
+		return NULL;
 	n->type = JSON_NUM;
 	init_empty_dstring(&(n->json_number.fraction), 0);
 	init_empty_dstring(&(n->json_number.exponent), 0);
@@ -172,6 +180,8 @@ json_node* new_json_scientific_notation_node(long double fraction, int64_t expon
 json_node* new_json_decimal_string_scientific_notation_node(const dstring* fraction, const dstring* exponent)
 {
 	json_node* n = malloc(sizeof(json_node));
+	if(n == NULL)
+		return NULL;
 	n->type = JSON_NUM;
 	if(!init_copy_dstring(&(n->json_number.fraction), fraction))
 	{
@@ -190,6 +200,8 @@ json_node* new_json_decimal_string_scientific_notation_node(const dstring* fract
 json_node* new_json_string_node(const dstring* string_value)
 {
 	json_node* n = malloc(sizeof(json_node));
+	if(n == NULL)
+		return NULL;
 	n->type = JSON_STRING;
 	if(!init_copy_dstring(&(n->json_string), string_value))
 	{
@@ -202,6 +214,8 @@ json_node* new_json_string_node(const dstring* string_value)
 json_node* new_json_object_node(cy_uint element_count, const json_object_entry entries[])
 {
 	json_node* n = malloc(sizeof(json_node));
+	if(n == NULL)
+		return NULL;
 	n->type = JSON_OBJECT;
 	if(!initialize_hashmap(&(n->json_object), ROBINHOOD_HASHING, element_count + 4, &simple_hasher(hash_json_object_entry), &simple_comparator(((int (*)(const void*, const void*))compare_dstring)), offsetof(json_object_entry, embed_node)))
 	{
@@ -225,6 +239,8 @@ json_node* new_json_object_node(cy_uint element_count, const json_object_entry e
 json_node* new_json_array_node(cy_uint element_count, const json_node* elements[])
 {
 	json_node* n = malloc(sizeof(json_node));
+	if(n == NULL)
+		return NULL;
 	n->type = JSON_ARRAY;
 	if(!initialize_arraylist(&(n->json_array), element_count))
 	{
@@ -288,7 +304,6 @@ int insert_in_json_object(json_node* object_node_p, const dstring* key, const js
 		return 0;
 
 	json_object_entry* e = malloc(sizeof(json_object_entry));
-
 	// if the malloc call fails, we return a failure to insert the node
 	if(e == NULL)
 		return 0;
