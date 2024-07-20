@@ -222,7 +222,10 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 		if(get_char_count_dstring(&(lxm->lexeme_str)) >= lxr->max_json_number_length)
 			return JSON_LEXER_ERROR;
 		if(!concatenate_char(&(lxm->lexeme_str), c))
+		{
+			deinit_dstring(&(lxm->lexeme_str));
 			return JSON_ALLOCATION_ERROR;
+		}
 	}
 	else // fail if none of the above
 		return JSON_LEXER_ERROR;
@@ -546,6 +549,9 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 			return JSON_NO_ERROR;
 		}
 	}
+
+	// up until now we never required lxm->lexeme_str, hence it should be empty
+	// only the below 2 cases will need it
 
 	// decode STRING_LEXEME or NUMBER_LEXEME, only these 2 cases left
 	if(c == '"')
