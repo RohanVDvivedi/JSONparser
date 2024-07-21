@@ -307,7 +307,6 @@ json_node* parse_json(stream* rs, size_t max_json_string_length, size_t max_json
 
 	if(((*error) = get_next_lexeme_from_lexer(&lxr, &lxm)))
 		goto EXIT;
-
 	if(lxm.type == CURLY_OPEN_BRACE)
 	{
 		undo_lexer(&lxr, &lxm);
