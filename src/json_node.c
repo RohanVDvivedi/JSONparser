@@ -104,8 +104,17 @@ json_node* new_json_unsigned_integer_node(uint64_t num_value)
 	if(n == NULL)
 		return NULL;
 	n->type = JSON_NUM;
-	init_empty_dstring(&(n->json_number.fraction), 0);
-	init_empty_dstring(&(n->json_number.exponent), 0);
+	if(!init_empty_dstring(&(n->json_number.fraction), 0))
+	{
+		free(n);
+		return NULL;
+	}
+	if(!init_empty_dstring(&(n->json_number.exponent), 0))
+	{
+		deinit_dstring(&(n->json_number.fraction));
+		free(n);
+		return NULL;
+	}
 	if(!snprintf_dstring(&(n->json_number.fraction), "%" PRIu64, num_value))
 	{
 		deinit_dstring(&(n->json_number.fraction));
@@ -122,8 +131,17 @@ json_node* new_json_integer_node(int64_t num_value)
 	if(n == NULL)
 		return NULL;
 	n->type = JSON_NUM;
-	init_empty_dstring(&(n->json_number.fraction), 0);
-	init_empty_dstring(&(n->json_number.exponent), 0);
+	if(!init_empty_dstring(&(n->json_number.fraction), 0))
+	{
+		free(n);
+		return NULL;
+	}
+	if(!init_empty_dstring(&(n->json_number.exponent), 0))
+	{
+		deinit_dstring(&(n->json_number.fraction));
+		free(n);
+		return NULL;
+	}
 	if(!snprintf_dstring(&(n->json_number.fraction), "%" PRId64, num_value))
 	{
 		deinit_dstring(&(n->json_number.fraction));
@@ -140,8 +158,17 @@ json_node* new_json_float_node(long double num_value)
 	if(n == NULL)
 		return NULL;
 	n->type = JSON_NUM;
-	init_empty_dstring(&(n->json_number.fraction), 0);
-	init_empty_dstring(&(n->json_number.exponent), 0);
+	if(!init_empty_dstring(&(n->json_number.fraction), 0))
+	{
+		free(n);
+		return NULL;
+	}
+	if(!init_empty_dstring(&(n->json_number.exponent), 0))
+	{
+		deinit_dstring(&(n->json_number.fraction));
+		free(n);
+		return NULL;
+	}
 	if(!snprintf_dstring(&(n->json_number.fraction), "%Lf", num_value))
 	{
 		deinit_dstring(&(n->json_number.fraction));
@@ -158,8 +185,17 @@ json_node* new_json_scientific_notation_node(long double fraction, int64_t expon
 	if(n == NULL)
 		return NULL;
 	n->type = JSON_NUM;
-	init_empty_dstring(&(n->json_number.fraction), 0);
-	init_empty_dstring(&(n->json_number.exponent), 0);
+	if(!init_empty_dstring(&(n->json_number.fraction), 0))
+	{
+		free(n);
+		return NULL;
+	}
+	if(!init_empty_dstring(&(n->json_number.exponent), 0))
+	{
+		deinit_dstring(&(n->json_number.fraction));
+		free(n);
+		return NULL;
+	}
 	if(!snprintf_dstring(&(n->json_number.fraction), "%Lf", fraction))
 	{
 		deinit_dstring(&(n->json_number.fraction));
@@ -263,7 +299,7 @@ json_node* new_json_array_node(cy_uint element_count, const json_node* elements[
 
 int append_to_json_array(json_node* array_node_p, const json_node* node_p)
 {
-	if(array_node_p->type != JSON_ARRAY)
+	if(array_node_p == NULL || array_node_p->type != JSON_ARRAY)
 		return 0;
 
 	if(is_full_arraylist(&(array_node_p->json_array)))
@@ -281,7 +317,7 @@ json_node* fetch_json_node_from_json_array(const json_node* array_node_p, cy_uin
 
 int delete_from_json_array(json_node* array_node_p, cy_uint index)
 {
-	if(array_node_p->type != JSON_ARRAY)
+	if(array_node_p == NULL || array_node_p->type != JSON_ARRAY)
 		return 0;
 
 	int removed = 0;
@@ -300,7 +336,7 @@ int delete_from_json_array(json_node* array_node_p, cy_uint index)
 
 int insert_in_json_object(json_node* object_node_p, const dstring* key, const json_node* node_p)
 {
-	if(object_node_p->type != JSON_OBJECT)
+	if(object_node_p == NULL || object_node_p->type != JSON_OBJECT)
 		return 0;
 
 	json_object_entry* e = malloc(sizeof(json_object_entry));
@@ -345,7 +381,7 @@ json_node* fetch_json_node_from_json_object(const json_node* object_node_p, cons
 
 int delete_from_json_object(json_node* object_node_p, json_object_entry* entry_p)
 {
-	if(object_node_p->type != JSON_OBJECT)
+	if(object_node_p == NULL || object_node_p->type != JSON_OBJECT)
 		return 0;
 
 	int removed = remove_from_hashmap(&(object_node_p->json_object), entry_p);
