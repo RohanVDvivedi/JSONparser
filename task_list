@@ -1,1 +1,0 @@
- * if memory allocation in parser fails then return NULL object and error code, but do not kill the process
