@@ -81,12 +81,10 @@ int main()
 
 	// remove an element from an array and object in js
 	{
-		json_object_entry* age_next_year = (json_object_entry*) find_equals_in_hashmap(&(js->json_object), &((const json_object_entry){.key = dst("age \t next \n year")}));
-		delete_from_json_object(js, age_next_year);
+		delete_from_json_object(js, &dst("age \t next \n year"));
 
-		json_object_entry* family_members = (json_object_entry*) find_equals_in_hashmap(&(js->json_object), &((const json_object_entry){.key = dst("family members")}));
-		json_node* family_members_array = family_members->value;
-		json_node* family_members_array_1 = (json_node*) get_from_front_of_arraylist(&(family_members_array->json_array), 1);
+		json_node* family_members_array = fetch_json_node_from(js, &dst("family members"));
+		json_node* family_members_array_1 = fetch_json_node_from(family_members_array, 1);
 		delete_from_json_array(family_members_array_1, 2);
 	}
 
