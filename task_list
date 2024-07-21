@@ -1,1 +1,2 @@
- * test parser with malformed JSON
+ * test parser with malformed JSON vigoursly
+   with commnd: printf "invalid_json" | valgrind ./test_parser.out
