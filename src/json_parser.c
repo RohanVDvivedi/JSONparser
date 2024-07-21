@@ -14,7 +14,7 @@ static json_node* parse_json_node(lexer* lxr, int* error)
 
 	// read the next lexeme to ch
 	if(((*error) = get_next_lexeme_from_lexer(lxr, &lxm)))
-		goto FAIL;
+		goto EXIT;
 
 	switch(lxm.type)
 	{
@@ -95,13 +95,10 @@ static json_node* parse_json_node(lexer* lxr, int* error)
 		{
 			destroy_lexeme(&lxm);
 			(*error) = JSON_PARSER_ERROR;
-			goto FAIL;
+			goto EXIT;
 		}
 	}
 
-	FAIL:;
-	delete_json_node(js);
-	js = NULL;
 	EXIT:;
 	return js;
 }
@@ -311,11 +308,15 @@ json_node* parse_json(stream* rs, size_t max_json_string_length, size_t max_json
 	{
 		undo_lexer(&lxr, &lxm);
 		js = parse_json_object_node(&lxr, error);
+		if(*error) // on error, js will be NULL for sure
+			goto EXIT;
 	}
 	else if(lxm.type == SQUARE_OPEN_BRACE)
 	{
 		undo_lexer(&lxr, &lxm);
 		js = parse_json_array_node(&lxr, error);
+		if(*error) // on error, js will be NULL for sure
+			goto EXIT;
 	}
 	else
 	{
