@@ -56,12 +56,12 @@ static int get_next_string_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 	size_t byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &stream_error);
 	if(stream_error)
 	{
-		destroy_lexeme(&lxm);
+		destroy_lexeme(lxm);
 		return JSON_ERROR_IN_STREAM;
 	}
 	else if(byte_read == 0 || c != '"')
 	{
-		destroy_lexeme(&lxm);
+		destroy_lexeme(lxm);
 		return JSON_LEXER_ERROR;
 	}
 
@@ -70,12 +70,12 @@ static int get_next_string_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 		byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &stream_error);
 		if(stream_error)
 		{
-			destroy_lexeme(&lxm);
+			destroy_lexeme(lxm);
 			return JSON_ERROR_IN_STREAM;
 		}
 		else if(byte_read == 0)
 		{
-			destroy_lexeme(&lxm);
+			destroy_lexeme(lxm);
 			return JSON_LEXER_ERROR;
 		}
 
@@ -90,7 +90,7 @@ static int get_next_string_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 		// then we are not supposed to append any further and we quit with a failure
 		if(get_char_count_dstring(&(lxm->lexeme_str)) >= lxr->max_json_string_length)
 		{
-			destroy_lexeme(&lxm);
+			destroy_lexeme(lxm);
 			return JSON_LEXER_ERROR;
 		}
 
@@ -99,12 +99,12 @@ static int get_next_string_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 			byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &stream_error);
 			if(stream_error)
 			{
-				destroy_lexeme(&lxm);
+				destroy_lexeme(lxm);
 				return JSON_ERROR_IN_STREAM;
 			}
 			else if(byte_read == 0)
 			{
-				destroy_lexeme(&lxm);
+				destroy_lexeme(lxm);
 				return JSON_LEXER_ERROR;
 			}
 
@@ -114,7 +114,7 @@ static int get_next_string_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 				{
 					if(!concatenate_char(&(lxm->lexeme_str), '\n'))
 					{
-						destroy_lexeme(&lxm);
+						destroy_lexeme(lxm);
 						return JSON_ALLOCATION_ERROR;
 					}
 					break;
@@ -123,7 +123,7 @@ static int get_next_string_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 				{
 					if(!concatenate_char(&(lxm->lexeme_str), '\r'))
 					{
-						destroy_lexeme(&lxm);
+						destroy_lexeme(lxm);
 						return JSON_ALLOCATION_ERROR;
 					}
 					break;
@@ -132,7 +132,7 @@ static int get_next_string_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 				{
 					if(!concatenate_char(&(lxm->lexeme_str), '\v'))
 					{
-						destroy_lexeme(&lxm);
+						destroy_lexeme(lxm);
 						return JSON_ALLOCATION_ERROR;
 					}
 					break;
@@ -141,7 +141,7 @@ static int get_next_string_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 				{
 					if(!concatenate_char(&(lxm->lexeme_str), '\f'))
 					{
-						destroy_lexeme(&lxm);
+						destroy_lexeme(lxm);
 						return JSON_ALLOCATION_ERROR;
 					}
 					break;
@@ -150,7 +150,7 @@ static int get_next_string_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 				{
 					if(!concatenate_char(&(lxm->lexeme_str), '\t'))
 					{
-						destroy_lexeme(&lxm);
+						destroy_lexeme(lxm);
 						return JSON_ALLOCATION_ERROR;
 					}
 					break;
@@ -159,7 +159,7 @@ static int get_next_string_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 				{
 					if(!concatenate_char(&(lxm->lexeme_str), '\b'))
 					{
-						destroy_lexeme(&lxm);
+						destroy_lexeme(lxm);
 						return JSON_ALLOCATION_ERROR;
 					}
 					break;
@@ -168,7 +168,7 @@ static int get_next_string_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 				{
 					if(!concatenate_char(&(lxm->lexeme_str), '"'))
 					{
-						destroy_lexeme(&lxm);
+						destroy_lexeme(lxm);
 						return JSON_ALLOCATION_ERROR;
 					}
 					break;
@@ -177,14 +177,14 @@ static int get_next_string_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 				{
 					if(!concatenate_char(&(lxm->lexeme_str), '\\'))
 					{
-						destroy_lexeme(&lxm);
+						destroy_lexeme(lxm);
 						return JSON_ALLOCATION_ERROR;
 					}
 					break;
 				}
 				default :
 				{
-					destroy_lexeme(&lxm);
+					destroy_lexeme(lxm);
 					return JSON_LEXER_ERROR;
 				}
 			}
@@ -193,7 +193,7 @@ static int get_next_string_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 		{
 			if(!concatenate_char(&(lxm->lexeme_str), c))
 			{
-				destroy_lexeme(&lxm);
+				destroy_lexeme(lxm);
 				return JSON_ALLOCATION_ERROR;
 			}
 		}
@@ -212,12 +212,12 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 	byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &stream_error);
 	if(stream_error)
 	{
-		destroy_lexeme(&lxm);
+		destroy_lexeme(lxm);
 		return JSON_ERROR_IN_STREAM;
 	}
 	else if(byte_read == 0)
 	{
-		destroy_lexeme(&lxm);
+		destroy_lexeme(lxm);
 		return JSON_LEXER_ERROR;
 	}
 
@@ -227,7 +227,7 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 		unread_from_stream(lxr->byte_read_stream, &c, 1, &stream_error);
 		if(stream_error)
 		{
-			destroy_lexeme(&lxm);
+			destroy_lexeme(lxm);
 			return JSON_ERROR_IN_STREAM;
 		}
 	}
@@ -236,18 +236,18 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 		// can not read a character, if we will cross the maximum limit
 		if(get_char_count_dstring(&(lxm->lexeme_str)) >= lxr->max_json_number_length)
 		{
-			destroy_lexeme(&lxm);
+			destroy_lexeme(lxm);
 			return JSON_LEXER_ERROR;
 		}
 		if(!concatenate_char(&(lxm->lexeme_str), c))
 		{
-			destroy_lexeme(&lxm);
+			destroy_lexeme(lxm);
 			return JSON_ALLOCATION_ERROR;
 		}
 	}
 	else // fail if none of the above
 	{
-		destroy_lexeme(&lxm);
+		destroy_lexeme(lxm);
 		return JSON_LEXER_ERROR;
 	}
 
@@ -261,14 +261,14 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 		byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &stream_error);
 		if(stream_error)
 		{
-			destroy_lexeme(&lxm);
+			destroy_lexeme(lxm);
 			return JSON_ERROR_IN_STREAM;
 		}
 		else if(byte_read == 0)
 		{
 			if(bytes_numeric_count == 0)
 			{
-				destroy_lexeme(&lxm);
+				destroy_lexeme(lxm);
 				return JSON_LEXER_ERROR;
 			}
 			else
@@ -283,12 +283,12 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 			// can not read a character, if we will cross the maximum limit
 			if(get_char_count_dstring(&(lxm->lexeme_str)) >= lxr->max_json_number_length)
 			{
-				destroy_lexeme(&lxm);
+				destroy_lexeme(lxm);
 				return JSON_LEXER_ERROR;
 			}
 			if(!concatenate_char(&(lxm->lexeme_str), c))
 			{
-				destroy_lexeme(&lxm);
+				destroy_lexeme(lxm);
 				return JSON_ALLOCATION_ERROR;
 			}
 			bytes_numeric_count++;
@@ -297,7 +297,7 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 		{
 			if(is_decimal_point_read)
 			{
-				destroy_lexeme(&lxm);
+				destroy_lexeme(lxm);
 				return JSON_LEXER_ERROR;
 			}
 			else
@@ -306,12 +306,12 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 				// can not read a character, if we will cross the maximum limit
 				if(get_char_count_dstring(&(lxm->lexeme_str)) >= lxr->max_json_number_length)
 				{
-					destroy_lexeme(&lxm);
+					destroy_lexeme(lxm);
 					return JSON_LEXER_ERROR;
 				}
 				if(!concatenate_char(&(lxm->lexeme_str), c))
 				{
-					destroy_lexeme(&lxm);
+					destroy_lexeme(lxm);
 					return JSON_ALLOCATION_ERROR;
 				}
 				bytes_numeric_count = 0;
@@ -322,12 +322,12 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 			// can not read a character, if we will cross the maximum limit
 			if(get_char_count_dstring(&(lxm->lexeme_str)) >= lxr->max_json_number_length || bytes_numeric_count == 0)
 			{
-				destroy_lexeme(&lxm);
+				destroy_lexeme(lxm);
 				return JSON_LEXER_ERROR;
 			}
 			if(!concatenate_char(&(lxm->lexeme_str), c))
 			{
-				destroy_lexeme(&lxm);
+				destroy_lexeme(lxm);
 				return JSON_ALLOCATION_ERROR;
 			}
 			bytes_numeric_count = 0;
@@ -337,7 +337,7 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 		{
 			if(bytes_numeric_count == 0)
 			{
-				destroy_lexeme(&lxm);
+				destroy_lexeme(lxm);
 				return JSON_LEXER_ERROR;
 			}
 			else
@@ -345,7 +345,7 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 				unread_from_stream(lxr->byte_read_stream, &c, 1, &stream_error);
 				if(stream_error)
 				{
-					destroy_lexeme(&lxm);
+					destroy_lexeme(lxm);
 					return JSON_ERROR_IN_STREAM;
 				}
 				lxm->type = NUMBER_LEXEME;
@@ -358,12 +358,12 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 	byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &stream_error);
 	if(stream_error)
 	{
-		destroy_lexeme(&lxm);
+		destroy_lexeme(lxm);
 		return JSON_ERROR_IN_STREAM;
 	}
 	else if(byte_read == 0)
 	{
-		destroy_lexeme(&lxm);
+		destroy_lexeme(lxm);
 		return JSON_LEXER_ERROR;
 	}
 
@@ -373,7 +373,7 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 		unread_from_stream(lxr->byte_read_stream, &c, 1, &stream_error);
 		if(stream_error)
 		{
-			destroy_lexeme(&lxm);
+			destroy_lexeme(lxm);
 			return JSON_ERROR_IN_STREAM;
 		}
 	}
@@ -382,18 +382,18 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 		// can not read a character, if we will cross the maximum limit
 		if(get_char_count_dstring(&(lxm->lexeme_str)) >= lxr->max_json_number_length)
 		{
-			destroy_lexeme(&lxm);
+			destroy_lexeme(lxm);
 			return JSON_LEXER_ERROR;
 		}
 		if(!concatenate_char(&(lxm->lexeme_str), c))
 		{
-			destroy_lexeme(&lxm);
+			destroy_lexeme(lxm);
 			return JSON_ALLOCATION_ERROR;
 		}
 	}
 	else // fail if none of the above
 	{
-		destroy_lexeme(&lxm);
+		destroy_lexeme(lxm);
 		return JSON_LEXER_ERROR;
 	}
 
@@ -405,14 +405,14 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 		byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &stream_error);
 		if(stream_error)
 		{
-			destroy_lexeme(&lxm);
+			destroy_lexeme(lxm);
 			return JSON_ERROR_IN_STREAM;
 		}
 		else if(byte_read == 0)
 		{
 			if(bytes_numeric_count == 0)
 			{
-				destroy_lexeme(&lxm);
+				destroy_lexeme(lxm);
 				return JSON_LEXER_ERROR;
 			}
 			else
@@ -427,12 +427,12 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 			// can not read a character, if we will cross the maximum limit
 			if(get_char_count_dstring(&(lxm->lexeme_str)) >= lxr->max_json_number_length)
 			{
-				destroy_lexeme(&lxm);
+				destroy_lexeme(lxm);
 				return JSON_LEXER_ERROR;
 			}
 			if(!concatenate_char(&(lxm->lexeme_str), c))
 			{
-				destroy_lexeme(&lxm);
+				destroy_lexeme(lxm);
 				return JSON_ALLOCATION_ERROR;
 			}
 			bytes_numeric_count++;
@@ -441,7 +441,7 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 		{
 			if(bytes_numeric_count == 0)
 			{
-				destroy_lexeme(&lxm);
+				destroy_lexeme(lxm);
 				return JSON_LEXER_ERROR;
 			}
 			else
@@ -449,7 +449,7 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 				unread_from_stream(lxr->byte_read_stream, &c, 1, &stream_error);
 				if(stream_error)
 				{
-					destroy_lexeme(&lxm);
+					destroy_lexeme(lxm);
 					return JSON_ERROR_IN_STREAM;
 				}
 				lxm->type = NUMBER_LEXEME;
@@ -479,7 +479,7 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 	skip_whitespaces_from_stream(lxr->byte_read_stream, MAX_WHITESAPCES, &stream_error);
 	if(stream_error)
 	{
-		destroy_lexeme(&lxm);
+		destroy_lexeme(lxm);
 		return JSON_ERROR_IN_STREAM;
 	}
 
@@ -488,7 +488,7 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 	size_t byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &stream_error);
 	if(stream_error)
 	{
-		destroy_lexeme(&lxm);
+		destroy_lexeme(lxm);
 		return JSON_ERROR_IN_STREAM;
 	}
 
@@ -502,7 +502,7 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 	// all white spaces must have been skipped, on excess white spaces we quit
 	if(is_whitespace_char(c))
 	{
-		destroy_lexeme(&lxm);
+		destroy_lexeme(lxm);
 		return JSON_LEXER_ERROR;
 	}
 
@@ -545,7 +545,7 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 	unread_from_stream(lxr->byte_read_stream, &c, 1, &stream_error);
 	if(stream_error)
 	{
-		destroy_lexeme(&lxm);
+		destroy_lexeme(lxm);
 		return JSON_ERROR_IN_STREAM;
 	}
 
@@ -557,7 +557,7 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 		size_t bytes_skipped = skip_dstring_from_stream(lxr->byte_read_stream, &string_to_skip, &stream_error);
 		if(stream_error)
 		{
-			destroy_lexeme(&lxm);
+			destroy_lexeme(lxm);
 			return JSON_ERROR_IN_STREAM;
 		}
 		if(bytes_skipped > 0)
@@ -570,7 +570,7 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 		bytes_skipped = skip_dstring_from_stream(lxr->byte_read_stream, &string_to_skip, &stream_error);
 		if(stream_error)
 		{
-			destroy_lexeme(&lxm);
+			destroy_lexeme(lxm);
 			return JSON_ERROR_IN_STREAM;
 		}
 		if(bytes_skipped > 0)
@@ -583,7 +583,7 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 		bytes_skipped = skip_dstring_from_stream(lxr->byte_read_stream, &string_to_skip, &stream_error);
 		if(stream_error)
 		{
-			destroy_lexeme(&lxm);
+			destroy_lexeme(lxm);
 			return JSON_ERROR_IN_STREAM;
 		}
 		if(bytes_skipped > 0)
