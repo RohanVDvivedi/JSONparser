@@ -123,7 +123,7 @@ static json_node* parse_json_array_node(lexer* lxr, int* error)
 		goto FAIL;
 	}
 
-	// initialize a new json_object node
+	// initialize a new json_array node
 	js = new_json_array_node(0, NULL);
 	if(js == NULL)
 	{
@@ -131,7 +131,7 @@ static json_node* parse_json_array_node(lexer* lxr, int* error)
 		goto FAIL;
 	}
 
-	// empty object case if next lexeme is a ']'
+	// empty array case if next lexeme is a ']'
 	if(((*error) = get_next_lexeme_from_lexer(lxr, &lxm)))
 		goto FAIL;
 	if(lxm.type == SQUARE_CLOSE_BRACE)
@@ -149,7 +149,7 @@ static json_node* parse_json_array_node(lexer* lxr, int* error)
 		if((*error))
 			goto FAIL;
 
-		// insert parsed json key value into the json object
+		// insert parsed json value into the json array
 		if(!append_to_json_array(js, value))
 		{
 			delete_json_node(value);
