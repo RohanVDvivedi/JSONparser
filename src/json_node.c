@@ -379,18 +379,19 @@ json_node* fetch_json_node_from_json_object(const json_node* object_node_p, cons
 	return e->value;
 }
 
-int delete_from_json_object(json_node* object_node_p, json_object_entry* entry_p)
+int delete_from_json_object(json_node* object_node_p, const dstring* key)
 {
 	if(object_node_p == NULL || object_node_p->type != JSON_OBJECT)
 		return 0;
 
-	int removed = remove_from_hashmap(&(object_node_p->json_object), entry_p);
+	json_object_entry* e = (json_object_entry*) find_equals_in_hashmap(&(object_node_p->json_object), key);
+	int removed = remove_from_hashmap(&(object_node_p->json_object), e);
 
 	if(removed)
 	{
-		deinit_dstring(&(entry_p->key));
-		delete_json_node(entry_p->value);
-		free(entry_p);
+		deinit_dstring(&(e->key));
+		delete_json_node(e->value);
+		free(e);
 	}
 
 	return removed;

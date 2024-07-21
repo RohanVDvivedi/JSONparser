@@ -79,8 +79,8 @@ int insert_in_json_object(json_node* object_node_p, const dstring* key, const js
 // returns NULL if object_node_p == NULL OR object_node_p->type != JSON_OBJECT OR json object entry with given key does not exist in object_node_p OR json_node at the given key is NULL
 json_node* fetch_json_node_from_json_object(const json_node* object_node_p, const dstring* key);
 
-// removes a json_object_entry from object_node_p and deletes it
-int delete_from_json_object(json_node* object_node_p, json_object_entry* entry_p);
+// removes a json_object_entry from object_node_p corresponding to key and deletes it
+int delete_from_json_object(json_node* object_node_p, const dstring* key);
 
 // recursively deletes all of the json_nodes starting at node_p
 void delete_json_node(json_node* node_p);
