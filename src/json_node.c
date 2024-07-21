@@ -385,6 +385,8 @@ int delete_from_json_object(json_node* object_node_p, const dstring* key)
 		return 0;
 
 	json_object_entry* e = (json_object_entry*) find_equals_in_hashmap(&(object_node_p->json_object), key);
+	if(e == NULL) // if there is no such entry with the given key
+		return 0;
 	int removed = remove_from_hashmap(&(object_node_p->json_object), e);
 
 	if(removed)
