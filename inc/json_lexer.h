@@ -70,6 +70,7 @@ int initialize_lexer(lexer* lxr, stream* byte_read_stream, size_t max_json_strin
 
 int undo_lexer(lexer* lxr, lexeme* lxm);
 
+// destroys every thing except type of the lexeme
 void destroy_lexeme(lexeme* lxm);
 
 void deinitialize_lexer(lexer* lxr);
