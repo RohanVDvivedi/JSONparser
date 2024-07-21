@@ -451,7 +451,8 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 	int stream_error = 0;
 
 	// reinitialize lexeme_str
-	init_empty_dstring(&(lxm->lexeme_str), 0);
+	if(!init_empty_dstring(&(lxm->lexeme_str), 0))
+		return JSON_ALLOCATION_ERROR;
 
 	// skip white spaces
 	skip_whitespaces_from_stream(lxr->byte_read_stream, MAX_WHITESAPCES, &stream_error);

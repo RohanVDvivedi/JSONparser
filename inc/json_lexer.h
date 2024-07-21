@@ -78,8 +78,9 @@ void deinitialize_lexer(lexer* lxr);
 #include<json_parser.h>
 
 // return, same error codes as json_parser.h, 0 (NO_ERROR) implies success
-// the only error codes this function returns are JSON_LEXER_ERROR and JSON_ERROR_IN_STREAM
+// the only error codes this function returns are JSON_ALLOCATION_ERROR, JSON_LEXER_ERROR and JSON_ERROR_IN_STREAM
 // this function must not be called again after it returns error
+// on an error, the lexeme is destroyed and so there is no requirement to call destroy_lexeme() on lxm
 int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm);
 
 #endif
