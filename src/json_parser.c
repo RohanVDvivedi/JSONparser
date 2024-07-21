@@ -238,10 +238,14 @@ static json_node* parse_json_object_node(lexer* lxr, int* error)
 
 		// after key comes a ':'
 		if(((*error) = get_next_lexeme_from_lexer(lxr, &lxm)))
+		{
+			deinit_dstring(&key);
 			goto FAIL;
+		}
 		destroy_lexeme(&lxm);
 		if(lxm.type != COLON)
 		{
+			deinit_dstring(&key);
 			(*error) = JSON_PARSER_ERROR;
 			goto FAIL;
 		}
