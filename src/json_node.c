@@ -88,14 +88,12 @@ json_node* clone_json_node(const json_node* node_p)
 	return NULL;
 }
 
+const json_node true_json_node = {.type = JSON_BOOL, .json_bool = 1};
+const json_node false_json_node = {.type = JSON_BOOL, .json_bool = 0};
+
 json_node* new_json_bool_node(int bool_value)
 {
-	json_node* n = malloc(sizeof(json_node));
-	if(n == NULL)
-		return NULL;
-	n->type = JSON_BOOL;
-	n->json_bool = bool_value;
-	return n;
+	return (json_node*)(bool_value ? (&true_json_node) : (&false_json_node));
 }
 
 json_node* new_json_unsigned_integer_node(uint64_t num_value)
@@ -409,7 +407,7 @@ static void notifier_on_remove_all_from_json_object_node(void* resource, const v
 
 void delete_json_node(json_node* node_p)
 {
-	if(node_p == NULL)
+	if(node_p == NULL || node_p == &true_json_node || node_p == &false_json_node)
 		return;
 	switch(node_p->type)
 	{
