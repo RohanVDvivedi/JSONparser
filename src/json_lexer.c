@@ -2,7 +2,7 @@
 
 #include<stream_util.h>
 
-int initialize_lexer(lexer* lxr, stream* byte_read_stream, size_t max_json_string_length, size_t max_json_number_length)
+int initialize_lexer(lexer* lxr, stream* byte_read_stream, cy_uint max_json_string_length, cy_uint max_json_number_length)
 {
 	// can not initialize lexeme, if the byte_read_stream is not readable OR if the maximum json_string or json_number length os 0
 	if((!is_readable_stream(byte_read_stream)) || (max_json_string_length == 0) || (max_json_number_length == 0))
@@ -53,7 +53,7 @@ static int get_next_string_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 	char c;
 
 	// read first quotation
-	size_t byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &stream_error);
+	cy_uint byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &stream_error);
 	if(stream_error)
 	{
 		destroy_lexeme(lxm);
@@ -205,7 +205,7 @@ static int get_next_number_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 {
 	int stream_error = 0;
 	char c;
-	size_t byte_read;
+	cy_uint byte_read;
 	make_dstring_empty(&(lxm->lexeme_str));
 
 	// read a byte
@@ -485,7 +485,7 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 
 	// read a byte
 	char c;
-	size_t byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &stream_error);
+	cy_uint byte_read = read_from_stream(lxr->byte_read_stream, &c, 1, &stream_error);
 	if(stream_error)
 	{
 		destroy_lexeme(lxm);
@@ -554,7 +554,7 @@ int get_next_lexeme_from_lexer(lexer* lxr, lexeme* lxm)
 	{
 		// now you can decode fixed strings: true, false and null
 		dstring string_to_skip = get_dstring_pointing_to_literal_cstring("true");
-		size_t bytes_skipped = skip_dstring_from_stream(lxr->byte_read_stream, &string_to_skip, &stream_error);
+		cy_uint bytes_skipped = skip_dstring_from_stream(lxr->byte_read_stream, &string_to_skip, &stream_error);
 		if(stream_error)
 		{
 			destroy_lexeme(lxm);

@@ -48,17 +48,17 @@ struct lexeme
 typedef struct lexer lexer;
 struct lexer
 {
-	// lexer can hold one undo lexeme
+	// lexer can hold atmost one undo lexeme
 	unsigned int has_undone_lexeme : 1;
 
 	// lexeme that as undone
 	lexeme undone_lexeme;
 
 	// maximum json string length lexeme to be read
-	size_t max_json_string_length;
+	cy_uint max_json_string_length;
 
 	// maximum json number lexeme_str length to be read
-	size_t max_json_number_length;
+	cy_uint max_json_number_length;
 
 	// stream to produce lexemes from
 	stream* byte_read_stream;
@@ -66,7 +66,7 @@ struct lexer
 
 // all the below 4 functions return 1 for success and 0 for error
 
-int initialize_lexer(lexer* lxr, stream* byte_read_stream, size_t max_json_string_length, size_t max_json_number_length);
+int initialize_lexer(lexer* lxr, stream* byte_read_stream, cy_uint max_json_string_length, cy_uint max_json_number_length);
 
 int undo_lexer(lexer* lxr, lexeme* lxm);
 

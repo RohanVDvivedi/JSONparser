@@ -288,7 +288,7 @@ static json_node* parse_json_object_node(lexer* lxr, int* error)
 	return js;
 }
 
-json_node* parse_json(stream* rs, size_t max_json_string_length, size_t max_json_number_length, int* error)
+json_node* parse_json(stream* rs, cy_uint max_json_string_length, cy_uint max_json_number_length, int* error)
 {
 	lexer lxr;
 	if(!initialize_lexer(&lxr, rs, max_json_string_length, max_json_number_length))
