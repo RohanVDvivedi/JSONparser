@@ -1,8 +1,8 @@
 #ifndef JSON_LEXER_H
 #define JSON_LEXER_H
 
-#include<stream.h>
-#include<dstring.h>
+#include<cutlery/stream.h>
+#include<cutlery/dstring.h>
 
 // types of JSON lexemes
 typedef enum lexeme_type lexeme_type;
@@ -75,7 +75,7 @@ void destroy_lexeme(lexeme* lxm);
 
 void deinitialize_lexer(lexer* lxr);
 
-#include<json_parser.h>
+#include<jsonparser/json_parser.h>
 
 // return, same error codes as json_parser.h, 0 (NO_ERROR) implies success
 // the only error codes this function returns are JSON_ALLOCATION_ERROR, JSON_LEXER_ERROR and JSON_ERROR_IN_STREAM

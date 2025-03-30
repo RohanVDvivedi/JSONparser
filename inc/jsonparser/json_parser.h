@@ -1,11 +1,11 @@
 #ifndef JSON_PARSER_H
 #define JSON_PARSER_H
 
-#include<stream.h>
+#include<cutlery/stream.h>
 
-#include<json_node.h>
+#include<jsonparser/json_node.h>
 
-#include<json_parser_error_codes.h>
+#include<jsonparser/json_parser_error_codes.h>
 
 // returns error
 // if error is != JSON_NO_ERROR, then returned value is going to be NULL

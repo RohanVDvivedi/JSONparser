@@ -19,8 +19,8 @@ A C library to build parse tree for JSON grammar.
 ## Using The library
  * add `-ljsonparser -lcutlery` linker flag, while compiling your application
  * do not forget to include appropriate public api headers as and when needed. this includes
-   * `#include<json_parser.h>`
-   * `#include<json_serializer.h>`
+   * `#include<jsonparser/json_parser.h>`
+   * `#include<jsonparser/json_serializer.h>`
 
 ## Instructions for uninstalling library
 

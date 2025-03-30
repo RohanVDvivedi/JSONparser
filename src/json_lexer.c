@@ -1,6 +1,6 @@
-#include<json_lexer.h>
+#include<jsonparser/json_lexer.h>
 
-#include<stream_util.h>
+#include<cutlery/stream_util.h>
 
 int initialize_lexer(lexer* lxr, stream* byte_read_stream, cy_uint max_json_string_length, cy_uint max_json_number_length)
 {

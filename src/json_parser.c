@@ -1,6 +1,6 @@
-#include<json_parser.h>
+#include<jsonparser/json_parser.h>
 
-#include<json_lexer.h>
+#include<jsonparser/json_lexer.h>
 
 static json_node* parse_json_array_node(lexer* lxr, int* error);
 static json_node* parse_json_object_node(lexer* lxr, int* error);

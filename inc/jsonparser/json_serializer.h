@@ -1,11 +1,11 @@
 #ifndef JSON_SERIALIZER
 #define JSON_SERIALIZER
 
-#include<stream.h>
+#include<cutlery/stream.h>
 
-#include<json_node.h>
+#include<jsonparser/json_node.h>
 
-#include<json_parser_error_codes.h>
+#include<jsonparser/json_parser_error_codes.h>
 
 // returns int value, suggesting error, from error codes given in json_parser_error_codes.h
 // return value of JSON_NO_ERROR is a success

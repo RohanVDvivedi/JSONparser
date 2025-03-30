@@ -1,9 +1,9 @@
 #ifndef JSON_NODE_H
 #define JSON_NODE_H
 
-#include<linkedlist.h>
-#include<arraylist.h>
-#include<hashmap.h>
+#include<cutlery/linkedlist.h>
+#include<cutlery/arraylist.h>
+#include<cutlery/hashmap.h>
 
 #include<stdint.h>
 
