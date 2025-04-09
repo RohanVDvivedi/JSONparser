@@ -81,7 +81,7 @@ int main()
 
 	printf("printing some nested node using json_accessor\n");
 	{
-		json_node* node_p = get_json_node_from_json_node(js_clone, STATIC_JSON_ACCESSOR(JSON_OBJECT_KEY_literal("family members"), JSON_ARRAY_INDEX(1)));
+		json_node* node_p = get_json_node_from_json_node(js, STATIC_JSON_ACCESSOR(JSON_OBJECT_KEY_literal("family members"), JSON_ARRAY_INDEX(1)));
 
 		serialization_error = serialize_json(&std_write, node_p);
 		if(serialization_error)
@@ -139,7 +139,7 @@ int main()
 
 	printf("printing some nested node using json_accessor\n");
 	{
-		json_node* node_p = get_json_node_from_json_node(js_clone, STATIC_JSON_ACCESSOR(JSON_OBJECT_KEY_literal("family members"), JSON_ARRAY_INDEX(1)));
+		json_node* node_p = get_json_node_from_json_node(js, STATIC_JSON_ACCESSOR(JSON_OBJECT_KEY_literal("family members"), JSON_ARRAY_INDEX(1)));
 
 		serialization_error = serialize_json(&std_write, node_p);
 		if(serialization_error)
