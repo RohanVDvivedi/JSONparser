@@ -96,4 +96,6 @@ void delete_json_node(json_node* node_p);
 											cy_uint:            fetch_json_node_from_json_array)\
 											(js, X)
 
+#include<jsonparser/json_accessor.h>
+
 #endif
