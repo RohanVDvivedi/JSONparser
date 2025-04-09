@@ -79,6 +79,25 @@ int main()
 
 	printf("\n\n");
 
+	printf("printing some nested node using json_accessor\n");
+	{
+		json_node* node_p = get_json_node_from_json_node(js_clone, STATIC_JSON_ACCESSOR(JSON_OBJECT_KEY_literal("family members"), JSON_ARRAY_INDEX(1)));
+
+		serialization_error = serialize_json(&std_write, node_p);
+		if(serialization_error)
+		{
+			printf("failed to serialize json\n");
+			return 0;
+		}
+		flush_all_from_stream(&std_write, &stream_error);
+		if(stream_error)
+		{
+			printf("failed to flush\n");
+			return 0;
+		}
+		printf("\n\n");
+	}
+
 	// remove an element from an array and object in js
 	{
 		delete_from_json_object(js, &dst("age \t next \n year"));
@@ -117,6 +136,25 @@ int main()
 	}
 
 	printf("\n\n");
+
+	printf("printing some nested node using json_accessor\n");
+	{
+		json_node* node_p = get_json_node_from_json_node(js_clone, STATIC_JSON_ACCESSOR(JSON_OBJECT_KEY_literal("family members"), JSON_ARRAY_INDEX(1)));
+
+		serialization_error = serialize_json(&std_write, node_p);
+		if(serialization_error)
+		{
+			printf("failed to serialize json\n");
+			return 0;
+		}
+		flush_all_from_stream(&std_write, &stream_error);
+		if(stream_error)
+		{
+			printf("failed to flush\n");
+			return 0;
+		}
+		printf("\n\n");
+	}
 
 	delete_json_node(js);
 	delete_json_node(js_clone);
