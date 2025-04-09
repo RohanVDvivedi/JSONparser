@@ -1,20 +1,2 @@
  * test parser with malformed JSON vigoursly
    with commnd: printf "invalid_json" | valgrind ./test_parser.out
-
- * need list or a structure to store json_accessor each of whose elements can either be an index into an array or a string that is a key into a json object
- struct json_key
- {
-    int is_array_index;
-    union
-    {
-      dstring key; // for json object
-      cy_uint index; // for json array
-    };
- };
- #define JSON_OBJECT_KEY(dstring* key)
- #define JSON_ARRAY_INDEX(cy_uint index)
- struct json_accessor
- {
-    uint64_t keys_length;
-    json_key* keys_list;
- };
