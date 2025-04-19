@@ -1,8 +1,6 @@
 #ifndef JSON_ACCESSOR_H
 #define JSON_ACCESSOR_H
 
-#include<jsonparser/json_node.h>
-
 typedef struct json_key json_key;
 struct json_key
 {
@@ -28,7 +26,5 @@ struct json_accessor
 };
 
 #define STATIC_JSON_ACCESSOR(...) ((json_accessor){ .keys_length = sizeof((json_key []){ __VA_ARGS__ })/sizeof(json_key), .keys_list = (json_key []){ __VA_ARGS__ } })
-
-json_node* get_json_node_from_json_node(json_node* node_p, json_accessor acs, int* non_existing);
 
 #endif
