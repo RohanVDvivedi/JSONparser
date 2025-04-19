@@ -1,2 +1,4 @@
+ * allow fetch functions to report if the key or index is out of bounds
+
  * test parser with malformed JSON vigoursly
    with commnd: printf "invalid_json" | valgrind ./test_parser.out
