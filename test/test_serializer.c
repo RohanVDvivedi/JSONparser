@@ -81,7 +81,9 @@ int main()
 
 	printf("printing some nested node using json_accessor\n");
 	{
-		json_node* node_p = get_json_node_from_json_node(js, STATIC_JSON_ACCESSOR(JSON_OBJECT_KEY_literal("family members"), JSON_ARRAY_INDEX(1)));
+		int non_existing = 0;
+		json_node* node_p = get_json_node_from_json_node(js, STATIC_JSON_ACCESSOR(JSON_OBJECT_KEY_literal("family members"), JSON_ARRAY_INDEX(1)), &non_existing);
+		printf("non_existing = %d\n", non_existing);
 
 		serialization_error = serialize_json(&std_write, node_p);
 		if(serialization_error)
@@ -102,9 +104,10 @@ int main()
 	{
 		delete_from_json_object(js, &dst("age \t next \n year"));
 
-		json_node* family_members_array = fetch_json_node_from(js, &dst("family members"));
-		json_node* family_members_array_1 = fetch_json_node_from(family_members_array, 1);
-		delete_from_json_array(family_members_array_1, 2);
+		int non_existing = 0;
+		json_node* t = get_json_node_from_json_node(js, STATIC_JSON_ACCESSOR(JSON_OBJECT_KEY_literal("family members"), JSON_ARRAY_INDEX(1)), &non_existing);
+		if(!non_existing)
+			delete_from_json_array(t, 2);
 	}
 
 	serialization_error = serialize_json(&std_write, js);
@@ -139,7 +142,9 @@ int main()
 
 	printf("printing some nested node using json_accessor\n");
 	{
-		json_node* node_p = get_json_node_from_json_node(js, STATIC_JSON_ACCESSOR(JSON_OBJECT_KEY_literal("family members"), JSON_ARRAY_INDEX(1)));
+		int non_existing = 0;
+		json_node* node_p = get_json_node_from_json_node(js, STATIC_JSON_ACCESSOR(JSON_OBJECT_KEY_literal("family members"), JSON_ARRAY_INDEX(1)), &non_existing);
+		printf("non_existing = %d\n", non_existing);
 
 		serialization_error = serialize_json(&std_write, node_p);
 		if(serialization_error)
