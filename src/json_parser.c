@@ -290,6 +290,11 @@ static json_node* parse_json_object_node(lexer* lxr, int* error)
 
 json_node* parse_json(stream* rs, cy_uint max_json_string_length, cy_uint max_json_number_length, int* error)
 {
+	return parse_json2(rs, max_json_string_length, max_json_number_length, 1, error);
+}
+
+json_node* parse_json2(stream* rs, cy_uint max_json_string_length, cy_uint max_json_number_length, int wait_for_EOF, int* error)
+{
 	lexer lxr;
 	if(!initialize_lexer(&lxr, rs, max_json_string_length, max_json_number_length))
 	{
@@ -325,17 +330,20 @@ json_node* parse_json(stream* rs, cy_uint max_json_string_length, cy_uint max_js
 		goto EXIT;
 	}
 
-	if(((*error) = get_next_lexeme_from_lexer(&lxr, &lxm)))
+	if(wait_for_EOF)
 	{
-		delete_json_node(js);
-		goto EXIT;
-	}
-	destroy_lexeme(&lxm);
-	if(lxm.type != END_OF_STREAM)
-	{
-		delete_json_node(js);
-		(*error) = JSON_PARSER_ERROR;
-		goto EXIT;
+		if(((*error) = get_next_lexeme_from_lexer(&lxr, &lxm)))
+		{
+			delete_json_node(js);
+			goto EXIT;
+		}
+		destroy_lexeme(&lxm);
+		if(lxm.type != END_OF_STREAM)
+		{
+			delete_json_node(js);
+			(*error) = JSON_PARSER_ERROR;
+			goto EXIT;
+		}
 	}
 
 	EXIT:;
