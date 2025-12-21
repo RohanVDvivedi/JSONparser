@@ -182,6 +182,15 @@ static int get_next_string_lexeme_CONFIRM_END(lexer* lxr, lexeme* lxm)
 					}
 					break;
 				}
+				case 'u' :
+				{
+					if(!concatenate_char(&(lxm->lexeme_str), 'u'))
+					{
+						destroy_lexeme(lxm);
+						return JSON_ALLOCATION_ERROR;
+					}
+					break;
+				}
 				default :
 				{
 					destroy_lexeme(lxm);
