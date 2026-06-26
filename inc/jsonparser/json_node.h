@@ -30,7 +30,7 @@ struct json_node
 
 	union
 	{
-		int json_bool : 1;
+		unsigned int json_bool : 1;
 		json_num json_number;
 		dstring json_string;
 		hashmap json_object;
