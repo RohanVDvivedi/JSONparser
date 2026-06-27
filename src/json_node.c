@@ -37,7 +37,7 @@ json_node* clone_json_node(const json_node* node_p)
 				free(n);
 				return NULL;
 			}
-			for(const json_object_entry* e = get_first_of_in_hashmap(&(node_p->json_object), ANY_IN_HASHMAP); e != NULL; e = get_next_of_in_hashmap(&(node_p->json_object), e, ANY_IN_HASHMAP))
+			for(const json_object_entry* e = get_first_of_in_hashmap(&(node_p->json_object), FIRST_OF_HASHMAP); e != NULL; e = get_next_of_in_hashmap(&(node_p->json_object), e, ANY_IN_HASHMAP))
 			{
 				json_node* node_p_child = e->value;
 				json_node* n_child = clone_json_node(node_p_child);
