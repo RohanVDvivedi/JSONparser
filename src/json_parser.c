@@ -335,12 +335,14 @@ json_node* parse_json2(stream* rs, cy_uint max_json_string_length, cy_uint max_j
 		if(((*error) = get_next_lexeme_from_lexer(&lxr, &lxm)))
 		{
 			delete_json_node(js);
+			js = NULL;
 			goto EXIT;
 		}
 		destroy_lexeme(&lxm);
 		if(lxm.type != END_OF_STREAM)
 		{
 			delete_json_node(js);
+			js = NULL;
 			(*error) = JSON_PARSER_ERROR;
 			goto EXIT;
 		}

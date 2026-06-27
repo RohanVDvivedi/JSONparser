@@ -441,6 +441,7 @@ void delete_json_node(json_node* node_p)
 		{
 			remove_all_from_hashmap(&(node_p->json_object), &((notifier_interface){NULL, notifier_on_remove_all_from_json_object_node}));
 			deinitialize_hashmap(&(node_p->json_object));
+			break;
 		}
 		case JSON_ARRAY :
 		{
@@ -451,6 +452,7 @@ void delete_json_node(json_node* node_p)
 				delete_json_node(n);
 			}
 			deinitialize_arraylist(&(node_p->json_array));
+			break;
 		}
 	}
 
